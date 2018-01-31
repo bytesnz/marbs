@@ -13,9 +13,9 @@ interface MockNconfConstructor {
   (conf: Conf): MockNconfInterface;
 }
 
-export const MockNconf: MockNconfConstructor = function MockNconf(conf: Conf): MockNconfInterface {
+const MockNconf = function MockNconf(conf: Conf): MockNconfInterface {
   if (!(this instanceof MockNconf)) {
-    return new MockNconf(conf);
+    return new (<MockNconfConstructor>MockNconf)(conf);
   }
 
   this.conf = conf;
@@ -37,8 +37,8 @@ Object.assign(MockNconf.prototype, {
   clone: function clone(): MockNconfInterface {
     const newConf = deepclone(this.conf);
 
-    return new MockNconf(newConf);
+    return new (<MockNconfConstructor>MockNconf)(newConf);
   }
 });
 
-export default MockNconf;
+export default MockNconf as MockNconfConstructor;

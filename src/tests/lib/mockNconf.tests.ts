@@ -1,6 +1,6 @@
 import test from 'ava';
 
-import { MockNconf } from './mockNconf';
+import MockNconf from './mockNconf';
 
 test('MockNconf can be called as a function', (t) => {
   const mock = MockNconf({ test: 'ok' });
