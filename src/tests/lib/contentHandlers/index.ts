@@ -1,4 +1,5 @@
 import * as Configs from '../../../../typings/configs';
+import * as ava from 'ava';
 
 import * as process from 'process';
 import MockNconf from '../mockNconf';
@@ -60,7 +61,7 @@ const validateContentHandler = (t, contentHandler) => {
 /**
  * Test runner for a ContentHandlerCreator
  */
-export const contentHandlerCreatorTests = (test, contentHandlerCreator) => {
+export const contentHandlerCreatorTests = (test: ava.RegisterContextual<any>, contentHandlerCreator) => {
   test.beforeEach((t) => {
     const mockBase = `/${process.pid}`;
     const mockBaseSource = `${mockBase}/source`

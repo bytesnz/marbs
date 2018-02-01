@@ -1,6 +1,6 @@
 {
   "compileOnSave": true,
-  "allowSynthenticDefaultImports": true,
+  "allowSynthenticDefaultImports": false,
   "compilerOptions": {
     "outDir": "./",
     "target": "es6",
@@ -15,6 +15,7 @@
     "src/**/*"
   ],
   "exclude": [
-    "src/spec"
+    "src/spec",
+    "src/app"
   ]
 }

@@ -1,11 +1,13 @@
-import { DefaultGlobalConfig } from '../../../typings/configs';
+import { SetGlobalConfig } from '../../../typings/configs';
 
-export default <DefaultGlobalConfig>{
+export default <SetGlobalConfig>{
   title: 'MARSS Web App',
   baseUri: '/',
   functionality: {
     tags: true,
     categories: true,
     search: ['title', 'tags', 'categories']
-  }
+  },
+  tagsUri: 'tags',
+  categoriesUri: 'categories'
 }

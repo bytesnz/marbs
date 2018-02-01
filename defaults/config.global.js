@@ -7,7 +7,5 @@ exports.default = {
         tags: true,
         categories: true,
         search: ['title', 'tags', 'categories']
-    },
-    tagsUri: 'tags',
-    categoriesUri: 'categories'
+    }
 };

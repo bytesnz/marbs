@@ -1,5 +1,12 @@
 import { contentHandlerCreator as content } from './content';
 
-export const baseContentHandlers = {
+export {
+  content
+};
+
+/**
+ * Default content handlers loaded in MARSS
+ */
+export default {
   content
 };

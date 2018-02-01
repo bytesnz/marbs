@@ -6,7 +6,19 @@ export interface AppFunctionalityConfig {
   /// Generate and load category list
   categories?: boolean,
   /// Search in the given post fields
-  search?: Array<string>
+  search?: Array<string>,
+  /** Whether or not to preload the tags count. If set, server
+   *  rendering / client rerendering of the page will be blocked until the
+   *  categories list is loaded. */
+  preloadTags?: boolean,
+  /** Whether or not to preload the categories count. If set, server
+   *  rendering / client rerendering of the page will be blocked until the
+   *  categories list is loaded. */
+  preloadCategories?: boolean,
+  /** If and how many post details to preload. If set, server
+   *  rendering / client rerendering of the page will be blocked until the
+   *  categories list is loaded. */
+  proloadPostDetails?: number
 }
 
 export interface GlobalConfig {
@@ -15,17 +27,23 @@ export interface GlobalConfig {
   /// Base URI for the app (default: /)
   baseUri?: string,
   /// The basename that static elements will be served from (default: static/)
-  staticBasename?: string,
+  staticUri?: string,
   /// Path to use for socketIO (default: SocketIO default path: /socket.io)
   socketPath?: string,
   /// Functionality to be enabled in the web app
-  functionality?: AppFunctionalityConfig
+  functionality?: AppFunctionalityConfig,
+  /// URI for tags page (default: tags)
+  tagsUri?: string,
+  /// URI for categories page (default: categories)
+  categoriesUri?: string,
 }
 
-export interface DefaultGlobalConfig extends GlobalConfig {
+export interface SetGlobalConfig extends GlobalConfig {
   title: string,
   baseUri: string,
-  functionality: AppFunctionalityConfig
+  functionality: AppFunctionalityConfig,
+  tagsUri: string,
+  categoriesUri: string
 }
 
 export interface UserServerConfig {
@@ -42,12 +60,12 @@ export interface UserServerConfig {
   handlers?: { [id: string]: handlers.Handler }
 }
 
-export interface DefaultServerConfig extends UserServerConfig {
+export interface SetServerConfig extends UserServerConfig {
   source: string,
   port: number,
   draftRegex: RegExp
 }
 
-export interface ServerConfig extends DefaultServerConfig, GlobalConfig {
+export interface ServerConfig extends SetServerConfig, GlobalConfig {
 }
 

@@ -1,3 +1,5 @@
+import * as ava from 'ava';
+
 import { Document, Tags } from '../../../../typings/data';
 import { ContentHandlerCreator } from '../../../../typings/handlers';
 //TODO Add test type def import * as AVA from 'ava';
@@ -18,9 +20,9 @@ export const calculateTagsCount =
   }
 
   return tagCounts;
-}, {});
+},<Tags>{});
 
-export const tagsTests = (test, contentHandlerCreator: ContentHandlerCreator) => {
+export const tagsTests = (test: ava.RegisterContextual<any>, contentHandlerCreator: ContentHandlerCreator) => {
   test ('tags() returns undefined if tags not enabled', async (t) => {
     const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
 

@@ -1,6 +1,6 @@
-import { DefaultServerConfig } from '../../../typings/configs';
+import { SetServerConfig } from '../../../typings/configs';
 
-export default <DefaultServerConfig>{
+export default <SetServerConfig>{
   source: 'source',
   port: 8080,
   draftRegex: /\.draft$/
