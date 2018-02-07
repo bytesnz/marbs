@@ -20,7 +20,7 @@ export const documentsTests = (test, contentHandlerCreator: ContentHandlerCreato
   });
 
   test('documents() returns documents without drafts by default, with a different draft regex', async (t) => {
-    const regex = '\.anotherdraft$';
+    const regex = '\\.anotherdraft$';
     const conf = t.context.conf.clone();
     conf.set('draftRegex', regex);
     const contentHandler = await getReturn(contentHandlerCreator(conf));
@@ -28,7 +28,7 @@ export const documentsTests = (test, contentHandlerCreator: ContentHandlerCreato
     const docs = await contentHandler.documents();
 
     const testDocuments =
-        testData.nullDocumentBodies(testData.flagDraftDocuments(testData.testDocuments, regex));
+        testData.nullDocumentBodies(testData.flagDraftDocuments(testData.testDocuments, new RegExp(regex)));
     t.deepEqual([
       testDocuments[0],
       testDocuments[1],

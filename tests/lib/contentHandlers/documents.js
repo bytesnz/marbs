@@ -24,12 +24,12 @@ exports.documentsTests = (test, contentHandlerCreator) => {
         ], docs);
     }));
     test('documents() returns documents without drafts by default, with a different draft regex', (t) => __awaiter(this, void 0, void 0, function* () {
-        const regex = '\.anotherdraft$';
+        const regex = '\\.anotherdraft$';
         const conf = t.context.conf.clone();
         conf.set('draftRegex', regex);
         const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(conf));
         const docs = yield contentHandler.documents();
-        const testDocuments = testData.nullDocumentBodies(testData.flagDraftDocuments(testData.testDocuments, regex));
+        const testDocuments = testData.nullDocumentBodies(testData.flagDraftDocuments(testData.testDocuments, new RegExp(regex)));
         t.deepEqual([
             testDocuments[0],
             testDocuments[1],

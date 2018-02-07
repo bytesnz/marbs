@@ -61,6 +61,7 @@ export const contentHandlerCreator: Handlers.ContentHandlerCreator =
   let docsArray: Array<Document>  = [];
   let tags;
   let categories;
+  let draftRegex = RegExp(conf.get('draftRegex'));
 
   if (conf.get('functionality').tags) {
     tags = new StringTags();
@@ -146,7 +147,7 @@ export const contentHandlerCreator: Handlers.ContentHandlerCreator =
       data.date = mtime;
     }
 
-    if (conf.get('draftRegex').exec(id)) {
+    if (draftRegex.exec(id)) {
       data.draft = true;
     }
 
@@ -155,10 +156,12 @@ export const contentHandlerCreator: Handlers.ContentHandlerCreator =
     // Add counts if enabled and not a draft
     if (!data.draft) {
       if (conf.get('functionality').tags && data.tags) {
+        data.tags = data.tags.map((tag) => tag.toLowerCase());
         data.tags.forEach((tag) => tags.add(tag));
       }
 
       if (conf.get('functionality').categories && data.categories) {
+        data.categories = data.categories;
         data.categories.forEach((category) => categories.add(category));
       }
     }

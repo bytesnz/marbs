@@ -55,7 +55,7 @@ export interface UserServerConfig {
   port?: number
   /// Regular expression to detect if the file is draft (and should not be added to lists)
   /// Should exclude the .md file extension (default: /.draft$/)
-  draftRegex?: RegExp,
+  draftRegex?: string,
   /// Custom handlers for handling socket events
   handlers?: { [id: string]: handlers.Handler }
 }
@@ -63,7 +63,7 @@ export interface UserServerConfig {
 export interface SetServerConfig extends UserServerConfig {
   source: string,
   port: number,
-  draftRegex: RegExp
+  draftRegex: string
 }
 
 export interface ServerConfig extends SetServerConfig, GlobalConfig {

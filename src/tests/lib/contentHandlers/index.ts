@@ -25,7 +25,7 @@ const testConf: Configs.ServerConfig = {
   port: 4321,
   source: '/source',
   functionality: {},
-  draftRegex: /\.draft$/
+  draftRegex: '\\.draft$'
 };
 
 /**

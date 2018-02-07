@@ -27,7 +27,7 @@ const testConf = {
     port: 4321,
     source: '/source',
     functionality: {},
-    draftRegex: /\.draft$/
+    draftRegex: '\\.draft$'
 };
 /**
  * Validates that the given object is a ContentHandler
