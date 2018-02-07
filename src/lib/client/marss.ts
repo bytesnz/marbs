@@ -6,6 +6,53 @@ import { combineReducers } from 'redux';
 import * as contentReducer from '../../reducers/content';
 import * as optionsReducer from '../../reducers/options';
 
+type ActionLivenFunction = (state, options: configs.SetGlobalConfig) => LiveActionsGroup
+
+export interface Actions {
+  [group: string]: LiveActionsGroup | ActionLivenFunction
+}
+
+interface LiveActions {
+  [group: string]: LiveActionsGroup
+}
+
+interface LiveActionsGroup {
+  [action: string]: Function
+}
+
+/**
+ * Livens the actions given to it by passing the state and the given options
+ * to them
+ *
+ * @param actions Actions to liven.
+ * @param state Redux state to use to liven actions
+ * @param options Config options to pass to actions
+ */
+export const livenActions = (actions: Actions, state,
+    options: configs.SetGlobalConfig, socket): LiveActions => {
+  const life = {
+    dispatch: state.dispatch,
+    getState: state.getState,
+    socket
+  };
+  return Object.keys(actions).reduce((liveActions, group) => {
+    const groupActions = actions[group];
+
+    if (typeof groupActions === 'function') {
+      liveActions[group] = groupActions(life, options);
+    } else {
+      liveActions[group] = Object.keys(groupActions).reduce((liveGroupActions, actionName) => {
+        const action = groupActions[actionName];
+        liveGroupActions[actionName] = (...params) => action(life, options, ...params);
+
+        return liveGroupActions;
+      }, <LiveActionsGroup>{});
+    }
+
+    return liveActions;
+  }, <LiveActions>{});
+};
+
 export const createMarss = async (options: configs.SetGlobalConfig) => {
   let reducers = <State.Reducers>{
     contents: contentReducer.reducer,
@@ -15,9 +62,11 @@ export const createMarss = async (options: configs.SetGlobalConfig) => {
     contents: await contentReducer.initialState(options),
     options: await optionsReducer.initialState(options)
   };
+  let actions = <Actions>{};
 
   if (options.functionality.tags) {
     const tagsReducer = require('../../reducers/tags');
+    actions.tags = require('../../actions/tags').createTagsActions;
     reducers.tags = tagsReducer.reducer;
     initialState.tags = await tagsReducer.initialState(options);
   }
@@ -30,19 +79,20 @@ export const createMarss = async (options: configs.SetGlobalConfig) => {
 
   let combinedReducers = combineReducers(reducers);
 
-  /*if (process.env.NODE_ENV !== 'production') {
-    const original = combineReducers;
-    combinedReducers = (state, action) => {
+  if (process.env.NODE_ENV !== 'production') {
+    const original = combinedReducers;
+    combinedReducers = (state = {}, action) => {
       state = original(state, action);
 
       Object.freeze(state);
 
       return state;
     };
-  }*/
+  }
 
   return {
     reducers: combinedReducers,
-    initialState
+    initialState,
+    actions
   };
 };

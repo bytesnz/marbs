@@ -33,5 +33,26 @@ test('reducer should set the tags state to the given tags when given a set actio
     data: newTags
   });
 
-  t.deepEqual(newTags, newState);
+  t.deepEqual({
+    data: newTags
+  }, newState);
+});
+
+test('reducer should set an error in the state', (t) => {
+  const newError = {
+    message: 'test',
+    code: 200
+  };
+
+  const newState = tagsReducer({}, {
+    type: Actions.MARSS_TAGS_SET,
+    error: newError
+  });
+
+  t.deepEqual({
+    error: {
+      ...newError,
+      date: new Date()
+    }
+  }, newState);
 });

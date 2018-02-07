@@ -24,6 +24,20 @@ ava_1.default('reducer should set the tags state to the given tags when given a 
         type: Actions.MARSS_TAGS_SET,
         data: newTags
     });
-    t.log(newState);
-    t.deepEqual(newTags, newState);
+    t.deepEqual({
+        data: newTags
+    }, newState);
+});
+ava_1.default('reducer should set an error in the state', (t) => {
+    const newError = {
+        message: 'test',
+        code: 200
+    };
+    const newState = tags_1.reducer({}, {
+        type: Actions.MARSS_TAGS_SET,
+        error: newError
+    });
+    t.deepEqual({
+        error: Object.assign({}, newError, { date: new Date() })
+    }, newState);
 });

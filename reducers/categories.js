@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const categories_1 = require("../actions/categories");
-const initial = {};
+const initial = null;
 exports.initialState = (options) => {
     return initial;
 };

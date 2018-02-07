@@ -1,5 +1,7 @@
 import * as Data from './data';
 import * as Config from './configs';
+import { TagsState } from '../src/reducers/tags';
+import { CategoriesState } from '../src/reducers/categories';
 
 export interface Action {
   type: string,
@@ -12,9 +14,9 @@ export interface State {
   /// Current document
   contents: Data.Document,
   /// Site tags
-  tags?: Data.Tags,
+  tags?: TagsState,
   /// Site categories
-  categories?: Data.Categories
+  categories?: CategoriesState
 }
 
 export interface Reducers {

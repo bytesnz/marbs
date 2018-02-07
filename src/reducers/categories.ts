@@ -1,11 +1,16 @@
 import * as State from '../../typings/state';
 import * as Configs from '../../typings/configs';
+import * as Errors from '../../typings/error';
 
 import {
   MARSS_CATEGORIES_SET
 } from '../actions/categories';
 
-const initial = {};
+type TagsCount = { [category: string]: number};
+
+export type CategoriesState = TagsCount | Errors.MarssError;
+
+const initial = null;
 
 export const initialState = (options: Configs.AppFunctionalityConfig) => {
   return initial;
