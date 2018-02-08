@@ -4,7 +4,10 @@ import * as State from '../../../typings/state';
 import { combineReducers } from 'redux';
 
 import * as contentReducer from '../../reducers/content';
+import * as postsReducer from '../../reducers/posts';
 import * as optionsReducer from '../../reducers/options';
+
+import { createPostsActions } from '../../actions/posts';
 
 type ActionLivenFunction = (state, options: configs.SetGlobalConfig) => LiveActionsGroup
 
@@ -56,13 +59,15 @@ export const livenActions = (actions: Actions, state,
 export const createMarss = async (options: configs.SetGlobalConfig) => {
   let reducers = <State.Reducers>{
     contents: contentReducer.reducer,
-    options: optionsReducer.reducer
+    posts: postsReducer.reducer
   };
   let initialState = <State.State>{
     contents: await contentReducer.initialState(options),
-    options: await optionsReducer.initialState(options)
+    posts: await postsReducer.initialState(options)
   };
-  let actions = <Actions>{};
+  let actions = <Actions>{
+    posts: createPostsActions
+  };
 
   if (options.functionality.tags) {
     const tagsReducer = require('../../reducers/tags');

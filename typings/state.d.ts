@@ -9,10 +9,10 @@ export interface Action {
 }
 
 export interface State {
-  /// Options
-  options: Config.SetGlobalConfig,
   /// Current document
   contents: Data.Document,
+  /// Posts list
+  posts?: Array<Data.Document>
   /// Site tags
   tags?: TagsState,
   /// Site categories

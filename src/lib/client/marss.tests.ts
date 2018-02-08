@@ -1,4 +1,5 @@
 import * as config from '../../../typings/configs';
+import * as State from '../../../typings/state';
 
 import test from 'ava';
 
@@ -23,13 +24,13 @@ test('should return a Promise', (t) => {
 test('should return a reducer and initial state with site and content with no functionality selected', async (t) => {
   const marss = await createMarss(options);
 
-  const initialState = {
-    options: options,
-    contents: null
+  const initialState = <State.State>{
+    contents: null,
+    posts: null
   };
 
   t.is(typeof marss.reducers, 'function');
-  t.deepEqual(marss.initialState, initialState);
+  t.deepEqual(initialState, marss.initialState);
 });
 
 test('initialState should include tags when enabled', async (t) => {
