@@ -8,7 +8,10 @@ import {
 
 export type TagsCount = { [tag: string]: number };
 
-export type TagsState = TagsCount | Errors.MarssError;
+export interface TagsState {
+  error?: Errors.MarssError,
+  data?: TagsCount
+};
 
 const initial = null;
 

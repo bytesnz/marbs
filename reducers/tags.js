@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const tags_1 = require("../actions/tags");
+;
 const initial = null;
 exports.initialState = (options) => {
     return initial;
