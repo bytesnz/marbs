@@ -6,12 +6,14 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const config = require('./config.global') || {};
 const appDist = path.resolve(__dirname, './app');
+const urlJoin = require('join-path');
 module.exports = {
   entry: {
     app: './src/app/index.tsx',
   },
   output: {
     path: appDist,
+    publicPath: urlJoin('/', config.baseUri),
     libraryTarget: 'umd',
     filename: '[name].js'
   },
