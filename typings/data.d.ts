@@ -4,7 +4,7 @@ export type Tags = { [tag: string]: number };
 export type Categories = { [categoryPath: string]: number };
 
 export interface Document {
-  id?: string;
+  id: string;
   attributes: {
     draft?: boolean,
     title?: string,

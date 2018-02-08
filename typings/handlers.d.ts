@@ -44,6 +44,10 @@ interface SocketDocumentsRetrievalOptions {
   categories?: Array<string | Array<string>>;
   /// Return document that only have all of the categories given in `categories`
   allCategories?: boolean;
+  /// Start offset of documents to return
+  start?: number;
+  /// Number of documents to return (limit)
+  limit?: number;
 }
 
 interface DocumentsRetrievalOptions extends SocketDocumentsRetrievalOptions {

@@ -362,7 +362,7 @@ export const contentHandlerCreator: Handlers.ContentHandlerCreator =
   // Create object
   return <Handlers.ContentHandler>{
     get: getContent,
-    documents: (options?: Handlers.DocumentsRetrievalOptions) => {
+    documents: (options: Handlers.DocumentsRetrievalOptions = {}) => {
       const results = filterDocuments(options);
       return clone(results);
     },
@@ -379,7 +379,7 @@ export const contentHandlerCreator: Handlers.ContentHandlerCreator =
           uri
         });
       },
-      documents: (socket, data) => {
+      documents: (socket, data: Handlers.SocketDocumentsRetrievalOptions = {}) => {
         // Validate fields
         if (typeof data.fields !== 'undefined') {
           if (!Array.isArray(data.fields) ||
@@ -396,8 +396,8 @@ export const contentHandlerCreator: Handlers.ContentHandlerCreator =
             });
           }
         }
-        if (typeof data.length !== 'undefined') {
-          if (typeof data.length !== 'number') {
+        if (typeof data.limit !== 'undefined') {
+          if (typeof data.limit !== 'number') {
             socket.emit('documents', {
               error: 'Invalid length given'
             });
@@ -410,6 +410,7 @@ export const contentHandlerCreator: Handlers.ContentHandlerCreator =
           documents = documents.map((doc) => copyObjectValues(doc, data.fields));
         } else {*/
           documents = documents.map((doc) => ({
+            id: doc.id,
             attributes: {
               title: doc.attributes.title,
               date: doc.attributes.date,
@@ -421,7 +422,7 @@ export const contentHandlerCreator: Handlers.ContentHandlerCreator =
         //TODO }
 
         let start = 0;
-        if (data.length || typeof data.start === 'number') {
+        if (data.limit || typeof data.start === 'number') {
 
           if (typeof data.start === 'number') {
             if (data.start >= documents.length) {
@@ -436,8 +437,8 @@ export const contentHandlerCreator: Handlers.ContentHandlerCreator =
         }
 
         let results;
-        if (data.length) {
-          results = documents.slice(start, data.length);
+        if (data.limit) {
+          results = documents.slice(start, data.limit);
         } else if (data.start) {
           results = documents.slice(start);
         } else {
