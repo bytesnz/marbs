@@ -10,7 +10,7 @@ export interface Action {
 
 export interface State {
   /// Current document
-  contents: Data.Document,
+  content: Data.Document,
   /// Posts list
   posts?: Array<Data.Document>
   /// Site tags

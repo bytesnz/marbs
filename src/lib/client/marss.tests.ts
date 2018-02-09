@@ -25,7 +25,7 @@ test('should return a reducer and initial state with site and content with no fu
   const marss = await createMarss(options);
 
   const initialState = <State.State>{
-    contents: null,
+    content: null,
     posts: null
   };
 
