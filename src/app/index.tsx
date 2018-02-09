@@ -13,7 +13,7 @@ import * as io from 'socket.io-client';
 import { createMarss, livenActions } from '../lib/client/marss';
 import config from './lib/config';
 
-import '../style.scss';
+import './style.scss';
 
 import { TagList } from '../components/tags';
 import { CategoryList } from '../components/categories';
