@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const testData = require("../../data/source");
 const asyncValue_1 = require("../asyncValue");
 exports.documentsEventTests = (test, contentHandlerCreator) => {
-    test('documents event handler returns the documents without drafts', (t) => __awaiter(this, void 0, void 0, function* () {
+    test('documents event handler returns the only posts without drafts', (t) => __awaiter(this, void 0, void 0, function* () {
         t.plan(2);
         const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
         return new Promise((resolve, reject) => {
@@ -21,14 +21,13 @@ exports.documentsEventTests = (test, contentHandlerCreator) => {
                     t.is('documents', event);
                     t.deepEqual({
                         results: [
-                            testData.mappedDocuments[0],
                             testData.mappedDocuments[1],
                             testData.mappedDocuments[3],
                             testData.mappedDocuments[4],
                             testData.mappedDocuments[5]
                         ],
                         start: 0,
-                        total: 5
+                        total: 4
                     }, data);
                     resolve();
                 }
@@ -37,7 +36,7 @@ exports.documentsEventTests = (test, contentHandlerCreator) => {
             });
         });
     }));
-    test('documents event handler returns the documents with no options', (t) => __awaiter(this, void 0, void 0, function* () {
+    test('documents event handler returns the posts with no options', (t) => __awaiter(this, void 0, void 0, function* () {
         t.plan(2);
         const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
         return new Promise((resolve, reject) => {
@@ -46,14 +45,13 @@ exports.documentsEventTests = (test, contentHandlerCreator) => {
                     t.is('documents', event);
                     t.deepEqual({
                         results: [
-                            testData.mappedDocuments[0],
                             testData.mappedDocuments[1],
                             testData.mappedDocuments[3],
                             testData.mappedDocuments[4],
                             testData.mappedDocuments[5]
                         ],
                         start: 0,
-                        total: 5
+                        total: 4
                     }, data);
                     resolve();
                 }

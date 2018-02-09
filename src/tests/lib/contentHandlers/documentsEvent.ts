@@ -5,7 +5,7 @@ import * as testData from '../../data/source';
 import { getReturn } from '../asyncValue';
 
 export const documentsEventTests = (test, contentHandlerCreator: ContentHandlerCreator) => {
-  test('documents event handler returns the documents without drafts', async (t) => {
+  test('documents event handler returns the only posts without drafts', async (t) => {
     t.plan(2);
 
     const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
@@ -16,14 +16,13 @@ export const documentsEventTests = (test, contentHandlerCreator: ContentHandlerC
           t.is('documents', event);
           t.deepEqual({
             results: [
-              testData.mappedDocuments[0],
               testData.mappedDocuments[1],
               testData.mappedDocuments[3],
               testData.mappedDocuments[4],
               testData.mappedDocuments[5]
             ],
             start: 0,
-            total: 5
+            total: 4
           }, data);
           resolve();
         }
@@ -33,7 +32,7 @@ export const documentsEventTests = (test, contentHandlerCreator: ContentHandlerC
     });
   });
 
-  test('documents event handler returns the documents with no options', async (t) => {
+  test('documents event handler returns the posts with no options', async (t) => {
     t.plan(2);
 
     const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
@@ -44,14 +43,13 @@ export const documentsEventTests = (test, contentHandlerCreator: ContentHandlerC
           t.is('documents', event);
           t.deepEqual({
             results: [
-              testData.mappedDocuments[0],
               testData.mappedDocuments[1],
               testData.mappedDocuments[3],
               testData.mappedDocuments[4],
               testData.mappedDocuments[5]
             ],
             start: 0,
-            total: 5
+            total: 4
           }, data);
           resolve();
         }

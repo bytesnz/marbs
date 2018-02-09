@@ -404,7 +404,12 @@ export const contentHandlerCreator: Handlers.ContentHandlerCreator =
           }
         }
 
-        let documents = docsArray.filter((doc) => !doc.attributes.draft);
+        const documentType = 'post';
+
+        let documents = docsArray.filter((doc) => !doc.attributes.draft
+            && (documentType === 'post' ?
+            (!doc.attributes.type || doc.attributes.type === 'post') :
+            doc.attributes.type === documentType));
 
         /**TODO if (data.fields) {
           documents = documents.map((doc) => copyObjectValues(doc, data.fields));
