@@ -43,7 +43,8 @@ test('reducer should set the tags state to the given tags when given a set actio
 test('reducer should set an error in the state', (t) => {
   const newError = {
     message: 'test',
-    code: 200
+    code: 200,
+    date: new Date()
   };
   const state = {};
 

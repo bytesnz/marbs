@@ -24,10 +24,7 @@ export const reducer = (state = initial, action: State.Action) => {
     case MARSS_TAGS_SET:
       if (action.error) {
         state = {
-          error: {
-            ...action.error,
-            date: new Date()
-          }
+          error: action.error
         };
       } else {
         state = {

@@ -11,7 +11,7 @@ exports.reducer = (state = initial, action) => {
         case tags_1.MARSS_TAGS_SET:
             if (action.error) {
                 state = {
-                    error: Object.assign({}, action.error, { date: new Date() })
+                    error: action.error
                 };
             }
             else {

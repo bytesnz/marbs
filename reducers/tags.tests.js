@@ -33,7 +33,8 @@ ava_1.default('reducer should set the tags state to the given tags when given a 
 ava_1.default('reducer should set an error in the state', (t) => {
     const newError = {
         message: 'test',
-        code: 200
+        code: 200,
+        date: new Date()
     };
     const state = {};
     const newState = tags_1.reducer(state, {
