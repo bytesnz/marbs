@@ -3,7 +3,7 @@ import { Document } from '../../../typings/data';
 
 export const testDocuments: Array<Document> = [
   { // 0
-    id: 'page-test-1',
+    id: 'index',
     attributes: {
       title: 'Test 1',
       date: new Date('2017-11-12 10:30'),

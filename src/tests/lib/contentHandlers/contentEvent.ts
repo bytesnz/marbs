@@ -17,11 +17,11 @@ export const contentEventTests = (test, contentHandlerCreator: ContentHandlerCre
           t.is('content', event);
           t.deepEqual({
             results: undefined,
-            uri: ''
+            uri: 'fdsafdsa'
           }, data);
           resolve();
         }
-      }, '');
+      }, 'fdsafdsa');
     });
   });
 
@@ -60,6 +60,25 @@ export const contentEventTests = (test, contentHandlerCreator: ContentHandlerCre
           resolve();
         }
       }, testData.flaggedTestDocuments[2].id);
+    });
+  });
+
+  test('content event handler returns the index document when available', async (t) => {
+    t.plan(2);
+
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+
+    return new Promise((resolve, reject) => {
+      contentHandler.events.content({
+        emit: (event, data) => {
+          t.is('content', event);
+          t.deepEqual({
+            uri: '',
+            results: testData.testDocuments[0]
+          }, data);
+          resolve();
+        }
+      }, '');
     });
   });
 };

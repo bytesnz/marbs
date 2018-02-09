@@ -21,11 +21,11 @@ exports.contentEventTests = (test, contentHandlerCreator) => {
                     t.is('content', event);
                     t.deepEqual({
                         results: undefined,
-                        uri: ''
+                        uri: 'fdsafdsa'
                     }, data);
                     resolve();
                 }
-            }, '');
+            }, 'fdsafdsa');
         });
     }));
     test('content event handler returns the full document of the given id', (t) => __awaiter(this, void 0, void 0, function* () {
@@ -58,6 +58,22 @@ exports.contentEventTests = (test, contentHandlerCreator) => {
                     resolve();
                 }
             }, testData.flaggedTestDocuments[2].id);
+        });
+    }));
+    test('content event handler returns the index document when available', (t) => __awaiter(this, void 0, void 0, function* () {
+        t.plan(2);
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        return new Promise((resolve, reject) => {
+            contentHandler.events.content({
+                emit: (event, data) => {
+                    t.is('content', event);
+                    t.deepEqual({
+                        uri: '',
+                        results: testData.testDocuments[0]
+                    }, data);
+                    resolve();
+                }
+            }, '');
         });
     }));
 };

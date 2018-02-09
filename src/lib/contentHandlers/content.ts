@@ -201,7 +201,10 @@ export const contentHandlerCreator: Handlers.ContentHandlerCreator =
    */
   const getContent = async (id: string): Promise<Document> => {
     if (typeof docs[id] === 'undefined') {
-      return;
+      id = id + (id ? '/' : '') + 'index';
+      if (typeof docs[id] === 'undefined') {
+        return;
+      }
     }
     const filename = getFilename(id);
 

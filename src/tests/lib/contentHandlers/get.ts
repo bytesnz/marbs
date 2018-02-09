@@ -8,7 +8,7 @@ export const getTests = (test, contentHandlerCreator: ContentHandlerCreator) => 
   test('get() returns undefined when a document does not exist for the given id', async (t) => {
     const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
 
-    const content = await contentHandler.get('');
+    const content = await contentHandler.get('fdgsgsfd');
 
     t.is(undefined, content);
   });
@@ -27,6 +27,14 @@ export const getTests = (test, contentHandlerCreator: ContentHandlerCreator) => 
     const content = await contentHandler.get(testData.flaggedTestDocuments[2].id);
 
     t.deepEqual(testData.flaggedTestDocuments[2], content);
+  });
+
+  test('get() returns the index page when available', async (t) => {
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+
+    const content = await contentHandler.get('');
+
+    t.deepEqual(testData.flaggedTestDocuments[0], content);
   });
 };
 
