@@ -1,5 +1,19 @@
 import * as handlers from './handlers';
 
+interface BaseMenuItem {
+  label: string
+}
+
+interface MenuLink extends BaseMenuItem {
+  link: string
+}
+
+interface MenuHeading extends BaseMenuItem {
+  children: Array<MenuItem>
+}
+
+type MenuItem = MenuHeading | MenuLink;
+
 export interface AppFunctionalityConfig {
   /// Generate and load tag list
   tags?: boolean,
@@ -7,15 +21,15 @@ export interface AppFunctionalityConfig {
   categories?: boolean,
   /// Search in the given post fields
   search?: Array<string>,
-  /** Whether or not to preload the tags count. If set, server
+  /** TODO Whether or not to preload the tags count. If set, server
    *  rendering / client rerendering of the page will be blocked until the
    *  categories list is loaded. */
   preloadTags?: boolean,
-  /** Whether or not to preload the categories count. If set, server
+  /** TODO Whether or not to preload the categories count. If set, server
    *  rendering / client rerendering of the page will be blocked until the
    *  categories list is loaded. */
   preloadCategories?: boolean,
-  /** If and how many post details to preload. If set, server
+  /** TODO If and how many post details to preload. If set, server
    *  rendering / client rerendering of the page will be blocked until the
    *  categories list is loaded. */
   proloadPostDetails?: number
@@ -36,6 +50,14 @@ export interface GlobalConfig {
   tagsUri?: string,
   /// URI for categories page (default: categories)
   categoriesUri?: string,
+  /** TODO Enable showing a category on its own page for all categories (if set to
+   *  true), or for the given categories. If only selected categories are
+   *  given, the given categories won't be displayed on the main categories
+   *  list page
+   */
+  categoriesPerPage?: boolean | Array<string>,
+  /// Menu items
+  menu?: Array<MenuItem>,
 }
 
 export interface SetGlobalConfig extends GlobalConfig {
