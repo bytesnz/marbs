@@ -85,11 +85,12 @@ export const createMarss = async (options: configs.SetGlobalConfig) => {
   let combinedReducers = combineReducers(reducers);
 
   if (process.env.NODE_ENV !== 'production') {
+    const deepFreeze = require('deep-freeze');
     const original = combinedReducers;
     combinedReducers = (state = {}, action) => {
       state = original(state, action);
 
-      Object.freeze(state);
+      deepFreeze(state);
 
       return state;
     };
