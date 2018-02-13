@@ -154,14 +154,22 @@ export const contentHandlerCreator: Handlers.ContentHandlerCreator =
     docs[id] = markdown;
 
     // Add counts if enabled and not a draft
-    if (!data.draft) {
-      if (conf.get('functionality').tags && data.tags) {
-        data.tags = data.tags.map((tag) => tag.toLowerCase());
+    if (conf.get('functionality').tags && data.tags) {
+      data.tags = data.tags.map((tag) => tag.toLowerCase());
+      if (!data.draft) {
         data.tags.forEach((tag) => tags.add(tag));
       }
+    }
 
-      if (conf.get('functionality').categories && data.categories) {
-        data.categories = data.categories;
+    if (conf.get('functionality').categories && data.categories) {
+      data.categories = data.categories.map((category) => {
+        if (typeof category === 'string') {
+          return category.toLowerCase();
+        } else {
+          return category.map((subCategory) => subCategory.toLowerCase());
+        }
+      });
+      if (!data.draft) {
         data.categories.forEach((category) => categories.add(category));
       }
     }
