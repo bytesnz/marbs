@@ -8,6 +8,10 @@ let highlightJs;
 /// Highlight.js language packs
 let languages = {};
 
+declare var System: {
+  import(file: string): Promise<any>;
+}
+
 export class Markdown extends React.Component {
   state: {
     hijs: any,
@@ -82,7 +86,7 @@ export class Markdown extends React.Component {
       if (highlightJs instanceof Promise) {
         promises.push(highlightJs);
       } else if (typeof highlightJs === 'undefined') {
-        highlightJs = import('highlight.js/lib/highlight').then((highlight) => {
+        highlightJs = System.import('highlight.js/lib/highlight').then((highlight) => {
           highlight.configure({ //TODO Move to config
             tabReplace: '  '
           });
@@ -95,7 +99,7 @@ export class Markdown extends React.Component {
       if (languages[language] instanceof Promise) {
         promises.push(languages[language]);
       } else if (typeof languages[language] === 'undefined') {
-        languages[language] = import(`highlight.js/lib/languages/${language}`).then((languagePack) => {
+        languages[language] = System.import(`highlight.js/lib/languages/${language}`).then((languagePack) => {
           if (!languagePack) {
             console.error('Could not import language', language);
             languages[language] = false;

@@ -63,7 +63,7 @@ class Markdown extends React.Component {
                 promises.push(highlightJs);
             }
             else if (typeof highlightJs === 'undefined') {
-                highlightJs = Promise.resolve().then(() => require('highlight.js/lib/highlight')).then((highlight) => {
+                highlightJs = System.import('highlight.js/lib/highlight').then((highlight) => {
                     highlight.configure({
                         tabReplace: '  '
                     });
@@ -75,7 +75,7 @@ class Markdown extends React.Component {
                 promises.push(languages[language]);
             }
             else if (typeof languages[language] === 'undefined') {
-                languages[language] = Promise.resolve().then(() => require(`highlight.js/lib/languages/${language}`)).then((languagePack) => {
+                languages[language] = System.import(`highlight.js/lib/languages/${language}`).then((languagePack) => {
                     if (!languagePack) {
                         console.error('Could not import language', language);
                         languages[language] = false;
