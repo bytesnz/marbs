@@ -33,6 +33,8 @@ test('reducer should set the categories state to the given categories when given
     data: newCategories
   });
 
-  t.deepEqual(newCategories, newState);
+  t.deepEqual({
+    data: newCategories
+  }, newState);
 });
 

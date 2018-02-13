@@ -24,5 +24,7 @@ ava_1.default('reducer should set the categories state to the given categories w
         type: Actions.MARSS_CATEGORIES_SET,
         data: newCategories
     });
-    t.deepEqual(newCategories, newState);
+    t.deepEqual({
+        data: newCategories
+    }, newState);
 });

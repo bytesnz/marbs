@@ -9,6 +9,7 @@ import * as optionsReducer from '../../reducers/options';
 
 import { createPostsActions } from '../../actions/posts';
 import { createContentActions } from '../../actions/content';
+import { createCategoriesActions } from '../../actions/categories';
 
 type ActionLivenFunction = (state, options: configs.SetGlobalConfig) => LiveActionsGroup
 
@@ -68,6 +69,7 @@ export const createMarss = async (options: configs.SetGlobalConfig) => {
   };
   let actions = <Actions>{
     content: createContentActions,
+    categories: createCategoriesActions,
     posts: createPostsActions
   };
 

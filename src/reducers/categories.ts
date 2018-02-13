@@ -6,7 +6,7 @@ import {
   MARSS_CATEGORIES_SET
 } from '../actions/categories';
 
-type TagsCount = { [category: string]: number};
+export type TagsCount = { [category: string]: number};
 
 export type CategoriesState = TagsCount | Errors.MarssError;
 
@@ -19,9 +19,17 @@ export const initialState = (options: Configs.AppFunctionalityConfig) => {
 export const reducer = (state = initial, action: State.Action) => {
   switch (action.type) {
     case MARSS_CATEGORIES_SET:
-      state = {
-        ...action.data
-      };
+      if (action.error) {
+        state = {
+          error: action.error
+        };
+      } else if (action.data) {
+        state = {
+          data: {
+            ...action.data
+          }
+        };
+      }
       break;
   }
 
