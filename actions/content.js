@@ -75,6 +75,10 @@ exports.createContentActions = ({ getState, dispatch, socket }, options) => {
             contentError(data.error, data.code);
             return;
         }
+        if (!data.results) {
+            contentError('"Not found', 404);
+            return;
+        }
         setContent(data.results);
     });
     return {

@@ -2,6 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const react_redux_1 = require("react-redux");
 const React = require("react");
+const react_router_dom_1 = require("react-router-dom");
+const urlJoin = require("join-path");
+const config_1 = require("../app/lib/config");
 const post_1 = require("./post");
 const makeLabel = (id) => id;
 class TagListComponent extends React.Component {
@@ -26,13 +29,6 @@ class TagListComponent extends React.Component {
             this.state.expandedTags = [];
         }
     }
-    label({ tag, count }) {
-        return (React.createElement("a", { href: `#${tag}` },
-            tag,
-            " (",
-            count,
-            ")"));
-    }
     render() {
         let { tags, posts, ListPost } = this.props;
         ListPost = ListPost || post_1.ListPost;
@@ -46,7 +42,7 @@ class TagListComponent extends React.Component {
             posts && posts.error ? (React.createElement("div", { className: "error" },
                 "There has been an error fetching the posts: ",
                 posts.error.message)) : null,
-            React.createElement(exports.TagCloud, { Label: this.label }),
+            React.createElement(exports.TagCloud, null),
             Object.keys(tags).sort().map((id) => (React.createElement("section", { key: id },
                 React.createElement("h1", null,
                     React.createElement("a", { id: id }),
@@ -89,8 +85,12 @@ const TagCloudComponent = (props) => {
     const countDelta = maxCount - minCount;
     const sizeDelta = maxSize - minSize;
     const size = (count) => 100 * (((count - minCount) / countDelta * sizeDelta) + minSize);
-    return Object.keys(tags).map((id) => (React.createElement("span", { key: id, style: { fontSize: `${size(tags[id])}%` } },
-        React.createElement(Label, { tag: id, count: tags[id] }))));
+    return (React.createElement("ul", { className: "tagCloud" }, Object.keys(tags).sort().map((id) => (React.createElement("li", { key: id, style: { fontSize: `${size(tags[id])}%` } },
+        React.createElement(react_router_dom_1.Link, { to: urlJoin(config_1.default.baseUri, config_1.default.tagsUri + '#' + id) },
+            id,
+            " (",
+            tags[id],
+            ")"))))));
 };
 exports.TagCloud = react_redux_1.connect((state) => ({
     tags: state.tags

@@ -1,5 +1,9 @@
 import { connect } from 'react-redux';
 import * as React from 'react';
+import { Link } from 'react-router-dom';
+import * as urlJoin from 'join-path';
+
+import config from '../app/lib/config';
 
 import {
   ListPost as DefaultListPost
@@ -45,14 +49,6 @@ class TagListComponent extends React.Component {
     }
   }
 
-  label({tag, count}) {
-    return (
-      <a href={`#${tag}`}>
-        {tag} ({count})
-      </a>
-    );
-  }
-
   render() {
     let { tags, posts, ListPost } = this.props;
     ListPost = ListPost || DefaultListPost;
@@ -72,14 +68,14 @@ class TagListComponent extends React.Component {
             There has been an error fetching the posts: {posts.error.message}
           </div>
         ) : null }
-        <TagCloud Label={this.label} />
+        <TagCloud />
         { Object.keys(tags).sort().map((id) => (
           <section key={id}>
             <h1>
               <a id={id} />
               {makeLabel(id)} ({tags[id]})
             </h1>
-            { posts ? posts.filter((post) => post.attributes 
+            { posts ? posts.filter((post) => post.attributes
                 && post.attributes.tags
                 && post.attributes.tags.indexOf(id) !== -1).map((post) => (
               <ListPost key={post.id} post={post}/>
@@ -132,11 +128,17 @@ const TagCloudComponent  = (props) => {
 
   const size = (count) => 100 * (((count - minCount) / countDelta * sizeDelta) + minSize);
 
-  return Object.keys(tags).map((id) => (
-    <span key={id} style={{ fontSize: `${size(tags[id])}%` }}>
-      <Label tag={id} count={tags[id]} />
-    </span>
-  ));
+  return (
+    <ul className="tagCloud">
+      { Object.keys(tags).sort().map((id) => (
+      <li key={id} style={{ fontSize: `${size(tags[id])}%` }}>
+        <Link to={urlJoin(config.baseUri, config.tagsUri + '#' + id)}>
+          {id} ({tags[id]})
+        </Link>
+      </li>
+      )) }
+    </ul>
+  );
 };
 
 export const TagCloud = connect((state) => ({

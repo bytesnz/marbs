@@ -86,6 +86,11 @@ export const createContentActions = ({ getState, dispatch, socket }, options: Se
       return;
     }
 
+    if (!data.results) {
+      contentError('"Not found', 404);
+      return;
+    }
+
     setContent(data.results);
   });
 

@@ -35,6 +35,7 @@ const categories_1 = require("../components/categories");
 const content_1 = require("../components/content");
 const header_1 = require("../components/header");
 const footer_1 = require("../components/footer");
+const sidebar_1 = require("../components/sidebar");
 const history = createBrowserHistory_1.default();
 const renderMergedProps = (component, ...rest) => {
     const finalProps = Object.assign({}, ...rest);
@@ -55,6 +56,7 @@ const PropsRoute = (_a) => {
         React.createElement(react_router_redux_1.ConnectedRouter, { history: history },
             React.createElement("div", null,
                 React.createElement(header_1.Header, null),
+                React.createElement(sidebar_1.Sidebar, { actions: actions, toggle: true, toggleUsingClass: true }),
                 React.createElement(PropsRoute, { actions: actions, component: content_1.Content }),
                 React.createElement(PropsRoute, { path: `${urlJoin('/', config_1.default.baseUri, config_1.default.tagsUri)}`, actions: actions, component: tags_1.TagList }),
                 React.createElement(PropsRoute, { path: `${urlJoin('/', config_1.default.baseUri, config_1.default.categoriesUri)}`, actions: actions, component: categories_1.CategoryList }),

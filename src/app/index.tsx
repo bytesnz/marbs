@@ -20,6 +20,7 @@ import { CategoryList } from '../components/categories';
 import { Content } from '../components/content';
 import { Header } from '../components/header';
 import { Footer } from '../components/footer';
+import { Sidebar } from '../components/sidebar';
 
 const history = createHistory();
 
@@ -54,9 +55,10 @@ const PropsRoute = ({ component, ...rest }) => {
       <ConnectedRouter history={history}>
         <div>
           <Header/>
-            <PropsRoute actions={actions} component={Content} />
-            <PropsRoute path={`${urlJoin('/', config.baseUri, config.tagsUri)}`} actions={actions} component={TagList} />
-            <PropsRoute path={`${urlJoin('/', config.baseUri, config.categoriesUri)}`} actions={actions} component={CategoryList} />
+          <Sidebar actions={actions} toggle={true} toggleUsingClass={true} />
+          <PropsRoute actions={actions} component={Content} />
+          <PropsRoute path={`${urlJoin('/', config.baseUri, config.tagsUri)}`} actions={actions} component={TagList} />
+          <PropsRoute path={`${urlJoin('/', config.baseUri, config.categoriesUri)}`} actions={actions} component={CategoryList} />
           <Footer/>
         </div>
       </ConnectedRouter>

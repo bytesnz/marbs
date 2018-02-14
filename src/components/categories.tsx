@@ -1,5 +1,9 @@
 import { connect } from 'react-redux';
 import * as React from 'react';
+import { Link } from 'react-router-dom';
+import * as urlJoin from 'join-path';
+
+import config from '../app/lib/config';
 
 import {
   ListPost as DefaultListPost
@@ -48,3 +52,33 @@ export const CategoryList = connect((state) => ({
   categories: state.categories,
   posts: state.posts
 }))(CategoryListComponent);
+
+const CategoriesComponent = ({ categories, actions }) => {
+  if (categories === null) {
+    actions.categories.fetchCategories();
+    return null;
+  }
+
+  if (categories.data) {
+    categories = categories.data;
+  } else {
+    return null;
+  }
+
+  return (
+    <ul className="categories">
+      { Object.keys(categories).sort().map((id) => (
+        <li key={id}>
+          <Link to={urlJoin(config.baseUri, config.categoriesUri +
+              (config.categoriesPerPage ? '' : '#') + id)}>
+            {id} ({categories[id]})
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+export const Categories = connect((state) => ({
+  categories: state.categories
+}))(CategoriesComponent);
