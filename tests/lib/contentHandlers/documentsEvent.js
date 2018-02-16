@@ -14,7 +14,7 @@ const asyncValue_1 = require("../asyncValue");
 exports.documentsEventTests = (test, contentHandlerCreator) => {
     test('documents event handler returns the only posts without drafts', (t) => __awaiter(this, void 0, void 0, function* () {
         t.plan(2);
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         return new Promise((resolve, reject) => {
             contentHandler.events.documents({
                 emit: (event, data) => {
@@ -38,7 +38,7 @@ exports.documentsEventTests = (test, contentHandlerCreator) => {
     }));
     test('documents event handler returns the posts with no options', (t) => __awaiter(this, void 0, void 0, function* () {
         t.plan(2);
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         return new Promise((resolve, reject) => {
             contentHandler.events.documents({
                 emit: (event, data) => {

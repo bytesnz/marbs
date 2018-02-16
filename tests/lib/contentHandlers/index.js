@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const process = require("process");
-const mockNconf_1 = require("../mockNconf");
 const unionfs_1 = require("../unionfs");
 const source_1 = require("../../data/source");
 const asyncValue_1 = require("../asyncValue");
@@ -24,6 +23,7 @@ const categoriesEvent_1 = require("./categoriesEvent");
 const testConf = {
     title: 'Test Site',
     baseUri: '/',
+    address: '127.0.0.1',
     port: 4321,
     source: '/source',
     functionality: {},
@@ -62,14 +62,14 @@ exports.contentHandlerCreatorTests = (test, contentHandlerCreator) => {
         const mockBase = `/${process.pid}`;
         const mockBaseSource = `${mockBase}/source`;
         //const vol = new Volume();
-        const conf = Object.assign({}, testConf, {
+        const testConfig = Object.assign({}, testConf, {
             source: mockBaseSource
         });
-        unionfs_1.vol.fromJSON(source_1.testSource, conf.source);
-        t.context.conf = mockNconf_1.default(conf);
+        unionfs_1.vol.fromJSON(source_1.testSource, testConfig.source);
+        t.context.config = testConfig;
     });
     test('the creator returns either a handler or a promise that resolves to a handler', (t) => __awaiter(this, void 0, void 0, function* () {
-        const value = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const value = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         validateContentHandler(t, value);
     }));
     documents_1.documentsTests(test, contentHandlerCreator);

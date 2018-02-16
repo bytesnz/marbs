@@ -7,7 +7,7 @@ import { getReturn } from '../asyncValue';
 
 export const categoriesTests = (test, contentHandlerCreator: ContentHandlerCreator) => {
   test ('categories() returns undefined if categories no enabled', async (t) => {
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     const categories = await contentHandler.categories();
 
@@ -15,10 +15,13 @@ export const categoriesTests = (test, contentHandlerCreator: ContentHandlerCreat
   });
 
   test('categories() returns the categories and counts', async (t) => {
-    const conf = t.context.conf.clone();
-    conf.set('functionality', {
-      categories: true
-    });
+    const conf = {
+      ...t.context.config,
+      functionality: {
+        ...t.context.config.functionality,
+        categories: true
+      }
+    };
     const contentHandler = await getReturn(contentHandlerCreator(conf));
 
     const categories = await contentHandler.categories();

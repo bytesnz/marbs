@@ -15,7 +15,7 @@ const tag_you_are_1 = require("tag-you-are");
 exports.categoriesEventTests = (test, contentHandlerCreator) => {
     test('categories event handler returns undefined if categories are not enabled', (t) => __awaiter(this, void 0, void 0, function* () {
         t.plan(2);
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         return new Promise((resolve, reject) => {
             contentHandler.events.categories({
                 emit: (event, data) => {
@@ -30,8 +30,7 @@ exports.categoriesEventTests = (test, contentHandlerCreator) => {
     }));
     test('categories event handler returns the categories count if categories are enabled', (t) => __awaiter(this, void 0, void 0, function* () {
         t.plan(2);
-        const conf = t.context.conf.clone();
-        conf.set('functionality', Object.assign({}, conf.get('functionality'), { categories: true }));
+        const conf = Object.assign({}, t.context.config, { functionality: Object.assign({}, t.context.config.functionality, { categories: true }) });
         const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(conf));
         const testCategoriesCount = new tag_you_are_1.Tags('/');
         testData.nulledTestDocuments.filter((doc) => !doc.attributes.draft).forEach((doc) => {

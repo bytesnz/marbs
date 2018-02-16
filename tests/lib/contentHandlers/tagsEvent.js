@@ -15,7 +15,7 @@ const tags_1 = require("./tags");
 exports.tagsEventTests = (test, contentHandlerCreator) => {
     test('tags event handler returns undefined if tags are not enabled', (t) => __awaiter(this, void 0, void 0, function* () {
         t.plan(2);
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         return new Promise((resolve, reject) => {
             contentHandler.events.tags({
                 emit: (event, data) => {
@@ -30,8 +30,7 @@ exports.tagsEventTests = (test, contentHandlerCreator) => {
     }));
     test('tags event handler returns the tags count if tags are enabled', (t) => __awaiter(this, void 0, void 0, function* () {
         t.plan(2);
-        const conf = t.context.conf.clone();
-        conf.set('functionality', Object.assign({}, conf.get('functionality'), { tags: true }));
+        const conf = Object.assign({}, t.context.config, { functionality: Object.assign({}, t.context.config.functionality, { tags: true }) });
         const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(conf));
         return new Promise((resolve, reject) => {
             contentHandler.events.tags({

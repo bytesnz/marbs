@@ -13,22 +13,22 @@ const testData = require("../../data/source");
 const asyncValue_1 = require("../asyncValue");
 exports.getTests = (test, contentHandlerCreator) => {
     test('get() returns undefined when a document does not exist for the given id', (t) => __awaiter(this, void 0, void 0, function* () {
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         const content = yield contentHandler.get('fdgsgsfd');
         t.is(undefined, content);
     }));
     test('get() returns the entire document when a good is given', (t) => __awaiter(this, void 0, void 0, function* () {
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         const content = yield contentHandler.get(testData.testDocuments[0].id);
         t.deepEqual(testData.testDocuments[0], content);
     }));
     test('get() returns draft content if requested', (t) => __awaiter(this, void 0, void 0, function* () {
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         const content = yield contentHandler.get(testData.flaggedTestDocuments[2].id);
         t.deepEqual(testData.flaggedTestDocuments[2], content);
     }));
     test('get() returns the index page when available', (t) => __awaiter(this, void 0, void 0, function* () {
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         const content = yield contentHandler.get('');
         t.deepEqual(testData.flaggedTestDocuments[0], content);
     }));

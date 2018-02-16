@@ -6,7 +6,7 @@ import { getReturn } from '../asyncValue';
 
 export const getTests = (test, contentHandlerCreator: ContentHandlerCreator) => {
   test('get() returns undefined when a document does not exist for the given id', async (t) => {
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     const content = await contentHandler.get('fdgsgsfd');
 
@@ -14,7 +14,7 @@ export const getTests = (test, contentHandlerCreator: ContentHandlerCreator) => 
   });
 
   test('get() returns the entire document when a good is given', async (t) => {
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     const content = await contentHandler.get(testData.testDocuments[0].id);
 
@@ -22,7 +22,7 @@ export const getTests = (test, contentHandlerCreator: ContentHandlerCreator) => 
   });
 
   test('get() returns draft content if requested', async (t) => {
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     const content = await contentHandler.get(testData.flaggedTestDocuments[2].id);
 
@@ -30,7 +30,7 @@ export const getTests = (test, contentHandlerCreator: ContentHandlerCreator) => 
   });
 
   test('get() returns the index page when available', async (t) => {
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     const content = await contentHandler.get('');
 

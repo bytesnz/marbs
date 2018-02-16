@@ -14,7 +14,7 @@ const asyncValue_1 = require("../asyncValue");
 exports.contentEventTests = (test, contentHandlerCreator) => {
     test('content event handler returns undefined if content with the given id does not exist', (t) => __awaiter(this, void 0, void 0, function* () {
         t.plan(2);
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         return new Promise((resolve, reject) => {
             contentHandler.events.content({
                 emit: (event, data) => {
@@ -30,7 +30,7 @@ exports.contentEventTests = (test, contentHandlerCreator) => {
     }));
     test('content event handler returns the full document of the given id', (t) => __awaiter(this, void 0, void 0, function* () {
         t.plan(2);
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         return new Promise((resolve, reject) => {
             contentHandler.events.content({
                 emit: (event, data) => {
@@ -46,7 +46,7 @@ exports.contentEventTests = (test, contentHandlerCreator) => {
     }));
     test('content event handler returns the full document for draft document with the given id', (t) => __awaiter(this, void 0, void 0, function* () {
         t.plan(2);
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         return new Promise((resolve, reject) => {
             contentHandler.events.content({
                 emit: (event, data) => {
@@ -62,7 +62,7 @@ exports.contentEventTests = (test, contentHandlerCreator) => {
     }));
     test('content event handler returns the index document when available', (t) => __awaiter(this, void 0, void 0, function* () {
         t.plan(2);
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         return new Promise((resolve, reject) => {
             contentHandler.events.content({
                 emit: (event, data) => {

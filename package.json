@@ -39,6 +39,7 @@
     "autoprefixer": "^7.2.5",
     "ava": "^0.25.0",
     "awesome-typescript-loader": "^3.4.1",
+    "command-line-args": "^5.0.2",
     "css-loader": "^0.28.8",
     "deep-freeze": "^0.0.1",
     "extract-text-webpack-plugin": "^3.0.2",
@@ -75,7 +76,8 @@
     "webpack-dev-middleware": "^2.0.4",
     "webpack-dev-server": "^2.10.0",
     "webpack-hot-middleware": "^2.21.0",
-    "webpack-merge": "^4.1.1"
+    "webpack-merge": "^4.1.1",
+    "z-schema": "^3.19.1"
   },
   "dependencies": {
     "es6-promisify": "^5.0.0",
@@ -83,7 +85,6 @@
     "glob": "^7.1.2",
     "glob-promise": "^3.3.0",
     "lodash.clonedeep": "^4.5.0",
-    "nconf": "^0.10.0",
     "socket.io": "^2.0.4",
     "tag-you-are": "^1.0.0"
   },

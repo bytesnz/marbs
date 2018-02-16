@@ -38,6 +38,8 @@ export interface AppFunctionalityConfig {
 export interface GlobalConfig {
   /// The title of the web app (default: MARSS Web App)
   title?: string,
+  /// Description of site
+  description?: string,
   /// Base URI for the app (default: /)
   baseUri?: string,
   /// The basename that static elements will be served from (default: static/)
@@ -58,6 +60,8 @@ export interface GlobalConfig {
   categoriesPerPage?: boolean | Array<string>,
   /// Menu items
   menu?: Array<MenuItem>,
+  /// Function to use to generate the page title
+  pageTitle?: (pageTitle: string) => string
 }
 
 export interface SetGlobalConfig extends GlobalConfig {
@@ -65,24 +69,30 @@ export interface SetGlobalConfig extends GlobalConfig {
   baseUri: string,
   functionality: AppFunctionalityConfig,
   tagsUri: string,
-  categoriesUri: string
+  categoriesUri: string,
+  staticUri: string
 }
 
 export interface UserServerConfig {
   /// The folder that the content (Markdown) files are stored in (default: source)
   source?: string,
-  /// The folter containing static assests (default: no static assests will be served)
+  /// The folder containing static assests (default: no static assests will be served)
   staticAssets?: string,
+  /// Address to listen on (default: 127.0.0.1)
+  address?: string,
   /// Port to listen on (default: 8080)
   port?: number
   /// Regular expression to detect if the file is draft (and should not be added to lists)
   /// Should exclude the .md file extension (default: /.draft$/)
   draftRegex?: string,
   /// Custom handlers for handling socket events
-  handlers?: { [id: string]: handlers.Handler }
+  handlers?: { [id: string]: handlers.HandlerCreator },
+  /// Whether or not to cache the content markdown
+  cacheMarkdown?: boolean
 }
 
 export interface SetServerConfig extends UserServerConfig {
+  address: string,
   source: string,
   port: number,
   draftRegex: string

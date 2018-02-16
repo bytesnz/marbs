@@ -24,17 +24,20 @@ export const calculateTagsCount =
 
 export const tagsTests = (test: ava.RegisterContextual<any>, contentHandlerCreator: ContentHandlerCreator) => {
   test ('tags() returns undefined if tags not enabled', async (t) => {
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     const tags = await contentHandler.tags();
 
     t.is(undefined, tags);
   });
   test('tags() returns the tags and counts when tags enabled', async (t) => {
-    const conf = t.context.conf.clone();
-    conf.set('functionality', {
-      tags: true
-    });
+    const conf = {
+      ...t.context.config,
+      functionality: {
+        ...t.context.config.functionality,
+        tags: true
+      }
+    };
     const contentHandler = await getReturn(contentHandlerCreator(conf));
 
     const tags = await contentHandler.tags();

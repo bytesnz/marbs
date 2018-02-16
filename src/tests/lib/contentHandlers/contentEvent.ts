@@ -9,7 +9,7 @@ export const contentEventTests = (test, contentHandlerCreator: ContentHandlerCre
   test('content event handler returns undefined if content with the given id does not exist', async (t) => {
     t.plan(2);
 
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     return new Promise((resolve, reject) => {
       contentHandler.events.content({
@@ -28,7 +28,7 @@ export const contentEventTests = (test, contentHandlerCreator: ContentHandlerCre
   test('content event handler returns the full document of the given id', async (t) => {
     t.plan(2);
 
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     return new Promise((resolve, reject) => {
       contentHandler.events.content({
@@ -47,7 +47,7 @@ export const contentEventTests = (test, contentHandlerCreator: ContentHandlerCre
   test('content event handler returns the full document for draft document with the given id', async (t) => {
     t.plan(2);
 
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     return new Promise((resolve, reject) => {
       contentHandler.events.content({
@@ -66,7 +66,7 @@ export const contentEventTests = (test, contentHandlerCreator: ContentHandlerCre
   test('content event handler returns the index document when available', async (t) => {
     t.plan(2);
 
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     return new Promise((resolve, reject) => {
       contentHandler.events.content({

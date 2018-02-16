@@ -1,5 +1,6 @@
 import * as Handlers from '../../../typings/handlers';
 import { Document } from '../../../typings/data';
+import { ServerConfig } from '../../../typings/configs';
 
 import * as glob from 'glob-promise';
 import * as frontMatter from 'front-matter';
@@ -55,19 +56,19 @@ const copyRecurse = (newObject: any, object: any, keys: Array<string>) => {
 };
 
 
-export const contentHandlerCreator: Handlers.ContentHandlerCreator =
-    async (conf: Handlers.Conf): Promise<Handlers.ContentHandler> => {
+export const contentHandlerCreator: Handlers.ContentHandler =
+    async (config: ServerConfig): Promise<Handlers.ContentHandlerObject> => {
   let docs: { [id: string]: Document } = {};
   let docsArray: Array<Document>  = [];
   let tags;
   let categories;
-  let draftRegex = RegExp(conf.get('draftRegex'));
+  let draftRegex = RegExp(config.draftRegex);
 
-  if (conf.get('functionality').tags) {
+  if (config.functionality.tags) {
     tags = new StringTags();
   }
 
-  if (conf.get('functionality').categories) {
+  if (config.functionality.categories) {
     categories = new Tags('/');
   }
 
@@ -79,7 +80,7 @@ export const contentHandlerCreator: Handlers.ContentHandlerCreator =
    * @returns The filename for the document
    */
   const getFilename = (id: string) =>
-    path.join(conf.get('source'), id + '.md');
+    path.join(config.source, id + '.md');
   /**
    * Parses a source file and adds/updates it in the database
    *
@@ -98,11 +99,11 @@ export const contentHandlerCreator: Handlers.ContentHandlerCreator =
       creation = false;
 
       // Remove counts if enabled
-      if (conf.get('functionality').tags && docs[id].attributes.tags) {
+      if (config.functionality.tags && docs[id].attributes.tags) {
         docs[id].attributes.tags.forEach((tag) => tags.remove(tag));
       }
 
-      if (conf.get('functionality').categories && docs[id].attributes.categories) {
+      if (config.functionality.categories && docs[id].attributes.categories) {
         docs[id].attributes.categories.forEach((category) =>
             categories.remove(category));
       }
@@ -126,7 +127,7 @@ export const contentHandlerCreator: Handlers.ContentHandlerCreator =
       body: null
     };
 
-    if (conf.get('cacheMarkdown')) {
+    if (config.cacheMarkdown) {
       markdown.body = frontmatter.body;
     }
 
@@ -154,14 +155,14 @@ export const contentHandlerCreator: Handlers.ContentHandlerCreator =
     docs[id] = markdown;
 
     // Add counts if enabled and not a draft
-    if (conf.get('functionality').tags && data.tags) {
+    if (config.functionality.tags && data.tags) {
       data.tags = data.tags.map((tag) => tag.toLowerCase());
       if (!data.draft) {
         data.tags.forEach((tag) => tags.add(tag));
       }
     }
 
-    if (conf.get('functionality').categories && data.categories) {
+    if (config.functionality.categories && data.categories) {
       data.categories = data.categories.map((category) => {
         if (typeof category === 'string') {
           return category.toLowerCase();
@@ -180,7 +181,7 @@ export const contentHandlerCreator: Handlers.ContentHandlerCreator =
 
   // Parse all the markdown files in the source folder
   await glob('**/*.md', {
-    cwd: conf.get('source')
+    cwd: config.source
   }).then((files) => {
     return Promise.all(files.map((file) => parseFile(file)));
   });
@@ -216,7 +217,7 @@ export const contentHandlerCreator: Handlers.ContentHandlerCreator =
     }
     const filename = getFilename(id);
 
-    if (conf.get('cacheMarkdown')) {
+    if (config.cacheMarkdown) {
       return {
         ...docs[id],
         id
@@ -371,15 +372,15 @@ export const contentHandlerCreator: Handlers.ContentHandlerCreator =
 
 
   // Create object
-  return <Handlers.ContentHandler>{
+  return <Handlers.ContentHandlerObject>{
     get: getContent,
     documents: (options: Handlers.DocumentsRetrievalOptions = {}) => {
       const results = filterDocuments(options);
       return clone(results);
     },
-    tags: () => Promise.resolve(conf.get('functionality').tags ?
+    tags: () => Promise.resolve(config.functionality.tags ?
         tags.tags() : undefined),
-    categories: () => Promise.resolve(conf.get('functionality').categories ?
+    categories: () => Promise.resolve(config.functionality.categories ?
         categories.tags() : undefined),
     events: {
       content: async (socket, uri) => {

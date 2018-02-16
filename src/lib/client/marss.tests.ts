@@ -14,7 +14,8 @@ const options: config.SetGlobalConfig = {
   baseUri: '/',
   functionality: {},
   tagsUri: 'tags',
-  categoriesUri: 'categories'
+  categoriesUri: 'categories',
+  staticUri: 'static'
 };
 
 test('should return a Promise', (t) => {

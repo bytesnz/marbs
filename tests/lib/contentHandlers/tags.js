@@ -26,15 +26,12 @@ exports.calculateTagsCount = (documents) => documents.reduce((tagCounts, doc) =>
 }, {});
 exports.tagsTests = (test, contentHandlerCreator) => {
     test('tags() returns undefined if tags not enabled', (t) => __awaiter(this, void 0, void 0, function* () {
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         const tags = yield contentHandler.tags();
         t.is(undefined, tags);
     }));
     test('tags() returns the tags and counts when tags enabled', (t) => __awaiter(this, void 0, void 0, function* () {
-        const conf = t.context.conf.clone();
-        conf.set('functionality', {
-            tags: true
-        });
+        const conf = Object.assign({}, t.context.config, { functionality: Object.assign({}, t.context.config.functionality, { tags: true }) });
         const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(conf));
         const tags = yield contentHandler.tags();
         const testTagsCount = exports.calculateTagsCount(testData.nulledTestDocuments.filter((doc) => !doc.attributes.draft));

@@ -2,7 +2,6 @@ import * as Configs from '../../../../typings/configs';
 import * as ava from 'ava';
 
 import * as process from 'process';
-import MockNconf from '../mockNconf';
 import { vol } from '../unionfs';
 
 import { testSource, testDocuments } from '../../data/source';
@@ -22,6 +21,7 @@ import { categoriesEventTests } from './categoriesEvent';
 const testConf: Configs.ServerConfig = {
   title: 'Test Site',
   baseUri: '/',
+  address: '127.0.0.1',
   port: 4321,
   source: '/source',
   functionality: {},
@@ -67,17 +67,17 @@ export const contentHandlerCreatorTests = (test: ava.RegisterContextual<any>, co
     const mockBaseSource = `${mockBase}/source`
     //const vol = new Volume();
 
-    const conf = Object.assign({}, testConf, {
+    const testConfig = Object.assign({}, testConf, {
       source: mockBaseSource
     });
 
-    vol.fromJSON(testSource, conf.source);
+    vol.fromJSON(testSource, testConfig.source);
 
-    t.context.conf = MockNconf(conf);
+    t.context.config = testConfig;
   });
 
   test('the creator returns either a handler or a promise that resolves to a handler', async (t) => {
-    const value = await getReturn(contentHandlerCreator(t.context.conf));
+    const value = await getReturn(contentHandlerCreator(t.context.config));
 
     validateContentHandler(t, value);
   });

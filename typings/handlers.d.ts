@@ -1,12 +1,10 @@
-import * as nconf from 'nconf';
+import { ServerConfig } from './configs';
 import * as Data from './data';
 import * as SocketIO from 'socket.io';
 
 type EventHandler = Function; //(socket: Socket) => void;
 
-export type Conf = nconf.IStore;
-
-export interface Handler {
+export interface HandlerObject {
   /**
    * Initialisation function to be called before the server is set up
    *
@@ -15,7 +13,7 @@ export interface Handler {
    * @returns A Promise that resolves once the initialisation is complete or
    *   null if  initialisation is complete once the function returns
    */
-  init?(conf: Conf): Promise<void> | null;
+  init?(conf: ServerConfig): Promise<void> | null;
 
   /**
    * SocketIO event handlers
@@ -25,7 +23,9 @@ export interface Handler {
   }
 }
 
-export type HandlerCreator = (conf: nconf.IStore) => Promise<Handler> | Handler;
+export type HandlerCreator = (conf: ServerConfig) => Promise<HandlerObject>;
+
+export type Handler = HandlerCreator | HandlerObject;
 
 interface SocketDocumentsRetrievalOptions {
   /// Type of documents to return
@@ -55,7 +55,7 @@ interface DocumentsRetrievalOptions extends SocketDocumentsRetrievalOptions {
   includeDrafts?:boolean;
 }
 
-export interface ContentHandler extends Handler {
+export interface ContentHandlerObject extends HandlerObject {
   /**
    * Get a list of documents
    *
@@ -98,9 +98,16 @@ export interface ContentHandler extends Handler {
   }
 }
 
-export type ContentHandlerCreator = (conf: nconf.IStore) => Promise<ContentHandler> | ContentHandler;
+export type ContentHandlerCreator = (conf: ServerConfig) => Promise<ContentHandlerObject>;
+
+export type ContentHandler = ContentHandlerCreator | ContentHandlerObject;
 
 export interface Handlers {
   content: ContentHandler,
   [id: string]: Handler
+}
+
+export interface InitialisedHandlers {
+  content: ContentHandlerObject,
+  [id: string]: HandlerObject
 }

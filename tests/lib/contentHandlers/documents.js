@@ -13,7 +13,7 @@ const testData = require("../../data/source");
 const asyncValue_1 = require("../asyncValue");
 exports.documentsTests = (test, contentHandlerCreator) => {
     test('documents() returns documents without drafts by default', (t) => __awaiter(this, void 0, void 0, function* () {
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         const docs = yield contentHandler.documents();
         t.deepEqual([
             testData.nulledTestDocuments[0],
@@ -25,8 +25,7 @@ exports.documentsTests = (test, contentHandlerCreator) => {
     }));
     test('documents() returns documents without drafts by default, with a different draft regex', (t) => __awaiter(this, void 0, void 0, function* () {
         const regex = '\\.anotherdraft$';
-        const conf = t.context.conf.clone();
-        conf.set('draftRegex', regex);
+        const conf = Object.assign({}, t.context.config, { draftRegex: regex });
         const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(conf));
         const docs = yield contentHandler.documents();
         const testDocuments = testData.nullDocumentBodies(testData.flagDraftDocuments(testData.testDocuments, new RegExp(regex)));
@@ -39,7 +38,7 @@ exports.documentsTests = (test, contentHandlerCreator) => {
         ], docs);
     }));
     test('documents() returns documents with drafts if includeDrafts true', (t) => __awaiter(this, void 0, void 0, function* () {
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         const docs = yield contentHandler.documents({
             includeDrafts: true
         });
@@ -47,7 +46,7 @@ exports.documentsTests = (test, contentHandlerCreator) => {
     }));
     test('documents() returns only documents with the given tag', (t) => __awaiter(this, void 0, void 0, function* () {
         const tag = 'test';
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         const docs = yield contentHandler.documents({
             tags: [tag]
         });
@@ -59,7 +58,7 @@ exports.documentsTests = (test, contentHandlerCreator) => {
     }));
     test('documents() returns only documents with any of the given tags', (t) => __awaiter(this, void 0, void 0, function* () {
         const tags = ['folder', 'test'];
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         const docs = yield contentHandler.documents({
             tags: tags
         });
@@ -71,7 +70,7 @@ exports.documentsTests = (test, contentHandlerCreator) => {
     }));
     test('documents() returns only documents with all of the given tags', (t) => __awaiter(this, void 0, void 0, function* () {
         const tags = ['folder', 'test'];
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         const docs = yield contentHandler.documents({
             tags: tags,
             allTags: true
@@ -81,7 +80,7 @@ exports.documentsTests = (test, contentHandlerCreator) => {
         ], docs);
     }));
     test('documents() returns only documents with the given category', (t) => __awaiter(this, void 0, void 0, function* () {
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         const docs = yield contentHandler.documents({
             categories: ['cool']
         });
@@ -91,7 +90,7 @@ exports.documentsTests = (test, contentHandlerCreator) => {
         ], docs);
     }));
     test('documents() returns only documents with the given category in an array', (t) => __awaiter(this, void 0, void 0, function* () {
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         const docs = yield contentHandler.documents({
             categories: [['cool']]
         });
@@ -101,7 +100,7 @@ exports.documentsTests = (test, contentHandlerCreator) => {
         ], docs);
     }));
     test('documents() returns only documents with any of the given categories', (t) => __awaiter(this, void 0, void 0, function* () {
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         const docs = yield contentHandler.documents({
             categories: ['cool', ['folder', 'test']]
         });
@@ -112,7 +111,7 @@ exports.documentsTests = (test, contentHandlerCreator) => {
         ], docs);
     }));
     test('documents() returns only documents with all of the given categories', (t) => __awaiter(this, void 0, void 0, function* () {
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         const docs = yield contentHandler.documents({
             categories: [['cool'], 'folder'],
             includeDrafts: true,
@@ -124,7 +123,7 @@ exports.documentsTests = (test, contentHandlerCreator) => {
     }));
     test('documents() returns only documents with the given category array', (t) => __awaiter(this, void 0, void 0, function* () {
         const category = ['folder', 'test'];
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         const docs = yield contentHandler.documents({
             categories: [category]
         });

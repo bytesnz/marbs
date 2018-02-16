@@ -11,7 +11,7 @@ export const tagsEventTests = (test: ava.RegisterContextual<any>, contentHandler
   test('tags event handler returns undefined if tags are not enabled', async (t) => {
     t.plan(2);
 
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     return new Promise((resolve, reject) => {
       contentHandler.events.tags({
@@ -29,11 +29,13 @@ export const tagsEventTests = (test: ava.RegisterContextual<any>, contentHandler
   test('tags event handler returns the tags count if tags are enabled', async (t) => {
     t.plan(2);
 
-    const conf = t.context.conf.clone();
-    conf.set('functionality', {
-      ...conf.get('functionality'),
-      tags: true
-    });
+    const conf = {
+      ...t.context.config,
+      functionality: {
+        ...t.context.config.functionality,
+        tags: true
+      }
+    };
     const contentHandler = await getReturn(contentHandlerCreator(conf));
 
     return new Promise((resolve, reject) => {

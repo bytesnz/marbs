@@ -9,5 +9,6 @@ export default <SetGlobalConfig>{
     search: ['title', 'tags', 'categories']
   },
   tagsUri: 'tags',
-  categoriesUri: 'categories'
+  categoriesUri: 'categories',
+  staticUri: 'static'
 }

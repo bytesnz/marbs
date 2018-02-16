@@ -6,7 +6,7 @@ import { getReturn } from '../asyncValue';
 
 export const documentsTests = (test, contentHandlerCreator: ContentHandlerCreator) => {
   test('documents() returns documents without drafts by default', async (t) => {
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     const docs = await contentHandler.documents();
 
@@ -21,8 +21,10 @@ export const documentsTests = (test, contentHandlerCreator: ContentHandlerCreato
 
   test('documents() returns documents without drafts by default, with a different draft regex', async (t) => {
     const regex = '\\.anotherdraft$';
-    const conf = t.context.conf.clone();
-    conf.set('draftRegex', regex);
+    const conf = {
+      ...t.context.config,
+      draftRegex: regex
+    };
     const contentHandler = await getReturn(contentHandlerCreator(conf));
 
     const docs = await contentHandler.documents();
@@ -39,7 +41,7 @@ export const documentsTests = (test, contentHandlerCreator: ContentHandlerCreato
   });
 
   test('documents() returns documents with drafts if includeDrafts true', async (t) => {
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     const docs = await contentHandler.documents({
       includeDrafts: true
@@ -51,7 +53,7 @@ export const documentsTests = (test, contentHandlerCreator: ContentHandlerCreato
   test('documents() returns only documents with the given tag', async (t) => {
     const tag = 'test';
 
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     const docs = await contentHandler.documents({
       tags: [tag]
@@ -67,7 +69,7 @@ export const documentsTests = (test, contentHandlerCreator: ContentHandlerCreato
   test('documents() returns only documents with any of the given tags', async (t) => {
     const tags = ['folder', 'test'];
 
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     const docs = await contentHandler.documents({
       tags: tags
@@ -83,7 +85,7 @@ export const documentsTests = (test, contentHandlerCreator: ContentHandlerCreato
   test('documents() returns only documents with all of the given tags', async (t) => {
     const tags = ['folder', 'test'];
 
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     const docs = await contentHandler.documents({
       tags: tags,
@@ -96,7 +98,7 @@ export const documentsTests = (test, contentHandlerCreator: ContentHandlerCreato
   });
 
   test('documents() returns only documents with the given category', async (t) => {
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     const docs = await contentHandler.documents({
       categories: ['cool']
@@ -109,7 +111,7 @@ export const documentsTests = (test, contentHandlerCreator: ContentHandlerCreato
   });
 
   test('documents() returns only documents with the given category in an array', async (t) => {
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     const docs = await contentHandler.documents({
       categories: [['cool']]
@@ -122,7 +124,7 @@ export const documentsTests = (test, contentHandlerCreator: ContentHandlerCreato
   });
 
   test('documents() returns only documents with any of the given categories', async (t) => {
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     const docs = await contentHandler.documents({
       categories: ['cool', ['folder', 'test']]
@@ -136,7 +138,7 @@ export const documentsTests = (test, contentHandlerCreator: ContentHandlerCreato
   });
 
   test('documents() returns only documents with all of the given categories', async (t) => {
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     const docs = await contentHandler.documents({
       categories: [['cool'], 'folder'],
@@ -152,7 +154,7 @@ export const documentsTests = (test, contentHandlerCreator: ContentHandlerCreato
   test('documents() returns only documents with the given category array', async (t) => {
     const category = ['folder', 'test'];
 
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     const docs = await contentHandler.documents({
       categories: [category]

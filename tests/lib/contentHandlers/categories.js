@@ -14,15 +14,12 @@ const tag_you_are_1 = require("tag-you-are");
 const asyncValue_1 = require("../asyncValue");
 exports.categoriesTests = (test, contentHandlerCreator) => {
     test('categories() returns undefined if categories no enabled', (t) => __awaiter(this, void 0, void 0, function* () {
-        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.conf));
+        const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(t.context.config));
         const categories = yield contentHandler.categories();
         t.is(undefined, categories);
     }));
     test('categories() returns the categories and counts', (t) => __awaiter(this, void 0, void 0, function* () {
-        const conf = t.context.conf.clone();
-        conf.set('functionality', {
-            categories: true
-        });
+        const conf = Object.assign({}, t.context.config, { functionality: Object.assign({}, t.context.config.functionality, { categories: true }) });
         const contentHandler = yield asyncValue_1.getReturn(contentHandlerCreator(conf));
         const categories = yield contentHandler.categories();
         const testCategoriesCount = new tag_you_are_1.Tags('/');

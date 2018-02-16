@@ -8,7 +8,7 @@ export const documentsEventTests = (test, contentHandlerCreator: ContentHandlerC
   test('documents event handler returns the only posts without drafts', async (t) => {
     t.plan(2);
 
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     return new Promise((resolve, reject) => {
       contentHandler.events.documents({
@@ -35,7 +35,7 @@ export const documentsEventTests = (test, contentHandlerCreator: ContentHandlerC
   test('documents event handler returns the posts with no options', async (t) => {
     t.plan(2);
 
-    const contentHandler = await getReturn(contentHandlerCreator(t.context.conf));
+    const contentHandler = await getReturn(contentHandlerCreator(t.context.config));
 
     return new Promise((resolve, reject) => {
       contentHandler.events.documents({
