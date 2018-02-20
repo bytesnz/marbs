@@ -26,6 +26,7 @@ const react_router_redux_1 = require("react-router-redux");
 const redux_devtools_extension_1 = require("redux-devtools-extension");
 const createBrowserHistory_1 = require("history/createBrowserHistory");
 const urlJoin = require("join-path");
+const react_helmet_1 = require("react-helmet");
 const io = require("socket.io-client");
 const marss_1 = require("../lib/client/marss");
 const config_1 = require("./lib/config");
@@ -55,6 +56,17 @@ const PropsRoute = (_a) => {
     ReactDom.render((React.createElement(react_redux_1.Provider, { store: store },
         React.createElement(react_router_redux_1.ConnectedRouter, { history: history },
             React.createElement("div", null,
+                React.createElement(react_helmet_1.Helmet, null,
+                    React.createElement("title", null, config_1.default.title),
+                    config_1.default.description ? (React.createElement("meta", { name: "description", content: config_1.default.description })) : null,
+                    config_1.default.description ? (React.createElement("meta", { property: "og:description", content: config_1.default.description })) : null,
+                    config_1.default.description ? (React.createElement("meta", { name: "twitter:description", content: config_1.default.description })) : null,
+                    React.createElement("meta", { property: "og:type", content: "website" }),
+                    React.createElement("meta", { property: "og:title", content: config_1.default.title }),
+                    React.createElement("meta", { property: "og:url", content: "" }),
+                    React.createElement("meta", { property: "og:site_name", content: config_1.default.title }),
+                    React.createElement("meta", { name: "twitter:card", content: "summary" }),
+                    React.createElement("meta", { name: "twitter:title", content: config_1.default.title })),
                 React.createElement(header_1.Header, null),
                 React.createElement(sidebar_1.Sidebar, { actions: actions, toggle: true, toggleUsingClass: true }),
                 React.createElement(PropsRoute, { actions: actions, component: content_1.Content }),

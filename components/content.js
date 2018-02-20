@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const react_redux_1 = require("react-redux");
 const config_1 = require("../app/lib/config");
+const react_helmet_1 = require("react-helmet");
 //const oldRequire = require
 const markdown_1 = require("./markdown");
 // TODO Show previous content until new content is loaded
@@ -49,7 +50,23 @@ class ContentComponent extends React.Component {
             return null;
         }
         if (content.error) {
-            return null;
+            if (id.startsWith(config_1.default.tagsUri)) {
+                return null;
+            }
+            if (content.error.code === 404) {
+                return (React.createElement("section", null,
+                    React.createElement(react_helmet_1.Helmet, null,
+                        React.createElement("title", null, "Four Oh Four")),
+                    React.createElement("h1", null, "Four Oh Four!"),
+                    React.createElement("p", null, "You've gone into the unknown. Please try navigating back to the light.")));
+            }
+            return (React.createElement("section", null,
+                React.createElement(react_helmet_1.Helmet, null,
+                    React.createElement("title", null, "Error")),
+                React.createElement("h1", null,
+                    content.error.code,
+                    " Error"),
+                React.createElement("p", null, "There has been an error accessing the page you wanted. Please try again.")));
         }
         if (!content.data) {
             return null;

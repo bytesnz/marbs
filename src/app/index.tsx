@@ -7,6 +7,7 @@ import { ConnectedRouter } from 'react-router-redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createHistory from 'history/createBrowserHistory';
 import * as urlJoin from 'join-path';
+import { Helmet } from 'react-helmet';
 
 import * as io from 'socket.io-client';
 
@@ -54,6 +55,24 @@ const PropsRoute = ({ component, ...rest }) => {
     <Provider store={store}>
       <ConnectedRouter history={history}>
         <div>
+          <Helmet>
+            <title>{config.title}</title>
+            { config.description ? (
+                <meta name="description" content={config.description} />
+            ) : null }
+            { config.description ? (
+            <meta property="og:description" content={config.description} />
+            ) : null }
+            { config.description ? (
+            <meta name="twitter:description" content={config.description} />
+            ) : null }
+            <meta property="og:type" content="website" />
+            <meta property="og:title" content={config.title} />
+            <meta property="og:url" content="" />
+            <meta property="og:site_name" content={config.title} />
+            <meta name="twitter:card" content="summary" />
+            <meta name="twitter:title" content={config.title} />
+          </Helmet>
           <Header/>
           <Sidebar actions={actions} toggle={true} toggleUsingClass={true} />
           <PropsRoute actions={actions} component={Content} />

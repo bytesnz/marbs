@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import config from '../app/lib/config';
+import { Helmet } from 'react-helmet';
 
 //const oldRequire = require
 import { Markdown } from './markdown';
@@ -65,7 +66,37 @@ class ContentComponent extends React.Component {
     }
 
     if (content.error) {
-      return null;
+      if (id.startsWith(config.tagsUri)) {
+        return null;
+      }
+
+      if (content.error.code === 404) {
+        return (
+          <section>
+            <Helmet>
+              <title>Four Oh Four</title>
+            </Helmet>
+            <h1>Four Oh Four!</h1>
+            <p>
+              You've gone into the unknown. Please try navigating back to the
+              light.
+            </p>
+          </section>
+        );
+      }
+
+      return (
+        <section>
+          <Helmet>
+            <title>Error</title>
+          </Helmet>
+          <h1>{content.error.code} Error</h1>
+          <p>
+            There has been an error accessing the page you wanted. Please try
+            again.
+          </p>
+        </section>
+      );
     }
 
     if (!content.data) {
