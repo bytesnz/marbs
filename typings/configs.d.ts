@@ -61,7 +61,11 @@ export interface GlobalConfig {
   /// Menu items
   menu?: Array<MenuItem>,
   /// Function to use to generate the page title
-  pageTitle?: (pageTitle: string) => string
+  pageTitle?: (pageTitle: string) => string,
+  /// List of Remarkable plugins to include
+  remarkablePlugins?: Array<(md) => void>,
+  /// Object of Remarkably Simple Tags to use when rendering the Markdown
+  rstTags?: { [tag: string]: any } /// TODO correct typing
 }
 
 export interface SetGlobalConfig extends GlobalConfig {

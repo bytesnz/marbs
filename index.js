@@ -7,9 +7,9 @@ const socketio = require("socket.io");
 const path = require("path");
 const util = require("util");
 const fs = require("fs");
-const url = require("url");
 const promisify = require("es6-promisify");
 const commandLineArguments = require("command-line-args");
+const urlJoin = require("join-path");
 const contentHandlers_1 = require("./lib/contentHandlers");
 const webpackConfig = require("./webpack.common");
 const config_global_1 = require("./lib/defaults/config.global");
@@ -65,7 +65,6 @@ Promise.all([globalConfig, serverConfig].map((file) => file && access(file, 'r')
 }, (err) => (err.code === 'ENOENT' ? undefined : err))))
     .then(() => {
     // TODO Check validaty of config?
-    console.log('got draftregex', config.draftRegex);
     if (!config.draftRegex) {
         config.draftRegex = defaultConfig.draftRegex;
     }
@@ -126,10 +125,9 @@ Promise.all([globalConfig, serverConfig].map((file) => file && access(file, 'r')
         app.use(config.baseUri, webpackHotMiddleware(compiler));
     }
     // Set up static asset server
-    const staticAssets = config.staticAssets;
-    if (staticAssets) {
+    if (config.staticAssets) {
         // Check folder exists
-        app.use(url.resolve(`${config.baseUri}/`, config.staticUri), express.static(staticAssets));
+        app.use(urlJoin(`${config.baseUri}/`, config.staticUri), express.static(config.staticAssets));
     }
     // Set up catch all for content
     if (process.env.NODE_ENV === 'production') {

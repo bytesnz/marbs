@@ -16,6 +16,7 @@ import * as fs from 'fs';
 import * as url from 'url';
 import * as promisify from 'es6-promisify';
 import * as commandLineArguments from 'command-line-args';
+import * as urlJoin from 'join-path';
 
 import baseContentHandlers from './lib/contentHandlers';
 
@@ -167,11 +168,10 @@ Promise.all([globalConfig, serverConfig].map((file) => file && access(file, 'r')
   }
 
   // Set up static asset server
-  const staticAssets = config.staticAssets;
-  if (staticAssets) {
+  if (config.staticAssets) {
     // Check folder exists
-    app.use(url.resolve(`${config.baseUri}/`, config.staticUri),
-        express.static(staticAssets));
+    app.use(urlJoin(`${config.baseUri}/`, config.staticUri),
+        express.static(config.staticAssets));
   }
 
   // Set up catch all for content

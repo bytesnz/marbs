@@ -1,6 +1,11 @@
 import * as React from 'react';
 import * as Remarkable from 'remarkable';
 
+import { Plugin as RST } from 'remarkably-simple-tags'
+import * as tags from '../lib/client/mdTags';
+
+import config from '../app/lib/config';
+
 import 'highlight.js/styles/default.css';
 
 /// Highlight.js base
@@ -32,9 +37,34 @@ export class Markdown extends React.Component {
       md: new Remarkable({ //TODO Move to config
         linkify: true,
         langPrefix: 'hljs ',
-        highlight: this.highlight.bind(this)
+        highlight: this.highlight.bind(this),
       })
     };
+
+    const rst = new RST();
+
+    rst.register('post', tags.postTag);
+    rst.register('tags', tags.tagsTag);
+    rst.register('categories', tags.categoriesTag);
+    rst.register('static', tags.staticTag);
+
+    if (config.rstTags) {
+      Object.keys(config.rstTags).forEach((tag) => {
+        if (config.rstTags[tag].multiple) {
+          rst.register(tag, config.rstTags[tag].handler, true);
+        } else {
+          rst.register(tag, config.rstTags[tag].handler);
+        }
+      });
+    }
+
+    this.state.md.use(rst.hook);
+
+    if (config.remarkablePlugins) {
+      config.remarkablePlugins.forEach((plugin) => {
+        this.state.md.use(plugin);
+      });
+    }
 
     // Try render to start process of getting highlight libraries
     this.state.md.render(this.props.source);

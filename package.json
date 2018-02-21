@@ -66,6 +66,7 @@
     "redux": "^3.7.2",
     "redux-devtools-extension": "^2.13.2",
     "remarkable": "^1.7.1",
+    "remarkably-simple-tags": "^1.0.1",
     "sass-loader": "^6.0.6",
     "socket.io-client": "^2.0.4",
     "source-map-loader": "^0.2.3",

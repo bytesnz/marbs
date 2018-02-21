@@ -2,6 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const React = require("react");
 const Remarkable = require("remarkable");
+const remarkably_simple_tags_1 = require("remarkably-simple-tags");
+const tags = require("../lib/client/mdTags");
+const config_1 = require("../app/lib/config");
 require("highlight.js/styles/default.css");
 /// Highlight.js base
 let highlightJs;
@@ -16,9 +19,30 @@ class Markdown extends React.Component {
             md: new Remarkable({
                 linkify: true,
                 langPrefix: 'hljs ',
-                highlight: this.highlight.bind(this)
+                highlight: this.highlight.bind(this),
             })
         };
+        const rst = new remarkably_simple_tags_1.Plugin();
+        rst.register('post', tags.postTag);
+        rst.register('tags', tags.tagsTag);
+        rst.register('categories', tags.categoriesTag);
+        rst.register('static', tags.staticTag);
+        if (config_1.default.rstTags) {
+            Object.keys(config_1.default.rstTags).forEach((tag) => {
+                if (config_1.default.rstTags[tag].multiple) {
+                    rst.register(tag, config_1.default.rstTags[tag].handler, true);
+                }
+                else {
+                    rst.register(tag, config_1.default.rstTags[tag].handler);
+                }
+            });
+        }
+        this.state.md.use(rst.hook);
+        if (config_1.default.remarkablePlugins) {
+            config_1.default.remarkablePlugins.forEach((plugin) => {
+                this.state.md.use(plugin);
+            });
+        }
         // Try render to start process of getting highlight libraries
         this.state.md.render(this.props.source);
     }
