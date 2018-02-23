@@ -21,7 +21,8 @@ module.exports = {
   plugins: [
     new ExtractTextPlugin('style.css'),
     new BundleAnalyzerPlugin({
-      openAnalyzer: false
+      openAnalyzer: false,
+      analyzerPort: 7766
     })
   ],
   module: {

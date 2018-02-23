@@ -84,7 +84,7 @@ export interface UserServerConfig {
   staticAssets?: string,
   /// Address to listen on (default: 127.0.0.1)
   address?: string,
-  /// Port to listen on (default: 8080)
+  /// Port to listen on (default: 7765)
   port?: number
   /// Regular expression to detect if the file is draft (and should not be added to lists)
   /// Should exclude the .md file extension (default: /.draft$/)
