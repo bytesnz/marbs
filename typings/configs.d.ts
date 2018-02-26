@@ -65,7 +65,12 @@ export interface GlobalConfig {
   /// List of Remarkable plugins to include
   remarkablePlugins?: Array<(md) => void>,
   /// Object of Remarkably Simple Tags to use when rendering the Markdown
-  rstTags?: { [tag: string]: any } /// TODO correct typing
+  rstTags?: {
+    [tag: string]: {
+      handler: (parameters: string | Array<string>, opts: any) => string,
+      multiple?: boolean
+    }
+  }
 }
 
 export interface SetGlobalConfig extends GlobalConfig {

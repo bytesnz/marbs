@@ -5,7 +5,7 @@ import * as urlJoin from 'join-path';
 
 import config from '../app/lib/config';
 
-const PostsComponent = ({ posts, limit, actions }) => {
+const PostsComponent = ({ posts, limit, filter, actions }) => {
   if (posts === null) {
     actions.posts.fetchPosts();
     return null;
@@ -15,6 +15,10 @@ const PostsComponent = ({ posts, limit, actions }) => {
     posts = posts.data;
   } else {
     return null;
+  }
+
+  if (filter) {
+    posts = filter(posts);
   }
 
   if (limit) {

@@ -1,11 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = require("react");
 const react_redux_1 = require("react-redux");
-const react_router_dom_1 = require("react-router-dom");
-const urlJoin = require("join-path");
-const config_1 = require("../app/lib/config");
-const PostsComponent = ({ posts, limit, actions }) => {
+const PostsComponent = ({ posts, limit, filter, actions }) => {
     if (posts === null) {
         actions.posts.fetchPosts();
         return null;
@@ -15,6 +11,9 @@ const PostsComponent = ({ posts, limit, actions }) => {
     }
     else {
         return null;
+    }
+    if (filter) {
+        posts = filter(posts);
     }
     if (limit) {
         posts = posts.slice(0, limit);
