@@ -1,7 +1,112 @@
-import { Document } from '../../typings/data';
+import * as urlJoin from 'join-path';
 
+import { Document } from '../../typings/data';
+import { config } from '../app/lib/config';
+
+/**
+ * Create the url for the given asset
+ *
+ * @param asset URI to asset
+ *
+ * @returns URL to asset
+ */
+export const assetUrl = (asset: string) => urlJoin(config.baseUri,
+    config.staticUri, asset);
+
+export const tagToId = (tag: string): string => tag.replace(' ', '-');
+
+/**
+ * Creates a label for the given category
+ *
+ * @param category Category to create label for
+ *
+ * @returns Category label
+ */
+export const categoryLabel = (category: string | Array<string>) =>
+  Array.isArray(category) ? category.pop() : category;
+
+/**
+ * Create the url for the categories list, or a given category
+ *
+ * @param category Category to create url to
+ *
+ * @returns URL to categories list / category
+ */
+export const categoryUrl = (category?: string | Array<string>) => {
+  if (category) {
+    if (Array.isArray(category)) {
+      category = category.pop();
+    }
+    category = tagToId(category);
+    return (config.categoriesPerPage ?
+      urlJoin(config.baseUri, config.categoriesUri, category) :
+      urlJoin(config.baseUri, config.categoriesUri + '#' + category)
+    );
+  }
+
+  return urlJoin(config.baseUri, config.categoriesUri);
+};
+
+/**
+ * Flatten an array of categories into an array of singular categories
+ *
+ * @param categories Categories array to flatten
+ *
+ * @returns Flattened categories array
+ */
+export const flattenCategories =
+    (categories: Array<string | Array<string>>): Array<string> => {
+  let flatCategories = [];
+
+  categories.forEach((category: string | Array<string>) => {
+    if (Array.isArray(category)) {
+      category.forEach((subCategory) => {
+        if (flatCategories.indexOf(subCategory) === -1) {
+          flatCategories.push(subCategory);
+        }
+      });
+    } else {
+      if (flatCategories.indexOf(category) === -1) {
+        flatCategories.push(category);
+      }
+    }
+  });
+
+  return flatCategories;
+}
+/**
+ * Create a label for the given tag
+ *
+ * @param tag Tag to create the label for
+ *
+ * @returns Label
+ */
+export const tagLabel = (tag: string) => tag;
+
+/**
+ * Create the url for the tags list, or a given tag
+ *
+ * @param tag Tag to create url to
+ *
+ * @returns URL to tags list / tag
+ */
+export const tagUrl = (tag?: string) => tag ?
+    urlJoin(config.baseUri, config.tagsUri + '#' + tag) :
+    urlJoin(config.baseUri, config.tagsUri);
+
+/**
+ * Filters the given posts to only those that have one/all of the given tags
+ *
+ * @param posts Lists of posts to filter
+ * @param tags List of tags to filter on
+ * @param allTags Whether or not to require post has all given tags
+ *
+ * @returns Filtered list of posts
+ */
 export const filterPostsByTags = (posts: Array<Document>, tags: Array<string>,
     allTags?: boolean): Array<Document> => {
+  if (posts === null) return null;
+
   if (allTags) {
    return posts.filter((doc) => {
       if (!doc.attributes.tags) {
@@ -33,8 +138,19 @@ export const filterPostsByTags = (posts: Array<Document>, tags: Array<string>,
   }
 };
 
+/**
+ * Filters the given posts to only those that have one/all of the given categories
+ *
+ * @param posts Lists of posts to filter
+ * @param categories List of categories to filter on
+ * @param allCategories Whether or not to require post has all given categories
+ *
+ * @returns Filtered list of posts
+ */
 export const filterPostsByCategories = (posts: Array<Document>,
     categories: Array<string | Array<string>>, allCategories?: boolean): Array<Document> => {
+  if (posts === null) return null;
+
   if (allCategories) {
     return posts.filter((doc) => {
       if (!doc.attributes.categories) {
