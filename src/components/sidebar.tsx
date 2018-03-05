@@ -8,6 +8,11 @@ import { Posts } from './posts';
 import { Categories } from './categories';
 import { Menu } from './menu';
 
+import {
+  categoryUrl,
+  tagUrl
+} from '../lib/utils';
+
 class SidebarComponent extends React.Component {
   state: {
     expanded: string,
@@ -49,24 +54,26 @@ class SidebarComponent extends React.Component {
   }
 
   render() {
-    const toggle = this.props.toggle ? (<button className="sidebarToggle" onClick={this.toggle} />) : null;
+    const toggle = this.props.toggle ? (<button className="toggle" onClick={this.toggle} />) : null;
 
     const show = !this.props.toggle || this.state.expanded;
 
     if (show || this.props.toggleUsingClass) {
       return (
         <div className={'sidebar' + (this.props.toggleUsingClass && show ? ' expanded' : '')}>
-          <div className="cover" />
-          <div className="contents">
+          { this.props.toggle ? (<div className="cover" onClick={this.toggle} />) : null }
+          <div className="bar">
             {toggle}
-            <h1>Navigation</h1>
-            <Menu />
-            <h1>Recent Posts</h1>
-            { show ? (<Posts limit={10} actions={this.props.actions} />) : null }
-            <h1>Tags</h1>
-            { show ? (<TagCloud actions={this.props.actions} Label={({ tag, count }) => (<Link to="">{tag} ({count})</Link>)} />) : null }
-            <h1>Categories</h1>
-            {show ? (<Categories actions={this.props.actions} />) : null }
+            <div className="contents">
+              <h1>Navigation</h1>
+              <Menu />
+              <h1>Recent Posts</h1>
+              { show ? (<Posts limit={10} actions={this.props.actions} />) : null }
+              <h1><Link to={tagUrl()}>Tags</Link></h1>
+              { show ? (<TagCloud actions={this.props.actions} Label={({ tag, count }) => (<Link to="">{tag} ({count})</Link>)} />) : null }
+              <h1><Link to={categoryUrl()}>Categories</Link></h1>
+              {show ? (<Categories actions={this.props.actions} />) : null }
+            </div>
           </div>
         </div>
       );

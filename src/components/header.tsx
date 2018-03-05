@@ -7,7 +7,7 @@ import { Menu } from './menu';
 import config from '../app/lib/config';
 
 export const Header = () => (
-  <header role="banner">
+  <header className="siteHeader" role="banner">
     <h1>{config.title}</h1>
     <Menu />
   </header>
