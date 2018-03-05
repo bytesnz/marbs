@@ -4,14 +4,15 @@ const react_redux_1 = require("react-redux");
 const React = require("react");
 const react_router_dom_1 = require("react-router-dom");
 const urlJoin = require("join-path");
+const utils_1 = require("../lib/utils");
 const config_1 = require("../app/lib/config");
-const post_1 = require("./post");
-const makeLabel = (id) => id;
-class TagListComponent extends React.Component {
+const posts_1 = require("./posts");
+const filterList_1 = require("./lib/filterList");
+class TagListComponent extends filterList_1.FilterListComponent {
     constructor(props) {
         super(props);
         this.state = {
-            expandedTags: []
+            expanded: null
         };
         console.log('taglist constructor called');
         const { actions } = props;
@@ -23,39 +24,55 @@ class TagListComponent extends React.Component {
         }
         if (props.location && props.location.hash) {
             const tag = props.location.hash.slice(1);
-            this.state.expandedTags = [tag];
+            this.state.expanded = [tag];
         }
         else {
-            this.state.expandedTags = [];
+            this.state.expanded = [];
         }
     }
+    shouldScroll() {
+        return Boolean(this.props.tags && this.props.tags.data);
+    }
+    error(errorSource, error) {
+        return (React.createElement("p", { className: "error", key: errorSource },
+            "There is was an error getting the ",
+            errorSource,
+            ":",
+            error.message));
+    }
     render() {
-        let { tags, posts, ListPost } = this.props;
-        ListPost = ListPost || post_1.ListPost;
-        if (tags === null) {
-            return null;
-        }
-        tags = tags.data;
-        posts = posts && posts.data || null;
-        return (React.createElement("main", null,
-            React.createElement("h1", null, "Tags"),
-            posts && posts.error ? (React.createElement("div", { className: "error" },
-                "There has been an error fetching the posts: ",
-                posts.error.message)) : null,
-            React.createElement(exports.TagCloud, null),
-            Object.keys(tags).sort().map((id) => (React.createElement("section", { key: id },
-                React.createElement("h1", null,
-                    React.createElement("a", { id: id }),
-                    makeLabel(id),
-                    " (",
-                    tags[id],
-                    ")"),
-                posts ? posts.filter((post) => post.attributes
-                    && post.attributes.tags
-                    && post.attributes.tags.indexOf(id) !== -1).map((post) => (React.createElement(ListPost, { key: post.id, post: post }))) : null)))));
+        let { content, tags, posts, ListPost } = this.props;
+        return (React.createElement("div", null,
+            content ? null : (React.createElement("header", null,
+                React.createElement("h1", null, "Tags"))),
+            (() => {
+                if (!tags) {
+                    return 'Loading tags list';
+                }
+                else if (tags.error) {
+                    return this.error('tags', tags.error);
+                }
+                else if (posts && posts.error) {
+                    return this.error('posts', posts.error);
+                }
+                else {
+                    return [(React.createElement(exports.TagCloud, null))].concat(Object.keys(tags.data).sort().map((id) => (React.createElement("section", { key: id },
+                        React.createElement("h1", { className: config_1.default.expandableLists
+                                && this.isExpanded(id) ? 'expanded' : '', onClick: config_1.default.expandableLists ? () => this.toggle(id) : null },
+                            React.createElement("a", { id: id }),
+                            utils_1.tagLabel(id),
+                            " (",
+                            tags.data[id],
+                            ")"),
+                        !config_1.default.expandableLists || this.isExpanded(id)
+                            ? (posts ? (posts.data ? (React.createElement(posts_1.Posts, { posts: utils_1.filterPostsByTags(posts.data, [id]), full: true, actions: this.props.actions }))
+                                : null) : 'Loading posts') : null))));
+                }
+            })()));
     }
 }
 exports.TagList = react_redux_1.connect((state) => ({
+    content: state.content,
     tags: state.tags,
     posts: state.posts
 }))(TagListComponent);

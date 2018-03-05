@@ -2,29 +2,37 @@ import { connect } from 'react-redux';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import * as urlJoin from 'join-path';
+import {
+  filterPostsByTags,
+  tagLabel
+} from '../lib/utils';
 
 import config from '../app/lib/config';
 
 import {
   ListPost as DefaultListPost
 } from './post';
+import { Posts } from './posts';
 
 import { TagsState } from '../reducers/tags';
 
-const makeLabel = (id: string): string => id;
+import { FilterListComponent } from './lib/filterList';
 
-class TagListComponent extends React.Component {
+class TagListComponent extends FilterListComponent {
   state: {
-    expandedTags: Array<string>
+    expanded: Array<string>
   } = {
-    expandedTags: []
-  };
+    expanded: null
+  }
 
   props: {
+    actions: any,
+    content: any,
+    location: any,
     tags: TagsState,
     posts: any,
     ListPost?: any
-  };
+  }
 
   constructor(props) {
     super(props);
@@ -43,51 +51,69 @@ class TagListComponent extends React.Component {
 
     if (props.location && props.location.hash) {
       const tag = props.location.hash.slice(1);
-      this.state.expandedTags = [tag];
+      this.state.expanded = [tag];
     } else {
-      this.state.expandedTags = [];
+      this.state.expanded = [];
     }
   }
 
+  shouldScroll() {
+    return Boolean(this.props.tags && this.props.tags.data)
+  }
+
+  error(errorSource: string, error) {
+    return (
+      <p className="error" key={errorSource}>
+        There is was an error getting the { errorSource }:
+        { error.message }
+      </p>
+    );
+  }
+
   render() {
-    let { tags, posts, ListPost } = this.props;
-    ListPost = ListPost || DefaultListPost;
-
-    if (tags === null) {
-      return null;
-    }
-
-    tags = tags.data;
-    posts = posts && posts.data || null;
+    let { content, tags, posts, ListPost } = this.props;
 
     return (
-      <main>
-        <h1>Tags</h1>
-        { posts && posts.error ? (
-          <div className="error">
-            There has been an error fetching the posts: {posts.error.message}
-          </div>
-        ) : null }
-        <TagCloud />
-        { Object.keys(tags).sort().map((id) => (
-          <section key={id}>
-            <h1>
-              <a id={id} />
-              {makeLabel(id)} ({tags[id]})
-            </h1>
-            { posts ? posts.filter((post) => post.attributes
-                && post.attributes.tags
-                && post.attributes.tags.indexOf(id) !== -1).map((post) => (
-              <ListPost key={post.id} post={post}/>
-            )) : null }
-          </section>
-        ))}
-      </main>
+      <div>
+        { content ? null : (
+          <header>
+            <h1>Tags</h1>
+          </header>
+        ) }
+        { (() => {
+          if (!tags) {
+            return 'Loading tags list';
+          } else if (tags.error) {
+            return this.error('tags', tags.error);
+          } else if (posts && posts.error) {
+            return this.error('posts', posts.error);
+          } else {
+            return [(<TagCloud />)].concat(
+              Object.keys(tags.data).sort().map((id) => (
+                <section key={id}>
+                  <h1 className={ config.expandableLists
+                      && this.isExpanded(id) ? 'expanded' : '' }
+                      onClick={config.expandableLists ? () => this.toggle(id) : null}>
+                    <a id={id} />
+                    {tagLabel(id)} ({tags.data[id]})
+                  </h1>
+                  { !config.expandableLists || this.isExpanded(id)
+                      ? (posts ? (posts.data ? (<Posts
+                      posts={filterPostsByTags(posts.data, [id])}
+                      full={true} actions={this.props.actions} />)
+                      : null) : 'Loading posts') : null }
+                </section>
+              ))
+            );
+          }
+        })() }
+      </div>
     );
   }
 }
 
 export const TagList = connect((state) => ({
+  content: state.content,
   tags: state.tags,
   posts: state.posts
 }))(TagListComponent);

@@ -70,7 +70,16 @@ export interface GlobalConfig {
       handler: (parameters: string | Array<string>, opts: any) => string,
       multiple?: boolean
     }
-  }
+  },
+  /** Add a list of the last x posts to the index page (default: 10).
+   *  A value of 0 will list all the posts. A value of -1 or null will not list
+   *  any posts
+   */
+  listLastOnIndex?: number,
+  /** Whether or not the lists of posts on the categories and tags are
+   * expandable
+   */
+  expandableLists?: boolean
 }
 
 export interface SetGlobalConfig extends GlobalConfig {
