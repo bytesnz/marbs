@@ -1,7 +1,18 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import config from '../app/lib/config';
 import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
+import * as urlJoin from 'join-path';
+import {
+  categoryLabel,
+  categoryUrl,
+  flattenCategories,
+  documentUrl,
+  tagLabel,
+  tagUrl,
+} from '../lib/utils';
+
+import config from '../app/lib/config';
 
 //const oldRequire = require
 import { Markdown } from './markdown';
@@ -13,11 +24,16 @@ class ContentComponent extends React.Component {
   props: {
     actions: any,
     content: any, //TODO Properly type
-    location: any
+    location: any,
+    posts: any
   };
 
   constructor(props) {
     super(props);
+
+    if (props.posts === null) {
+      props.actions.posts.fetchPosts();
+    }
 
     this.checkContent(props);
   }
@@ -108,10 +124,26 @@ class ContentComponent extends React.Component {
 
     const attributes = content.data.attributes || {};
 
+    let nextPost, previousPost;
+    if (!attributes.type || attributes.type === 'post') {
+      if (this.props.posts && this.props.posts.data) {
+        const index = this.props.posts.data.findIndex((post) => post.id === content.data.id);
+
+        if (index !== -1) {
+          if (index !== 0) {
+            nextPost = this.props.posts.data[index-1];
+          }
+          if (index !== this.props.posts.data.length-1) {
+            previousPost = this.props.posts.data[index+1];
+          }
+        }
+      }
+    }
+
     return (
       <main>
         <article className={!attributes.type ? 'post' : attributes.type}>
-          { (!attributes.type || attributes.type == 'post') ? (
+          { (!attributes.type || attributes.type === 'post') ? (
             <header>
               { (attributes.date) ?
                   (
@@ -124,9 +156,35 @@ class ContentComponent extends React.Component {
               <h1>{attributes.title}</h1>
             </header>
           ) : null }
-          <Markdown source={content.data.body} />
-          { (!attributes.type || attributes.type == 'post') ? (
+          <Markdown className="documentBody" source={content.data.body} />
+          { (!attributes.type || attributes.type === 'post') ? (
             <footer>
+              { attributes.tags ? (
+                <div className="tags">
+                  {attributes.tags.map((tag) => (
+                    <Link key={tag} to={tagUrl(tag)}>
+                      {tagLabel(tag)}
+                    </Link>
+                  ))}
+                </div>
+              ) : null }
+              { attributes.categories ? (
+                <div className="categories">
+                  {flattenCategories(attributes.categories).map((category) => (
+                    <Link key={category} to={categoryUrl(category)}>
+                      {categoryLabel(category)}
+                    </Link>
+                  ))}
+                </div>
+              ) : null }
+              <nav>
+                { previousPost ? (
+                  <Link className="previousPost" to={documentUrl(previousPost.id)}>{previousPost.attributes.title}</Link>
+                ) : null }
+                { nextPost ? (
+                  <Link className="nextPost" to={documentUrl(nextPost.id)}>{nextPost.attributes.title}</Link>
+                ) : null }
+              </nav>
             </footer>
           ) : null }
         </article>
@@ -139,5 +197,6 @@ class ContentComponent extends React.Component {
 }
 
 export const Content = connect((state) => ({
-  content: state ? state.content : null
+  content: state ? state.content : null,
+  posts: state.posts
 }))(ContentComponent);

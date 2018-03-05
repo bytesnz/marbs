@@ -4,8 +4,6 @@ const React = require("react");
 const Remarkable = require("remarkable");
 const remarkably_simple_tags_1 = require("remarkably-simple-tags");
 const tags = require("../lib/client/mdTags");
-const utils_1 = require("../lib/utils");
-const posts_1 = require("./posts");
 const config_1 = require("../app/lib/config");
 require("highlight.js/styles/default.css");
 /// Highlight.js base
@@ -35,23 +33,6 @@ class Markdown extends React.Component {
                 }
                 return rule.call(this, tokens, idx, options, env, instance);
             };
-        });
-        // Create RST for post remarkable React injection
-        this.rst = new remarkably_simple_tags_1.Plugin();
-        this.rst.register('categoriesList', (categories) => {
-            return React.createElement(posts_1.Posts, {
-                filter: (posts) => utils_1.filterPostsByCategories(posts, categories)
-            });
-        });
-        this.rst.register('tagsList', (tags) => {
-            return React.createElement(posts_1.Posts, {
-                filter: (posts) => utils_1.filterPostsByTags(posts, tags)
-            });
-        });
-        this.rst.register('postsList', (limit) => {
-            return React.createElement(posts_1.Posts, {
-                limit
-            });
         });
         // Create RST for in remarkable tag replacement
         const rst = new remarkably_simple_tags_1.Plugin();
@@ -86,52 +67,7 @@ class Markdown extends React.Component {
     }
     render() {
         let markdown = this.state.md.render(this.props.source);
-        let start = 0;
-        let index;
-        let state = [];
-        let slices = [];
-        let slice;
-        state.src = markdown;
-        state.pos = 0;
-        while ((index = markdown.indexOf('{@', start)) !== -1) {
-            state.pos = index;
-            if (this.rst.parse(state)) {
-                console.log('tag', state[0]);
-                slices.push([start, index - 1]);
-                slices.push(state.pop());
-            }
-            start = state.pos + 1;
-        }
-        if (slices.length) {
-            markdown = '';
-            while (typeof (slice = slices.pop()) !== 'undefined') {
-                if (Array.isArray(slice)) {
-                    markdown += state.src.substring(slice[0], slice[0]);
-                }
-                else {
-                    markdown += (this.rst.render([slice], 0));
-                }
-            }
-        }
-        return (React.createElement("div", { dangerouslySetInnerHTML: { __html: markdown } }));
-    }
-    setHijs(language) {
-        let hijs;
-        if (languages[language] === false) {
-            hijs = false;
-        }
-        else {
-            hijs = highlightJs;
-        }
-        if (this.mounted) {
-            this.setState({
-                hijs
-            });
-        }
-        else {
-            this.state.hijs = hijs;
-        }
-        return hijs;
+        return (React.createElement("div", { className: this.props.className, dangerouslySetInnerHTML: { __html: markdown } }));
     }
     tryHighlight(content, language) {
         if (language === 'unknown' || languages[language] === false || this.state.hijs === false) {
@@ -196,11 +132,13 @@ class Markdown extends React.Component {
                             return highlightJs.then(() => {
                                 languages[language] = languagePack;
                                 highlightJs.registerLanguage(language, languages[language]);
+                                this.forceUpdate();
                             });
                         }
                         else {
                             languages[language] = languagePack;
                             highlightJs.registerLanguage(language, languages[language]);
+                            this.forceUpdate();
                         }
                     }, (error) => {
                         console.error('Could not load Highlight.js language for ' + language, error);

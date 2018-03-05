@@ -24,7 +24,8 @@ export class Markdown extends React.Component {
   };
 
   props: {
-    source: string
+    source: string,
+    className: string
   };
 
   mounted: boolean = false;
@@ -99,7 +100,7 @@ export class Markdown extends React.Component {
     let markdown = this.state.md.render(this.props.source);
 
     return (
-      <div dangerouslySetInnerHTML={{ __html: markdown }} />
+      <div className={this.props.className} dangerouslySetInnerHTML={{ __html: markdown }} />
     );
   }
 

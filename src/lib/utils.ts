@@ -95,6 +95,15 @@ export const tagUrl = (tag?: string) => tag ?
     urlJoin(config.baseUri, config.tagsUri);
 
 /**
+ * Create the url for the given document
+ *
+ * @param document Document ID to create url to
+ *
+ * @returns URL to document
+ */
+export const documentUrl = (id?: string) => urlJoin(config.baseUri, id);
+
+/**
  * Filters the given posts to only those that have one/all of the given tags
  *
  * @param posts Lists of posts to filter
