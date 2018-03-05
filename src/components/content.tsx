@@ -5,11 +5,13 @@ import { Helmet } from 'react-helmet';
 
 //const oldRequire = require
 import { Markdown } from './markdown';
+import { Posts } from './posts';
 
 // TODO Show previous content until new content is loaded
 // TODO Add loading status while loading
 class ContentComponent extends React.Component {
   props: {
+    actions: any,
     content: any, //TODO Properly type
     location: any
   };
@@ -107,22 +109,31 @@ class ContentComponent extends React.Component {
     const attributes = content.data.attributes || {};
 
     return (
-      <article>
-        <header>
-          <h1>{attributes.title}</h1>
-          { (attributes.date && attributes.date.toDateString) ?
-                (
-                  <time dateTime={attributes.date.toDateString()}>
-                    {attributes.date.toDateString()}
-                  </time>
-                )
-                : null
-           }
-        </header>
-        <Markdown source={content.data.body} />
-        <footer>
-        </footer>
-      </article>
+      <main>
+        <article className={!attributes.type ? 'post' : attributes.type}>
+          { (!attributes.type || attributes.type == 'post') ? (
+            <header>
+              { (attributes.date) ?
+                  (
+                    <time dateTime={attributes.date}>
+                      {(new Date(attributes.date)).toLocaleDateString()}
+                    </time>
+                  )
+                  : null
+              }
+              <h1>{attributes.title}</h1>
+            </header>
+          ) : null }
+          <Markdown source={content.data.body} />
+          { (!attributes.type || attributes.type == 'post') ? (
+            <footer>
+            </footer>
+          ) : null }
+        </article>
+        { (id === '' && typeof config.listLastOnIndex === 'number' && config.listLastOnIndex >= 0) ? (
+          <Posts actions={this.props.actions} limit={config.listLastOnIndex} full={true} />
+        ) : null }
+      </main>
     );
   }
 }

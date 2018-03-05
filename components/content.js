@@ -6,6 +6,7 @@ const config_1 = require("../app/lib/config");
 const react_helmet_1 = require("react-helmet");
 //const oldRequire = require
 const markdown_1 = require("./markdown");
+const posts_1 = require("./posts");
 // TODO Show previous content until new content is loaded
 // TODO Add loading status while loading
 class ContentComponent extends React.Component {
@@ -72,14 +73,16 @@ class ContentComponent extends React.Component {
             return null;
         }
         const attributes = content.data.attributes || {};
-        return (React.createElement("article", null,
-            React.createElement("header", null,
-                React.createElement("h1", null, attributes.title),
-                (attributes.date && attributes.date.toDateString) ?
-                    (React.createElement("time", { dateTime: attributes.date.toDateString() }, attributes.date.toDateString()))
-                    : null),
-            React.createElement(markdown_1.Markdown, { source: content.data.body }),
-            React.createElement("footer", null)));
+        return (React.createElement("main", null,
+            React.createElement("article", { className: !attributes.type ? 'post' : attributes.type },
+                (!attributes.type || attributes.type == 'post') ? (React.createElement("header", null,
+                    (attributes.date) ?
+                        (React.createElement("time", { dateTime: attributes.date }, (new Date(attributes.date)).toLocaleDateString()))
+                        : null,
+                    React.createElement("h1", null, attributes.title))) : null,
+                React.createElement(markdown_1.Markdown, { source: content.data.body }),
+                (!attributes.type || attributes.type == 'post') ? (React.createElement("footer", null)) : null),
+            (id === '' && typeof config_1.default.listLastOnIndex === 'number' && config_1.default.listLastOnIndex >= 0) ? (React.createElement(posts_1.Posts, { actions: this.props.actions, limit: config_1.default.listLastOnIndex, full: true })) : null));
     }
 }
 exports.Content = react_redux_1.connect((state) => ({

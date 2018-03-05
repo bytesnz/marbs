@@ -10,5 +10,6 @@ export default <SetGlobalConfig>{
   },
   tagsUri: 'tags',
   categoriesUri: 'categories',
-  staticUri: 'static'
+  staticUri: 'static',
+  listLastOnIndex: 10
 }
