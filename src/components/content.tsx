@@ -140,8 +140,8 @@ class ContentComponent extends React.Component {
       }
     }
 
-    return (
-      <main>
+    return [
+      (
         <article className={!attributes.type ? 'post' : attributes.type}>
           { (!attributes.type || attributes.type === 'post') ? (
             <header>
@@ -188,11 +188,11 @@ class ContentComponent extends React.Component {
             </footer>
           ) : null }
         </article>
-        { (id === '' && typeof config.listLastOnIndex === 'number' && config.listLastOnIndex >= 0) ? (
+      ),
+      (id === '' && typeof config.listLastOnIndex === 'number' && config.listLastOnIndex >= 0) ? (
           <Posts actions={this.props.actions} limit={config.listLastOnIndex} full={true} />
-        ) : null }
-      </main>
-    );
+        ) : null
+    ];
   }
 }
 

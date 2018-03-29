@@ -75,43 +75,41 @@ class CategoryListComponent extends FilterListComponent {
   render() {
     let { categories, content, posts, actions } = this.props;
 
-    return (
-      <div>
-        { content ? null : (
-          <header>
-            <h1>Categories</h1>
-          </header>
-        ) }
-        { (() => {
-          if (!categories) {
-            return 'Loading categories list';
-          } else if (categories.error) {
-            return this.error('categories', categories.error);
-          } else if (posts && posts.error) {
-            return this.error('posts', posts.error);
-          } else if (config.categoriesPerPage) {
-            return null;
-          } else {
-            return Object.keys(categories.data).map((id) => {
-              const category = id.split('/').pop();
+    return [
+      content ? null : (
+        <header key="header">
+          <h1>Categories</h1>
+        </header>
+      ),
+      (() => {
+        if (!categories) {
+          return 'Loading categories list';
+        } else if (categories.error) {
+          return this.error('categories', categories.error);
+        } else if (posts && posts.error) {
+          return this.error('posts', posts.error);
+        } else if (config.categoriesPerPage) {
+          return null;
+        } else {
+          return Object.keys(categories.data).map((id) => {
+            const category = id.split('/').pop();
 
-              return (
-                <section key={`category-${category}`}>
-                  <h1>
-                    <a id={id}/>
-                    {categoryLabel(id)} ({categories.data[id]})
-                  </h1>
-                  { !config.expandableLists || this.isExpanded(id)
-                      ? (posts && posts.data ? (<Posts
-                      posts={filterPostsByCategories(posts.data, [category])}
-                      full={true} actions={actions} />) : 'Loading posts') : null }
-                </section>
-              );
-            });
-          }
-        })() }
-      </div>
-    );
+            return (
+              <section className="postList" key={`category-${category}`}>
+                <h1>
+                  <a id={id}/>
+                  {categoryLabel(id)} ({categories.data[id]})
+                </h1>
+                { !config.expandableLists || this.isExpanded(id)
+                    ? (posts && posts.data ? (<Posts
+                    posts={filterPostsByCategories(posts.data, [category])}
+                    full={true} actions={actions} />) : 'Loading posts') : null }
+              </section>
+            );
+          });
+        }
+      })()
+    ];
   }
 }
 

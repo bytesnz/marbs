@@ -73,42 +73,40 @@ class TagListComponent extends FilterListComponent {
   render() {
     let { content, tags, posts, ListPost } = this.props;
 
-    return (
-      <div>
-        { content ? null : (
-          <header>
-            <h1>Tags</h1>
-          </header>
-        ) }
-        { (() => {
-          if (!tags) {
-            return 'Loading tags list';
-          } else if (tags.error) {
-            return this.error('tags', tags.error);
-          } else if (posts && posts.error) {
-            return this.error('posts', posts.error);
-          } else {
-            return [(<TagCloud />)].concat(
-              Object.keys(tags.data).sort().map((id) => (
-                <section key={id}>
-                  <h1 className={ config.expandableLists
-                      && this.isExpanded(id) ? 'expanded' : '' }
-                      onClick={config.expandableLists ? () => this.toggle(id) : null}>
-                    <a id={id} />
-                    {tagLabel(id)} ({tags.data[id]})
-                  </h1>
-                  { !config.expandableLists || this.isExpanded(id)
-                      ? (posts ? (posts.data ? (<Posts
-                      posts={filterPostsByTags(posts.data, [id])}
-                      full={true} actions={this.props.actions} />)
-                      : null) : 'Loading posts') : null }
-                </section>
-              ))
-            );
-          }
-        })() }
-      </div>
-    );
+    return [
+      content ? null : (
+        <header key="header">
+          <h1>Tags</h1>
+        </header>
+      ),
+      (() => {
+        if (!tags) {
+          return 'Loading tags list';
+        } else if (tags.error) {
+          return this.error('tags', tags.error);
+        } else if (posts && posts.error) {
+          return this.error('posts', posts.error);
+        } else {
+          return [(<TagCloud key="cloud" />)].concat(
+            Object.keys(tags.data).sort().map((id) => (
+              <section className="postList" key={id}>
+                <h1 className={ config.expandableLists
+                    && this.isExpanded(id) ? 'expanded' : '' }
+                    onClick={config.expandableLists ? () => this.toggle(id) : null}>
+                  <a id={id} />
+                  {tagLabel(id)} ({tags.data[id]})
+                </h1>
+                { !config.expandableLists || this.isExpanded(id)
+                    ? (posts ? (posts.data ? (<Posts
+                    posts={filterPostsByTags(posts.data, [id])}
+                    full={true} actions={this.props.actions} />)
+                    : null) : 'Loading posts') : null }
+              </section>
+            ))
+          );
+        }
+      })()
+    ];
   }
 }
 

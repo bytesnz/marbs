@@ -75,9 +75,11 @@ const PropsRoute = ({ component, ...rest }) => {
           </Helmet>
           <Header/>
           <Sidebar actions={actions} toggle={true} toggleUsingClass={true} />
-          <PropsRoute actions={actions} component={Content} />
-          <PropsRoute path={`${urlJoin('/', config.baseUri, config.tagsUri)}`} actions={actions} component={TagList} />
-          <PropsRoute path={`${urlJoin('/', config.baseUri, config.categoriesUri)}`} actions={actions} component={CategoryList} />
+          <main>
+            <PropsRoute actions={actions} component={Content} />
+            <PropsRoute path={`${urlJoin('/', config.baseUri, config.tagsUri)}`} actions={actions} component={TagList} />
+            <PropsRoute path={`${urlJoin('/', config.baseUri, config.categoriesUri)}`} actions={actions} component={CategoryList} />
+          </main>
           <Footer/>
         </div>
       </ConnectedRouter>
