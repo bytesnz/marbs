@@ -8,6 +8,7 @@ export default <SetGlobalConfig>{
     categories: true,
     search: ['title', 'tags', 'categories']
   },
+  windowTitle: (config, contentTitle) => `${contentTitle} - ${config.title}`,
   tagsUri: 'tags',
   categoriesUri: 'categories',
   staticUri: 'static',

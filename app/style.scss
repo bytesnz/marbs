@@ -3,7 +3,8 @@
 
 @font-face {
   font-family: 'FontAwesome';
-  src: url('~/node_modules/font-awesome/css/fontawesome-webfont.woff2') format('woff2');
+  src: url('~/node_modules/font-awesome/css/fontawesome-webfont.woff') format('woff')
+    url('~/node_modules/font-awesome/css/fontawesome-webfont.woff2') format('woff2');
 }
 
 html, body {
@@ -30,12 +31,12 @@ html, body {
   }
 
   .siteHeader {
-    padding: 5vh 2vw;
+    padding: 20px 2vw;
     background: #333;
     color: #fff;
 
     h1 {
-      margin: 2vh 0;
+      margin: 10px 0;
     }
 
     nav {
@@ -78,12 +79,14 @@ html, body {
 
     .toggle {
       float: right;
-      background: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.6);
       border: none;
+      padding: 4px 8px;
     }
 
     .toggle::before {
-      content: "\f0c9"
+      font-family: 'FontAwesome';
+      content: "\f0c9";
     }
 
     .contents {
@@ -172,11 +175,16 @@ html, body {
     .tags, .categories {
       font-size: 0.8em;
       margin: 0 1vw;
-      font-family: 'FontAwesome';
+      color: #999;
+
+      &::before {
+        font-family: 'FontAwesome';
+      }
 
       a {
         display: inline-block;
         margin: 0 5px;
+        color: #555;
       }
     }
 
@@ -186,6 +194,12 @@ html, body {
 
     .categories::before {
       content: "\f115" // $fa-var-folder-open-o
+    }
+
+    section.postList {
+      > h1 {
+        padding: 0 1vw;
+      }
     }
 
     article {
@@ -204,6 +218,8 @@ html, body {
       }
 
       header {
+        margin-bottom: 30px;
+
         time {
           padding: 0 5vw;
           display: block;
@@ -221,23 +237,38 @@ html, body {
       }
 
       footer {
-        nav a {
-          display: inline-block;
-          width: 50%;
+        color: #999;
+        margin-top: 30px;
 
-          &.nextPost {
-            text-align: right;
+        nav {
+          margin-top: 5vh;
 
-            &::after {
-              font-family: 'FontAwesome';
-              content: '\f054' // $fa-chevron-right
+          a {
+            display: inline-block;
+            width: 50%;
+            color: #444;
+
+            &.nextPost {
+              text-align: right;
+
+              &::after {
+                font-family: 'FontAwesome';
+                content: '\f054'; // $fa-chevron-right
+                margin-left: 10px;
+              }
             }
-          }
 
-          &.previousPost {
-            &::before {
-              font-family: 'FontAwesome';
-              content: '\f053' // $fa-chevron-left
+            &.previousPost {
+              &::before {
+                font-family: 'FontAwesome';
+                content: '\f053'; // $fa-chevron-left
+                margin-right: 10px;
+              }
+            }
+
+            &:hover {
+              text-decoration: none;
+              color: #000;
             }
           }
         }

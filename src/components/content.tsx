@@ -141,8 +141,13 @@ class ContentComponent extends React.Component {
     }
 
     return [
+      id !== '' ? (
+        <Helmet key="helmet">
+          <title>{config.windowTitle(config, attributes.title)}</title>
+        </Helmet>
+      ) : null,
       (
-        <article className={!attributes.type ? 'post' : attributes.type}>
+        <article key="article" className={!attributes.type ? 'post' : attributes.type}>
           { (!attributes.type || attributes.type === 'post') ? (
             <header>
               { (attributes.date) ?
@@ -190,7 +195,7 @@ class ContentComponent extends React.Component {
         </article>
       ),
       (id === '' && typeof config.listLastOnIndex === 'number' && config.listLastOnIndex >= 0) ? (
-          <Posts actions={this.props.actions} limit={config.listLastOnIndex} full={true} />
+          <Posts key="posts" actions={this.props.actions} limit={config.listLastOnIndex} full={true} />
         ) : null
     ];
   }

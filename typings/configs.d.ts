@@ -48,6 +48,15 @@ export interface GlobalConfig {
   socketPath?: string,
   /// Functionality to be enabled in the web app
   functionality?: AppFunctionalityConfig,
+  /**
+   * Function to use to generate the Window title for content
+   *
+   * @param config MARSS global config
+   * @param contentTitle Content title
+   *
+   * @returns Window title
+   */
+  windowTitle?: (config: SetGlobalConfig, contentTitle: string) => string,
   /// URI for tags page (default: tags)
   tagsUri?: string,
   /// URI for categories page (default: categories)
