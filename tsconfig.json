@@ -3,13 +3,13 @@
   "allowSynthenticDefaultImports": false,
   "compilerOptions": {
     "outDir": "./",
-    "target": "es6",
+    "target": "es5",
     "noImplicitAny": false,
     "module": "commonjs",
     "moduleResolution": "node",
     "jsx": "react",
     "lib": ["es2015", "es2017", "dom"],
-    "sourceMap": false
+    "sourceMap": true
   },
   "include": [
     "src/**/*"

@@ -10,6 +10,7 @@ module.exports = merge(common, {
   entry: {
     app: ['./src/app/index.tsx']
   },
+  devtool: 'source-map',
   resolve: {
     extensions: ['.tsx', '.ts']
   },
@@ -22,11 +23,6 @@ module.exports = merge(common, {
     ]
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      title: config.title || package.name,
-      template: 'src/app/index.ejs',
-      chunksSortMode: 'dependency'
-    }),
     new webpack.HotModuleReplacementPlugin()
   ]
 });

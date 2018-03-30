@@ -3,6 +3,7 @@ const path = require('path');
 const package = require('./package.json');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const config = require('./config.global') || {};
 const appDist = path.resolve(__dirname, './public');
 const urlJoin = require('join-path');
@@ -14,11 +15,19 @@ module.exports = {
     filename: '[name].js'
   },
   target: "web",
-  devtool: 'source-map',
   resolve: {
-    extensions: ['.tsx', '.ts', '.jsx', '.js', '.json', '.scss', '.sass', '.css']
+    extensions: ['.tsx', '.ts', '.jsx', '.js', '.json', '.scss', '.sass', '.css'],
+    alias: {
+      'font-awesome': 'node_modules/font-awesome'
+    }
   },
   plugins: [
+    new webpack.optimize.ModuleConcatenationPlugin(),
+    new HtmlWebpackPlugin({
+      title: config.title || package.name,
+      template: 'src/app/index.ejs',
+      chunksSortMode: 'dependency'
+    }),
     new ExtractTextPlugin('style.css'),
     new BundleAnalyzerPlugin({
       openAnalyzer: false,
@@ -27,10 +36,6 @@ module.exports = {
   ],
   module: {
     rules: [
-      {
-        test: /\.js$/,
-        loader: 'ify-loader'
-      },
       {
         test: /\.js$/,
         enforce: 'pre',
