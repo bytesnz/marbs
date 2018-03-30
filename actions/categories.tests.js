@@ -1,18 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const ava_1 = require("ava");
-const CategoriesActions = require("./categories");
-const config_global_1 = require("../lib/defaults/config.global");
-const actions_1 = require("../tests/lib/actions");
+var ava_1 = require("ava");
+var CategoriesActions = require("./categories");
+var config_global_1 = require("../lib/defaults/config.global");
+var actions_1 = require("../tests/lib/actions");
 ava_1.default.beforeEach(actions_1.createSetUpTestFunction(CategoriesActions.createCategoriesActions, config_global_1.default, {
     categories: null
 }));
-ava_1.default('createCategoriesActions() should listen for categories events', (t) => {
+ava_1.default('createCategoriesActions() should listen for categories events', function (t) {
     t.is(1, t.context.handlers['categories'].length, 'It did not add one handler for the categories event');
     t.true(typeof t.context.handlers['categories'][0] === 'function', 'The handler is not a function');
 });
-ava_1.default('categories event listener should dispatch a set categories action when get results', (t) => {
-    const count = {
+ava_1.default('categories event listener should dispatch a set categories action when get results', function (t) {
+    var count = {
         test: 2,
         another: 5
     };
@@ -25,9 +25,9 @@ ava_1.default('categories event listener should dispatch a set categories action
         data: count
     }, t.context.dispatchedActions[0]);
 });
-ava_1.default('categories event listener should dispatch an set categories action with the error when gets an error', (t) => {
-    const errorMessage = 'test';
-    const errorCode = 999;
+ava_1.default('categories event listener should dispatch an set categories action with the error when gets an error', function (t) {
+    var errorMessage = 'test';
+    var errorCode = 999;
     t.context.emit('categories', {
         error: errorMessage,
         code: errorCode
@@ -39,8 +39,8 @@ ava_1.default('categories event listener should dispatch an set categories actio
     t.is(errorCode, t.context.dispatchedActions[0].error.code);
     t.true(t.context.dispatchedActions[0].error.date instanceof Date);
 });
-ava_1.default('setCategories() should create a set categories action', (t) => {
-    const count = {
+ava_1.default('setCategories() should create a set categories action', function (t) {
+    var count = {
         test: 1,
         second: 5
     };
@@ -51,8 +51,8 @@ ava_1.default('setCategories() should create a set categories action', (t) => {
         data: count
     }, t.context.dispatchedActions[0]);
 });
-ava_1.default('categoriessError() should dispatch a set tags action with an error', (t) => {
-    const error = {
+ava_1.default('categoriessError() should dispatch a set tags action with an error', function (t) {
+    var error = {
         message: 'Error',
         code: 500
     };
@@ -65,7 +65,7 @@ ava_1.default('categoriessError() should dispatch a set tags action with an erro
     t.is(error.code, t.context.dispatchedActions[0].error.code);
     t.true(t.context.dispatchedActions[0].error.date instanceof Date);
 });
-ava_1.default('fetchCategories() emits a categories event', (t) => {
+ava_1.default('fetchCategories() emits a categories event', function (t) {
     t.context.actions.fetchCategories();
     t.is(1, t.context.events.length, 'Should have emitted one event');
     t.deepEqual({
@@ -73,8 +73,9 @@ ava_1.default('fetchCategories() emits a categories event', (t) => {
         data: []
     }, t.context.events[0]);
 });
-ava_1.default('fetchCategories() does not dispatch an action or an event if categories for an id are already being fetched', (t) => {
+ava_1.default('fetchCategories() does not dispatch an action or an event if categories for an id are already being fetched', function (t) {
     t.context.actions.fetchCategories();
     t.context.actions.fetchCategories();
     t.is(1, t.context.events.length, 'Should have emitted one event');
 });
+//# sourceMappingURL=categories.tests.js.map

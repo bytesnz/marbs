@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const ava_1 = require("ava");
-const deepFreeze = require("deep-freeze");
-const Actions = require("../actions/content");
-const content_1 = require("./content");
-const randomAction = {
+var ava_1 = require("ava");
+var deepFreeze = require("deep-freeze");
+var Actions = require("../actions/content");
+var content_1 = require("./content");
+var randomAction = {
     type: 'SOME_RANDOM_ACTION'
 };
-const newContent = {
+var newContent = {
     id: 'test',
     attribute: {
         type: 'page',
@@ -15,18 +15,18 @@ const newContent = {
     },
     body: 'test'
 };
-ava_1.default('reducer passes current state when it receives a action it does not care about', (t) => {
-    const state = {};
-    const newState = content_1.reducer(state, randomAction);
+ava_1.default('reducer passes current state when it receives a action it does not care about', function (t) {
+    var state = {};
+    var newState = content_1.reducer(state, randomAction);
     t.is(state, newState);
 });
-ava_1.default('reducer should return the initial state if given nothing', (t) => {
-    const newState = content_1.reducer(undefined, randomAction);
+ava_1.default('reducer should return the initial state if given nothing', function (t) {
+    var newState = content_1.reducer(undefined, randomAction);
     t.deepEqual(null, newState);
 });
-ava_1.default('reducer should set the content to thte given content if no current content', (t) => {
-    const state = {};
-    const newState = content_1.reducer(state, {
+ava_1.default('reducer should set the content to thte given content if no current content', function (t) {
+    var state = {};
+    var newState = content_1.reducer(state, {
         type: Actions.MARSS_CONTENT_SET,
         data: newContent
     });
@@ -35,13 +35,13 @@ ava_1.default('reducer should set the content to thte given content if no curren
         data: newContent
     }, newState);
 });
-ava_1.default('reducer should replace the content to thte given content if current content has different id', (t) => {
-    const state = {
+ava_1.default('reducer should replace the content to thte given content if current content has different id', function (t) {
+    var state = {
         data: {
             id: 'test2'
         }
     };
-    const newState = content_1.reducer(state, {
+    var newState = content_1.reducer(state, {
         type: Actions.MARSS_CONTENT_SET,
         data: newContent
     });
@@ -50,8 +50,8 @@ ava_1.default('reducer should replace the content to thte given content if curre
         data: newContent
     }, newState);
 });
-ava_1.default('reducer should store new content as update if current content has the same id', (t) => {
-    const state = {
+ava_1.default('reducer should store new content as update if current content has the same id', function (t) {
+    var state = {
         data: {
             id: 'test',
             attributes: {
@@ -60,7 +60,7 @@ ava_1.default('reducer should store new content as update if current content has
             body: 'ok'
         }
     };
-    const newState = content_1.reducer(state, {
+    var newState = content_1.reducer(state, {
         type: Actions.MARSS_CONTENT_SET,
         data: newContent
     });
@@ -71,18 +71,18 @@ ava_1.default('reducer should store new content as update if current content has
         update: newContent
     }, newState);
 });
-ava_1.default('reducer should not create an update if the content is the same', (t) => {
-    const state = {
+ava_1.default('reducer should not create an update if the content is the same', function (t) {
+    var state = {
         data: newContent
     };
-    const newState = content_1.reducer(state, {
+    var newState = content_1.reducer(state, {
         type: Actions.MARSS_CONTENT_SET,
         data: newContent
     });
     t.is(state, newState);
 });
-ava_1.default('reducer should store error and clear content and update when given an error', (t) => {
-    const state = {
+ava_1.default('reducer should store error and clear content and update when given an error', function (t) {
+    var state = {
         data: {
             id: 'test',
             attributes: {
@@ -94,22 +94,22 @@ ava_1.default('reducer should store error and clear content and update when give
             some: 'update'
         }
     };
-    const error = {
+    var error = {
         message: 'test',
         code: 999,
         date: new Date()
     };
-    const newState = content_1.reducer(state, {
+    var newState = content_1.reducer(state, {
         type: Actions.MARSS_CONTENT_SET,
-        error
+        error: error
     });
     t.not(state, newState);
     t.deepEqual({
-        error
+        error: error
     }, newState);
 });
-ava_1.default('reducer should clear state when given a clear action', (t) => {
-    const state = {
+ava_1.default('reducer should clear state when given a clear action', function (t) {
+    var state = {
         data: {
             id: 'test',
             attributes: {
@@ -121,26 +121,26 @@ ava_1.default('reducer should clear state when given a clear action', (t) => {
             some: 'update'
         }
     };
-    const newState = content_1.reducer(state, {
+    var newState = content_1.reducer(state, {
         type: Actions.MARSS_CONTENT_CLEAR
     });
     t.not(state, newState);
     t.is(null, newState);
 });
-ava_1.default('reducer should apply diff when given an update action', (t) => {
-    const oldContent = {
+ava_1.default('reducer should apply diff when given an update action', function (t) {
+    var oldContent = {
         id: 'test',
         attributes: {
             tags: ['test', 'this']
         },
         body: 'ok'
     };
-    const state = {
+    var state = {
         data: oldContent,
         update: newContent
     };
     deepFreeze(state);
-    const newState = content_1.reducer(state, {
+    var newState = content_1.reducer(state, {
         type: Actions.MARSS_CONTENT_UPDATE
     });
     t.not(state, newState);
@@ -148,3 +148,4 @@ ava_1.default('reducer should apply diff when given an update action', (t) => {
         data: newContent
     }, newState);
 });
+//# sourceMappingURL=content.tests.js.map

@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MARSS_TAGS_SET = 'MARSS_TAGS_SET';
-exports.createTagsActions = ({ getState, dispatch, socket }, options) => {
+exports.createTagsActions = function (_a, options) {
+    var getState = _a.getState, dispatch = _a.dispatch, socket = _a.socket;
     /// Timeout to timeout waiting for tags
-    let fetchTimeout = null;
+    var fetchTimeout = null;
     /**
      * Creates and dispatches a set tags action object
      *
@@ -11,7 +12,7 @@ exports.createTagsActions = ({ getState, dispatch, socket }, options) => {
      *
      * @returns Set tags action
      */
-    const setTags = (newTags) => {
+    var setTags = function (newTags) {
         dispatch({
             type: exports.MARSS_TAGS_SET,
             data: newTags
@@ -23,19 +24,19 @@ exports.createTagsActions = ({ getState, dispatch, socket }, options) => {
      * @param message Error message
      * @param code Error code
      */
-    const tagsError = (message, code) => {
+    var tagsError = function (message, code) {
         dispatch({
             type: exports.MARSS_TAGS_SET,
             error: {
-                message,
-                code,
+                message: message,
+                code: code,
                 date: new Date()
             }
         });
     };
-    const fetchTags = () => {
+    var fetchTags = function () {
         if (getState().tags === null && fetchTimeout === null) {
-            fetchTimeout = setTimeout(() => {
+            fetchTimeout = setTimeout(function () {
                 tagsError('Nobody responded when trying to fetch the tags count', 408);
                 fetchTimeout = null;
             }, 4000);
@@ -43,7 +44,7 @@ exports.createTagsActions = ({ getState, dispatch, socket }, options) => {
         }
     };
     // Register for the tags event
-    socket.on('tags', (data) => {
+    socket.on('tags', function (data) {
         clearTimeout(fetchTimeout);
         fetchTimeout = null;
         if (data.error) {
@@ -53,8 +54,9 @@ exports.createTagsActions = ({ getState, dispatch, socket }, options) => {
         setTags(data.results);
     });
     return {
-        setTags,
-        fetchTags,
-        tagsError
+        setTags: setTags,
+        fetchTags: fetchTags,
+        tagsError: tagsError
     };
 };
+//# sourceMappingURL=tags.js.map

@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = require("react");
-const react_router_dom_1 = require("react-router-dom");
-const urlJoin = require("join-path");
-const config_1 = require("../app/lib/config");
-const menuItem = (item, index) => {
+var React = require("react");
+var react_router_dom_1 = require("react-router-dom");
+var urlJoin = require("join-path");
+var config_1 = require("../app/lib/config");
+var menuItem = function (item, index) {
     if (item.children) {
         return (React.createElement("li", { key: index },
             React.createElement("span", null, item.label),
@@ -16,10 +16,11 @@ const menuItem = (item, index) => {
     }
     return null;
 };
-exports.Menu = () => {
+exports.Menu = function () {
     if (config_1.default.menu) {
         return (React.createElement("nav", null,
             React.createElement("ul", null, config_1.default.menu.map(menuItem))));
     }
     return null;
 };
+//# sourceMappingURL=menu.js.map

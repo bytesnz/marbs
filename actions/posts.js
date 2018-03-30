@@ -2,36 +2,37 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MARSS_POSTS_SET = 'MARSS_POSTS_SET';
 exports.MARSS_POSTS_UPDATE = 'MARSS_POSTS_UPDATE';
-exports.createPostsActions = ({ getState, dispatch, socket }, options) => {
+exports.createPostsActions = function (_a, options) {
+    var getState = _a.getState, dispatch = _a.dispatch, socket = _a.socket;
     /// Timeout to timeout waiting for tags
-    let fetchTimeout = null;
+    var fetchTimeout = null;
     /// Search timeouts
-    let searchTimeouts;
-    const setPosts = (newPosts) => {
+    var searchTimeouts;
+    var setPosts = function (newPosts) {
         dispatch({
             type: exports.MARSS_POSTS_SET,
             data: newPosts
         });
     };
-    const postsError = (message, code) => {
+    var postsError = function (message, code) {
         dispatch({
             type: exports.MARSS_POSTS_SET,
             error: {
-                message,
-                code,
+                message: message,
+                code: code,
                 date: new Date()
             }
         });
     };
-    const updatePosts = (posts) => {
+    var updatePosts = function (posts) {
         dispatch({
             type: exports.MARSS_POSTS_UPDATE,
             data: posts
         });
     };
-    const fetchPosts = () => {
+    var fetchPosts = function () {
         if (getState().posts === null && fetchTimeout === null) {
-            fetchTimeout = setTimeout(() => {
+            fetchTimeout = setTimeout(function () {
                 postsError('Nobody responded when trying to fetch the posts count', 408);
                 fetchTimeout = null;
             }, 4000);
@@ -39,7 +40,7 @@ exports.createPostsActions = ({ getState, dispatch, socket }, options) => {
         }
     };
     // Register for the tags event
-    socket.on('documents', (data) => {
+    socket.on('documents', function (data) {
         clearTimeout(fetchTimeout);
         fetchTimeout = null;
         if (data.error) {
@@ -49,8 +50,9 @@ exports.createPostsActions = ({ getState, dispatch, socket }, options) => {
         setPosts(data.results);
     });
     return {
-        setPosts,
-        updatePosts,
-        fetchPosts
+        setPosts: setPosts,
+        updatePosts: updatePosts,
+        fetchPosts: fetchPosts
     };
 };
+//# sourceMappingURL=posts.js.map

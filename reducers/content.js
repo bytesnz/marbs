@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const just_diff_1 = require("just-diff");
-const content_1 = require("../actions/content");
+var just_diff_1 = require("just-diff");
+var content_1 = require("../actions/content");
 ;
-exports.initialState = (options) => null;
-exports.reducer = (state = null, action) => {
+exports.initialState = function (options) { return null; };
+exports.reducer = function (state, action) {
+    if (state === void 0) { state = null; }
     switch (action.type) {
         case content_1.MARSS_CONTENT_SET:
             if (action.error) {
@@ -14,7 +15,7 @@ exports.reducer = (state = null, action) => {
                 break;
             }
             if (state && state.data && state.data.id === action.data.id) {
-                const contentDiff = just_diff_1.diff(state.data, action.data);
+                var contentDiff = just_diff_1.diff(state.data, action.data);
                 if (contentDiff.length) {
                     state = {
                         data: state.data,
@@ -41,3 +42,4 @@ exports.reducer = (state = null, action) => {
     }
     return state;
 };
+//# sourceMappingURL=content.js.map

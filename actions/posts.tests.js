@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const ava_1 = require("ava");
-const PostsActions = require("./posts");
-const config_global_1 = require("../lib/defaults/config.global");
-const actions_1 = require("../tests/lib/actions");
+var ava_1 = require("ava");
+var PostsActions = require("./posts");
+var config_global_1 = require("../lib/defaults/config.global");
+var actions_1 = require("../tests/lib/actions");
 ava_1.default.beforeEach(actions_1.createSetUpTestFunction(PostsActions.createPostsActions, config_global_1.default, {
     posts: null
 }));
-ava_1.default('setPosts() should replace the current documents list', (t) => {
-    const posts = [
+ava_1.default('setPosts() should replace the current documents list', function (t) {
+    var posts = [
         {
             id: 'new document',
             attributes: {}
@@ -33,8 +33,8 @@ ava_1.default('setPosts() should replace the current documents list', (t) => {
         data: posts
     }, t.context.dispatchedActions[0]);
 });
-ava_1.default('updatePosts() should dispatch a update action', (t) => {
-    const posts = [
+ava_1.default('updatePosts() should dispatch a update action', function (t) {
+    var posts = [
         {
             id: 'new document',
             attributes: {}
@@ -51,7 +51,7 @@ ava_1.default('updatePosts() should dispatch a update action', (t) => {
         data: posts
     }, t.context.dispatchedActions[0]);
 });
-ava_1.default('fetchPosts() does not dispatch an action or an event if posts are already being fetched', (t) => {
+ava_1.default('fetchPosts() does not dispatch an action or an event if posts are already being fetched', function (t) {
     t.context.state = {
         posts: null
     };
@@ -59,7 +59,7 @@ ava_1.default('fetchPosts() does not dispatch an action or an event if posts are
     t.context.actions.fetchPosts();
     t.is(1, t.context.events.length, 'Should have emitted one event');
 });
-ava_1.default('fetchPosts() should emit a documents event', (t) => {
+ava_1.default('fetchPosts() should emit a documents event', function (t) {
     t.context.actions.fetchPosts();
     t.is(1, t.context.events.length, 'It did not emit 1 event');
     t.deepEqual({
@@ -67,3 +67,4 @@ ava_1.default('fetchPosts() should emit a documents event', (t) => {
         data: []
     }, t.context.events[0]);
 });
+//# sourceMappingURL=posts.tests.js.map

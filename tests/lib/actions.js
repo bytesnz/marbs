@@ -21,34 +21,44 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * @param options Options to pass to actionCreator
  * @param state Initial state
  */
-exports.createSetUpTestFunction = (actionCreator, options = {}, state = null) => {
-    return (t) => {
+exports.createSetUpTestFunction = function (actionCreator, options, state) {
+    if (options === void 0) { options = {}; }
+    if (state === void 0) { state = null; }
+    return function (t) {
         t.context.dispatchedActions = [];
         t.context.repliers = {};
         t.context.handlers = {};
         t.context.events = [];
         t.context.state = state;
-        t.context.emit = (event, ...data) => {
+        t.context.emit = function (event) {
+            var data = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                data[_i - 1] = arguments[_i];
+            }
             if (typeof t.context.handlers[event] !== 'undefined') {
-                t.context.handlers[event].forEach((handler) => handler(...data));
+                t.context.handlers[event].forEach(function (handler) { return handler.apply(void 0, data); });
             }
         };
         t.context.actions = actionCreator({
-            dispatch: (action) => {
+            dispatch: function (action) {
                 t.context.dispatchedActions.push(action);
             },
-            getState: () => t.context.state,
+            getState: function () { return t.context.state; },
             socket: {
-                emit: (event, ...data) => {
+                emit: function (event) {
+                    var data = [];
+                    for (var _i = 1; _i < arguments.length; _i++) {
+                        data[_i - 1] = arguments[_i];
+                    }
                     t.context.events.push({
-                        event,
-                        data
+                        event: event,
+                        data: data
                     });
                     if (t.context.repliers[event]) {
                         t.context.repliers[event](data);
                     }
                 },
-                on: (event, handler) => {
+                on: function (event, handler) {
                     if (typeof t.context.handlers[event] === 'undefined') {
                         t.context.handlers[event] = [];
                     }
@@ -58,3 +68,4 @@ exports.createSetUpTestFunction = (actionCreator, options = {}, state = null) =>
         }, options);
     };
 };
+//# sourceMappingURL=actions.js.map

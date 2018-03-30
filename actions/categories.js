@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MARSS_CATEGORIES_SET = 'MARSS_CATEGORIES_SET';
-exports.createCategoriesActions = ({ dispatch, socket }, options) => {
+exports.createCategoriesActions = function (_a, options) {
+    var dispatch = _a.dispatch, socket = _a.socket;
     /// Timeout to timeout waiting for tags
-    let fetchTimeout = null;
+    var fetchTimeout = null;
     /**
      * Creates and dispatches a set categories action object
      *
@@ -11,7 +12,7 @@ exports.createCategoriesActions = ({ dispatch, socket }, options) => {
      *
      * @returns Set Categories action
      */
-    const setCategories = (newCategories) => {
+    var setCategories = function (newCategories) {
         dispatch({
             type: exports.MARSS_CATEGORIES_SET,
             data: newCategories
@@ -23,12 +24,12 @@ exports.createCategoriesActions = ({ dispatch, socket }, options) => {
      * @param message Error message
      * @param code Error code
      */
-    const categoriesError = (message, code) => {
+    var categoriesError = function (message, code) {
         dispatch({
             type: exports.MARSS_CATEGORIES_SET,
             error: {
-                message,
-                code,
+                message: message,
+                code: code,
                 date: new Date()
             }
         });
@@ -37,9 +38,9 @@ exports.createCategoriesActions = ({ dispatch, socket }, options) => {
      * Fetch the categories for the given id. If categories is already being fetched
      * for the given id, the request will be ignored
      */
-    const fetchCategories = () => {
+    var fetchCategories = function () {
         if (fetchTimeout === null) {
-            fetchTimeout = setTimeout(() => {
+            fetchTimeout = setTimeout(function () {
                 categoriesError('Nobody responded when trying to fetch the categories', 408);
                 fetchTimeout = null;
             }, 4000);
@@ -47,7 +48,7 @@ exports.createCategoriesActions = ({ dispatch, socket }, options) => {
         }
     };
     // Register for the tags event
-    socket.on('categories', (data) => {
+    socket.on('categories', function (data) {
         clearTimeout(fetchTimeout);
         fetchTimeout = null;
         if (data.error) {
@@ -57,8 +58,9 @@ exports.createCategoriesActions = ({ dispatch, socket }, options) => {
         setCategories(data.results);
     });
     return {
-        setCategories,
-        categoriesError,
-        fetchCategories
+        setCategories: setCategories,
+        categoriesError: categoriesError,
+        fetchCategories: fetchCategories
     };
 };
+//# sourceMappingURL=categories.js.map

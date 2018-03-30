@@ -3,11 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MARSS_CONTENT_SET = 'MARSS_CONTENT_SET';
 exports.MARSS_CONTENT_UPDATE = 'MARSS_CONTENT_UPDATE';
 exports.MARSS_CONTENT_CLEAR = 'MARSS_CONTENT_CLEAR';
-exports.createContentActions = ({ getState, dispatch, socket }, options) => {
+exports.createContentActions = function (_a, options) {
+    var getState = _a.getState, dispatch = _a.dispatch, socket = _a.socket;
     /// Timeout to timeout waiting for tags
-    let fetchTimeout = null;
+    var fetchTimeout = null;
     /// Content id currently being fetched
-    let fetchingId = null;
+    var fetchingId = null;
     /**
      * If the new content has a different id to the current content, or if there
      * is no current content, store the new content as the current content.
@@ -17,18 +18,18 @@ exports.createContentActions = ({ getState, dispatch, socket }, options) => {
      *
      * @param newContent New content
      */
-    const setContent = (newContent) => {
+    var setContent = function (newContent) {
         dispatch({
             type: exports.MARSS_CONTENT_SET,
             data: newContent
         });
     };
-    const contentError = (message, code) => {
+    var contentError = function (message, code) {
         dispatch({
             type: exports.MARSS_CONTENT_SET,
             error: {
-                message,
-                code,
+                message: message,
+                code: code,
                 date: new Date()
             }
         });
@@ -36,7 +37,7 @@ exports.createContentActions = ({ getState, dispatch, socket }, options) => {
     /**
      * Clears the current content state including any error
      */
-    const clearContent = () => {
+    var clearContent = function () {
         dispatch({
             type: exports.MARSS_CONTENT_CLEAR,
         });
@@ -44,7 +45,7 @@ exports.createContentActions = ({ getState, dispatch, socket }, options) => {
     /**
      * Updates the current content from the stored content update in the state
      */
-    const updateContent = () => {
+    var updateContent = function () {
         dispatch({
             type: exports.MARSS_CONTENT_UPDATE
         });
@@ -53,13 +54,13 @@ exports.createContentActions = ({ getState, dispatch, socket }, options) => {
      * Fetch the content for the given id. If content is already being fetched
      * for the given id, the request will be ignored
      */
-    const fetchContent = (id) => {
+    var fetchContent = function (id) {
         if (fetchTimeout === null || fetchingId !== id) {
             if (fetchTimeout !== null) {
                 clearTimeout(fetchTimeout);
             }
             fetchingId = id;
-            fetchTimeout = setTimeout(() => {
+            fetchTimeout = setTimeout(function () {
                 contentError('Nobody responded when trying to fetch the content for ' + id, 408);
                 fetchTimeout = null;
                 fetchingId = null;
@@ -68,7 +69,7 @@ exports.createContentActions = ({ getState, dispatch, socket }, options) => {
         }
     };
     // Register for the tags event
-    socket.on('content', (data) => {
+    socket.on('content', function (data) {
         clearTimeout(fetchTimeout);
         fetchTimeout = null;
         if (data.error) {
@@ -82,10 +83,11 @@ exports.createContentActions = ({ getState, dispatch, socket }, options) => {
         setContent(data.results);
     });
     return {
-        setContent,
-        contentError,
-        clearContent,
-        updateContent,
-        fetchContent
+        setContent: setContent,
+        contentError: contentError,
+        clearContent: clearContent,
+        updateContent: updateContent,
+        fetchContent: fetchContent
     };
 };
+//# sourceMappingURL=content.js.map

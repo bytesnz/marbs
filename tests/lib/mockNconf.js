@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const deepclone = require("lodash.clonedeep");
-const MockNconf = function MockNconf(conf) {
+var deepclone = require("lodash.clonedeep");
+var MockNconf = function MockNconf(conf) {
     if (!(this instanceof MockNconf)) {
         return new MockNconf(conf);
     }
@@ -22,8 +22,9 @@ Object.assign(MockNconf.prototype, {
         return this.conf[key];
     },
     clone: function clone() {
-        const newConf = deepclone(this.conf);
+        var newConf = deepclone(this.conf);
         return new MockNconf(newConf);
     }
 });
 exports.default = MockNconf;
+//# sourceMappingURL=mockNconf.js.map

@@ -1,22 +1,30 @@
 "use strict";
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const ava_1 = require("ava");
-const Actions = require("../actions/posts");
-const posts_1 = require("./posts");
-const randomAction = {
+var ava_1 = require("ava");
+var Actions = require("../actions/posts");
+var posts_1 = require("./posts");
+var randomAction = {
     type: 'SOME_RANDOM_ACTION'
 };
-ava_1.default('reducer passes current state when it receives a action it does not care about', (t) => {
-    const state = {};
-    const newState = posts_1.reducer(state, randomAction);
+ava_1.default('reducer passes current state when it receives a action it does not care about', function (t) {
+    var state = {};
+    var newState = posts_1.reducer(state, randomAction);
     t.is(state, newState);
 });
-ava_1.default('reducer should return the initial state if given nothing', (t) => {
-    const newState = posts_1.reducer(undefined, randomAction);
+ava_1.default('reducer should return the initial state if given nothing', function (t) {
+    var newState = posts_1.reducer(undefined, randomAction);
     t.deepEqual(null, newState);
 });
-ava_1.default('reducer should set the posts state to the given posts when given a set action', (t) => {
-    const posts = [
+ava_1.default('reducer should set the posts state to the given posts when given a set action', function (t) {
+    var posts = [
         {
             id: 'new document',
             attributes: {}
@@ -26,7 +34,7 @@ ava_1.default('reducer should set the posts state to the given posts when given 
             attributes: {}
         }
     ];
-    const newState = posts_1.reducer({
+    var newState = posts_1.reducer({
         data: [
             {
                 id: 'bad document',
@@ -39,13 +47,13 @@ ava_1.default('reducer should set the posts state to the given posts when given 
     });
     t.deepEqual(posts, newState.data);
 });
-ava_1.default('reducer should set an error in the state', (t) => {
-    const newError = {
+ava_1.default('reducer should set an error in the state', function (t) {
+    var newError = {
         message: 'test',
         code: 200
     };
-    const state = {};
-    const newState = posts_1.reducer(state, {
+    var state = {};
+    var newState = posts_1.reducer(state, {
         type: Actions.MARSS_POSTS_SET,
         error: newError
     });
@@ -55,8 +63,8 @@ ava_1.default('reducer should set an error in the state', (t) => {
     t.is(newError.code, newState.error.code, 'error code not set');
     t.true(newState.error.date instanceof Date, 'error date is not a Date');
 });
-ava_1.default('reducer should update the posts in the state when update action', (t) => {
-    const state = {
+ava_1.default('reducer should update the posts in the state when update action', function (t) {
+    var state = {
         data: [
             {
                 id: 'test',
@@ -69,25 +77,25 @@ ava_1.default('reducer should update the posts in the state when update action',
         ]
     };
     Object.freeze(state);
-    const newData = [
+    var newData = [
         {
             id: 'test',
             body: 'this is a test'
         }
     ];
-    const newState = posts_1.reducer(state, {
+    var newState = posts_1.reducer(state, {
         type: Actions.MARSS_POSTS_UPDATE,
         data: newData
     });
     t.not(state, newState, 'did not create a new state object');
     t.deepEqual({
         data: [
-            Object.assign({}, state.data[0], { body: newData[0].body })
+            __assign({}, state.data[0], { body: newData[0].body })
         ]
     }, newState);
 });
-ava_1.default('reducer should insert new post in correct position when given a new post in update action', (t) => {
-    const state = {
+ava_1.default('reducer should insert new post in correct position when given a new post in update action', function (t) {
+    var state = {
         data: [
             {
                 id: 'test',
@@ -108,7 +116,7 @@ ava_1.default('reducer should insert new post in correct position when given a n
         ]
     };
     Object.freeze(state);
-    const newData = [
+    var newData = [
         {
             id: 'test2',
             attributes: {
@@ -117,7 +125,7 @@ ava_1.default('reducer should insert new post in correct position when given a n
             body: 'this is a test'
         }
     ];
-    const newState = posts_1.reducer(state, {
+    var newState = posts_1.reducer(state, {
         type: Actions.MARSS_POSTS_UPDATE,
         data: newData
     });
@@ -130,8 +138,8 @@ ava_1.default('reducer should insert new post in correct position when given a n
         ]
     }, newState);
 });
-ava_1.default('reducer should set the posts state to the given posts when given a update with no posts in state', (t) => {
-    const posts = [
+ava_1.default('reducer should set the posts state to the given posts when given a update with no posts in state', function (t) {
+    var posts = [
         {
             id: 'new document',
             attributes: {}
@@ -141,9 +149,10 @@ ava_1.default('reducer should set the posts state to the given posts when given 
             attributes: {}
         }
     ];
-    const newState = posts_1.reducer(undefined, {
+    var newState = posts_1.reducer(undefined, {
         type: Actions.MARSS_POSTS_UPDATE,
         data: posts
     });
     t.deepEqual(posts, newState.data);
 });
+//# sourceMappingURL=posts.tests.js.map

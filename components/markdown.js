@@ -1,32 +1,43 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = require("react");
-const Remarkable = require("remarkable");
-const remarkably_simple_tags_1 = require("remarkably-simple-tags");
-const tags = require("../lib/client/mdTags");
-const config_1 = require("../app/lib/config");
+var React = require("react");
+var Remarkable = require("remarkable");
+var remarkably_simple_tags_1 = require("remarkably-simple-tags");
+var tags = require("../lib/client/mdTags");
+var config_1 = require("../app/lib/config");
 require("highlight.js/styles/default.css");
 /// Highlight.js base
-let highlightJs;
+var highlightJs;
 /// Highlight.js language packs
-let languages = {};
-class Markdown extends React.Component {
-    constructor(props) {
-        super(props);
-        this.mounted = false;
-        const remarkableOptions = {
+var languages = {};
+var Markdown = /** @class */ (function (_super) {
+    __extends(Markdown, _super);
+    function Markdown(props) {
+        var _this = _super.call(this, props) || this;
+        _this.mounted = false;
+        var remarkableOptions = {
             linkify: true,
             langPrefix: 'hljs ',
             langDefault: 'unknown',
-            highlight: this.highlight.bind(this),
+            highlight: _this.highlight.bind(_this),
         };
-        this.state = {
+        _this.state = {
             hijs: null,
             md: new Remarkable(remarkableOptions)
         };
         // Plugin for unknown language
-        this.state.md.use(function unknownLanguagePlugin(md) {
-            const rule = md.renderer.rules.fence;
+        _this.state.md.use(function unknownLanguagePlugin(md) {
+            var rule = md.renderer.rules.fence;
             md.renderer.rules.fence = function unknownLanguageRule(tokens, idx, options, env, instance) {
                 if (!tokens[idx].params && md.options.langDefault) {
                     tokens[idx].params = md.options.langDefault;
@@ -35,13 +46,13 @@ class Markdown extends React.Component {
             };
         });
         // Create RST for in remarkable tag replacement
-        const rst = new remarkably_simple_tags_1.Plugin();
+        var rst = new remarkably_simple_tags_1.Plugin();
         rst.register('post', tags.postTag);
         rst.register('tags', tags.tagsTag);
         rst.register('categories', tags.categoriesTag);
         rst.register('static', tags.staticTag);
         if (config_1.default.rstTags) {
-            Object.keys(config_1.default.rstTags).forEach((tag) => {
+            Object.keys(config_1.default.rstTags).forEach(function (tag) {
                 if (config_1.default.rstTags[tag].multiple) {
                     rst.register(tag, config_1.default.rstTags[tag].handler, true);
                 }
@@ -50,26 +61,27 @@ class Markdown extends React.Component {
                 }
             });
         }
-        this.state.md.use(rst.hook);
+        _this.state.md.use(rst.hook);
         if (config_1.default.remarkablePlugins) {
-            config_1.default.remarkablePlugins.forEach((plugin) => {
-                this.state.md.use(plugin);
+            config_1.default.remarkablePlugins.forEach(function (plugin) {
+                _this.state.md.use(plugin);
             });
         }
         // Try render to start process of getting highlight libraries
-        this.state.md.render(this.props.source);
+        _this.state.md.render(_this.props.source);
+        return _this;
     }
-    componentDidMount() {
+    Markdown.prototype.componentDidMount = function () {
         this.mounted = true;
-    }
-    componentWillUnmount() {
+    };
+    Markdown.prototype.componentWillUnmount = function () {
         this.mounted = false;
-    }
-    render() {
-        let markdown = this.state.md.render(this.props.source);
+    };
+    Markdown.prototype.render = function () {
+        var markdown = this.state.md.render(this.props.source);
         return (React.createElement("div", { className: this.props.className, dangerouslySetInnerHTML: { __html: markdown } }));
-    }
-    tryHighlight(content, language) {
+    };
+    Markdown.prototype.tryHighlight = function (content, language) {
         if (language === 'unknown' || languages[language] === false || this.state.hijs === false) {
             return '';
         }
@@ -78,41 +90,42 @@ class Markdown extends React.Component {
             return this.state.hijs.highlight(language, content).value;
         }
         return null;
-    }
-    highlight(content, language) {
-        const attempt = this.tryHighlight(content, language);
+    };
+    Markdown.prototype.highlight = function (content, language) {
+        var _this = this;
+        var attempt = this.tryHighlight(content, language);
         if (attempt !== null) {
             return attempt;
         }
         else {
             // Load the language pack and base if needed
-            let promises = [];
+            var promises = [];
             if (highlightJs instanceof Promise) {
                 promises.push(highlightJs);
             }
             else if (typeof highlightJs === 'undefined') {
-                highlightJs = System.import('highlight.js/lib/highlight').then((hijs) => {
+                highlightJs = System.import('highlight.js/lib/highlight').then(function (hijs) {
                     hijs.configure({
                         tabReplace: '  '
                     });
                     highlightJs = hijs;
-                    if (this.mounted) {
-                        this.setState({
+                    if (_this.mounted) {
+                        _this.setState({
                             hijs: hijs
                         });
                     }
                     else {
-                        this.state.hijs = hijs;
+                        _this.state.hijs = hijs;
                     }
-                }, (error) => {
+                }, function (error) {
                     console.error('could not load Highlight.js', error);
-                    if (this.mounted) {
-                        this.setState({
+                    if (_this.mounted) {
+                        _this.setState({
                             hijs: false
                         });
                     }
                     else {
-                        this.state.hijs = false;
+                        _this.state.hijs = false;
                     }
                 });
                 promises.push(highlightJs);
@@ -122,25 +135,25 @@ class Markdown extends React.Component {
                     promises.push(languages[language]);
                 }
                 else if (typeof languages[language] === 'undefined') {
-                    languages[language] = System.import(`highlight.js/lib/languages/${language}`).then((languagePack) => {
+                    languages[language] = System.import("highlight.js/lib/languages/" + language).then(function (languagePack) {
                         if (!languagePack) {
                             console.error('Could not import language', language);
                             languages[language] = false;
                             return;
                         }
                         if (highlightJs instanceof Promise) {
-                            return highlightJs.then(() => {
+                            return highlightJs.then(function () {
                                 languages[language] = languagePack;
                                 highlightJs.registerLanguage(language, languages[language]);
-                                this.forceUpdate();
+                                _this.forceUpdate();
                             });
                         }
                         else {
                             languages[language] = languagePack;
                             highlightJs.registerLanguage(language, languages[language]);
-                            this.forceUpdate();
+                            _this.forceUpdate();
                         }
-                    }, (error) => {
+                    }, function (error) {
                         console.error('Could not load Highlight.js language for ' + language, error);
                         languages[language] = false;
                     });
@@ -154,6 +167,8 @@ class Markdown extends React.Component {
                 return '';
             }
         }
-    }
-}
+    };
+    return Markdown;
+}(React.Component));
 exports.Markdown = Markdown;
+//# sourceMappingURL=markdown.js.map
