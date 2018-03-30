@@ -11,12 +11,13 @@ written in PHP and MySQL. I looked at Hexo, but had a few issues generating the
 content. I also wanted my blog to be a single page app to make it faster to
 navigate and load.
 
-## **Envisioned** Features
+## Features
 Initial features will include:
 - Posts etc are files written in Markdown files with front-matter metadata
-  (using [markdown-it](https://github.com/markdown-it/markdown-it) and
-  [markdown-it-front-matter](https://github.com/craigdmckenna/markdown-it-front-matter)
+  (using [remarkable](https://github.com/jonschlinkert/remarkable) and
+  [front-matter](https://github.com/jxson/front-matter))
 - Supports tags, categories and page (template) types
+
 Later features will include:
 - Support for offline app mode and offline reading of articles
 - Support for push notifications of new articles
@@ -27,10 +28,8 @@ Later features will include:
 - React
 - Markdown
 - Web Sockets
-- MathTex
-- Service Worker
 
-## **Envisioned** File Layout
+## File Layout
 ```
  - index.js - Server script
  - config.global.js - Configuration options used in both the client and the server
