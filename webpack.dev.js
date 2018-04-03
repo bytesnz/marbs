@@ -21,8 +21,5 @@ module.exports = merge(common, {
         loader: 'awesome-typescript-loader'
       },
     ]
-  },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin()
-  ]
+  }
 });

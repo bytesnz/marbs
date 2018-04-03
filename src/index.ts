@@ -155,7 +155,6 @@ Promise.all([globalConfig, serverConfig].map((file) => file && access(file, 'r')
     // Dev imports
     const webpack = require('webpack');
     webpackDevMiddleware = require( 'webpack-dev-middleware');
-    const webpackHotMiddleware = require('webpack-hot-middleware');
     const webpackDevConfig = require('./webpack.dev');
     const compiler = webpack(webpackDevConfig);
 
@@ -164,7 +163,6 @@ Promise.all([globalConfig, serverConfig].map((file) => file && access(file, 'r')
 
     // Attach webpack middlewares
     app.use(config.baseUri, devMiddleware);
-    app.use(config.baseUri, webpackHotMiddleware(compiler));
   }
 
   // Set up static asset server
