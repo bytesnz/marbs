@@ -9,7 +9,13 @@
     "moduleResolution": "node",
     "jsx": "react",
     "lib": ["es2015", "es2017", "dom"],
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": "./",
+    "paths": {
+      "~": [ "." ],
+      "Config": [ "src/config.global" ],
+      "ServerConfig": [ "src.config.server" ]
+    }
   },
   "include": [
     "src/**/*"

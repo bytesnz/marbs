@@ -4,7 +4,6 @@ import { connect, Provider } from 'react-redux';
 import { createStore } from 'redux';
 import { Route, Switch } from 'react-router';
 import { ConnectedRouter } from 'react-router-redux';
-import { composeWithDevTools } from 'redux-devtools-extension';
 import createHistory from 'history/createBrowserHistory';
 import * as urlJoin from 'join-path';
 import { Helmet } from 'react-helmet';
@@ -40,14 +39,29 @@ const PropsRoute = ({ component, ...rest }) => {
   );
 }
 
+// disable react-dev-tools for this project
+if (process.env.NODE_ENV === 'production') {
+  if (typeof window['__REACT_DEVTOOLS_GLOBAL_HOOK__'] === "object") {
+    for (let [key, value] of Object.entries(window['__REACT_DEVTOOLS_GLOBAL_HOOK__'])) {
+      window['__REACT_DEVTOOLS_GLOBAL_HOOK__'][key] = typeof value == "function" ? ()=>{} : null;
+    }
+  }
+}
+
 (async () => {
   const socket = io({
   });
 
   const marss = await createMarss(config);
 
-  const store = createStore(marss.reducers, marss.initialState,
-  composeWithDevTools());
+  let store;
+  if (process.env.NODE_ENV !== 'production') {
+    const composeWithDevTools = require('redux-devtools-extension').composeWithDevTools;
+    store = createStore(marss.reducers, marss.initialState,
+        composeWithDevTools());
+  } else {
+    store = createStore(marss.reducers, marss.initialState);
+  }
 
   const actions = livenActions(marss.actions, store, config, socket);
 

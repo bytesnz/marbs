@@ -8,8 +8,8 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var config_global_1 = require("../../config.global");
-var config_global_2 = require("../../lib/defaults/config.global");
-exports.config = __assign({}, config_global_2.default, config_global_1.default);
+var Config_1 = require("Config");
+var config_global_1 = require("../../lib/defaults/config.global");
+exports.config = __assign({}, config_global_1.default, Config_1.default);
 exports.default = exports.config;
 //# sourceMappingURL=config.js.map

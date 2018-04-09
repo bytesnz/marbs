@@ -59,7 +59,6 @@ var react_redux_1 = require("react-redux");
 var redux_1 = require("redux");
 var react_router_1 = require("react-router");
 var react_router_redux_1 = require("react-router-redux");
-var redux_devtools_extension_1 = require("redux-devtools-extension");
 var createBrowserHistory_1 = require("history/createBrowserHistory");
 var urlJoin = require("join-path");
 var react_helmet_1 = require("react-helmet");
@@ -88,8 +87,17 @@ var PropsRoute = function (_a) {
             return renderMergedProps(component, routeProps, rest);
         } })));
 };
+// disable react-dev-tools for this project
+if (process.env.NODE_ENV === 'production') {
+    if (typeof window['__REACT_DEVTOOLS_GLOBAL_HOOK__'] === "object") {
+        for (var _i = 0, _a = Object.entries(window['__REACT_DEVTOOLS_GLOBAL_HOOK__']); _i < _a.length; _i++) {
+            var _b = _a[_i], key = _b[0], value = _b[1];
+            window['__REACT_DEVTOOLS_GLOBAL_HOOK__'][key] = typeof value == "function" ? function () { } : null;
+        }
+    }
+}
 (function () { return __awaiter(_this, void 0, void 0, function () {
-    var socket, marss, store, actions, app, patch, AppContainer;
+    var socket, marss, store, composeWithDevTools, actions;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -97,15 +105,19 @@ var PropsRoute = function (_a) {
                 return [4 /*yield*/, marss_1.createMarss(config_1.default)];
             case 1:
                 marss = _a.sent();
-                store = redux_1.createStore(marss.reducers, marss.initialState, redux_devtools_extension_1.composeWithDevTools());
+                if (process.env.NODE_ENV !== 'production') {
+                    composeWithDevTools = require('redux-devtools-extension').composeWithDevTools;
+                    store = redux_1.createStore(marss.reducers, marss.initialState, composeWithDevTools());
+                }
+                else {
+                    store = redux_1.createStore(marss.reducers, marss.initialState);
+                }
                 actions = marss_1.livenActions(marss.actions, store, config_1.default, socket);
-                app = (React.createElement(react_redux_1.Provider, { store: store },
+                ReactDom.render((React.createElement(react_redux_1.Provider, { store: store },
                     React.createElement(react_router_redux_1.ConnectedRouter, { history: history },
                         React.createElement("div", null,
                             React.createElement(react_helmet_1.Helmet, null,
-                                React.createElement("title", null,
-                                    "test ",
-                                    config_1.default.title),
+                                React.createElement("title", null, config_1.default.title),
                                 config_1.default.description ? (React.createElement("meta", { name: "description", content: config_1.default.description })) : null,
                                 config_1.default.description ? (React.createElement("meta", { property: "og:description", content: config_1.default.description })) : null,
                                 config_1.default.description ? (React.createElement("meta", { name: "twitter:description", content: config_1.default.description })) : null,
@@ -121,15 +133,7 @@ var PropsRoute = function (_a) {
                                 React.createElement(PropsRoute, { actions: actions, component: content_1.Content }),
                                 React.createElement(PropsRoute, { path: "" + urlJoin('/', config_1.default.baseUri, config_1.default.tagsUri), actions: actions, component: tags_1.TagList }),
                                 React.createElement(PropsRoute, { path: "" + urlJoin('/', config_1.default.baseUri, config_1.default.categoriesUri), actions: actions, component: categories_1.CategoryList })),
-                            React.createElement(footer_1.Footer, null)))));
-                if (process.env.NODE_ENV === 'production') {
-                    ReactDom.render(app, document.getElementById('app'));
-                }
-                else {
-                    patch = require('react-hot-loader/patch');
-                    AppContainer = require('react-hot-loader/lib/AppContainer');
-                    ReactDom.render((React.createElement(AppContainer, null, app)), document.getElementById('app'));
-                }
+                            React.createElement(footer_1.Footer, null))))), document.getElementById('app'));
                 return [2 /*return*/];
         }
     });

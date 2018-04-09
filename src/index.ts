@@ -18,9 +18,15 @@ import * as promisify from 'es6-promisify';
 import * as commandLineArguments from 'command-line-args';
 import * as urlJoin from 'join-path';
 
-import baseContentHandlers from './lib/contentHandlers';
-
 import * as webpackConfig from './webpack.common';
+
+require('node-require-alias').setAlias({
+  Config: webpackConfig.resolve.alias.Config$,
+  ServerConfig: webpackConfig.resolve.alias.ServerConfig$,
+  '~': '..'
+});
+
+import baseContentHandlers from './lib/contentHandlers';
 
 import defaultGlobalConfig from './lib/defaults/config.global';
 import defaultServerConfig from './lib/defaults/config.server';

@@ -18,8 +18,13 @@ var fs = require("fs");
 var promisify = require("es6-promisify");
 var commandLineArguments = require("command-line-args");
 var urlJoin = require("join-path");
-var contentHandlers_1 = require("./lib/contentHandlers");
 var webpackConfig = require("./webpack.common");
+require('node-require-alias').setAlias({
+    Config: webpackConfig.resolve.alias.Config$,
+    ServerConfig: webpackConfig.resolve.alias.ServerConfig$,
+    '~': '..'
+});
+var contentHandlers_1 = require("./lib/contentHandlers");
 var config_global_1 = require("./lib/defaults/config.global");
 var config_server_1 = require("./lib/defaults/config.server");
 var access = (util.promisify || promisify)(fs.access);
@@ -124,13 +129,11 @@ Promise.all([globalConfig, serverConfig].map(function (file) { return file && ac
         // Dev imports
         var webpack = require('webpack');
         webpackDevMiddleware = require('webpack-dev-middleware');
-        var webpackHotMiddleware = require('webpack-hot-middleware');
         var webpackDevConfig = require('./webpack.dev');
         var compiler = webpack(webpackDevConfig);
         devMiddleware = webpackDevMiddleware(compiler, {});
         // Attach webpack middlewares
         app.use(config.baseUri, devMiddleware);
-        app.use(config.baseUri, webpackHotMiddleware(compiler));
     }
     // Set up static asset server
     if (config.staticAssets) {
