@@ -36,9 +36,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-var process = require("process");
-var unionfs_1 = require("../unionfs");
-var source_1 = require("../../data/source");
 var asyncValue_1 = require("../asyncValue");
 var documents_1 = require("./documents");
 var get_1 = require("./get");
@@ -48,15 +45,6 @@ var documentsEvent_1 = require("./documentsEvent");
 var contentEvent_1 = require("./contentEvent");
 var tagsEvent_1 = require("./tagsEvent");
 var categoriesEvent_1 = require("./categoriesEvent");
-var testConf = {
-    title: 'Test Site',
-    baseUri: '/',
-    address: '127.0.0.1',
-    port: 4321,
-    source: '/source',
-    functionality: {},
-    draftRegex: '\\.draft$'
-};
 /**
  * Validates that the given object is a ContentHandler
  *
@@ -86,16 +74,6 @@ var validateContentHandler = function (t, contentHandler) {
  * Test runner for a ContentHandlerCreator
  */
 exports.contentHandlerCreatorTests = function (test, contentHandlerCreator) {
-    test.beforeEach(function (t) {
-        var mockBase = "/" + process.pid;
-        var mockBaseSource = mockBase + "/source";
-        //const vol = new Volume();
-        var testConfig = Object.assign({}, testConf, {
-            source: mockBaseSource
-        });
-        unionfs_1.vol.fromJSON(source_1.testSource, testConfig.source);
-        t.context.config = testConfig;
-    });
     test('the creator returns either a handler or a promise that resolves to a handler', function (t) { return __awaiter(_this, void 0, void 0, function () {
         var value;
         return __generator(this, function (_a) {
