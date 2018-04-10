@@ -1,4 +1,3 @@
-import * as Configs from '../../../../typings/configs';
 import * as ava from 'ava';
 
 import * as process from 'process';

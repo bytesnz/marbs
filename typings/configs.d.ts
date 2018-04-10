@@ -115,7 +115,9 @@ export interface UserServerConfig {
   /// Custom handlers for handling socket events
   handlers?: { [id: string]: handlers.HandlerCreator },
   /// Whether or not to cache the content markdown
-  cacheMarkdown?: boolean
+  cacheMarkdown?: boolean,
+  /// Whether or not to disable watching for new documents if using a file-based content handler
+  disableFileWatch?: boolean
 }
 
 export interface SetServerConfig extends UserServerConfig {

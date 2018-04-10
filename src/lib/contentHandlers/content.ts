@@ -8,6 +8,7 @@ import * as path from 'path';
 import * as util from 'util';
 import * as fs from 'fs';
 import * as clone from 'lodash.clonedeep';
+import { watch } from 'chokidar';
 import { StringTags, Tags } from 'tag-you-are';
 import {
   filterPostsByTags,
@@ -60,11 +61,15 @@ const copyRecurse = (newObject: any, object: any, keys: Array<string>) => {
 };
 
 
-export const contentHandlerCreator: Handlers.ContentHandler =
+export const contentHandlerCreator: Handlers.ContentHandlerCreator =
     async (config: ServerConfig): Promise<Handlers.ContentHandlerObject> => {
+  /// Object of cached documents
   let docs: { [id: string]: Document } = {};
+  /// Array of documents in reverse choronological order (newest first)
   let docsArray: Array<Document>  = [];
+  /// Tag counts
   let tags;
+  /// Category counts
   let categories;
   let draftRegex = RegExp(config.draftRegex);
 
@@ -85,6 +90,16 @@ export const contentHandlerCreator: Handlers.ContentHandler =
    */
   const getFilename = (id: string) =>
     path.join(config.source, id + '.md');
+
+  /**
+   * Gets the id of a document based on it's filename
+   *
+   * @param filename Filename to get the id for
+   *
+   * @returns The id for the given document
+   */
+  const getIdFromFilename = (filename: string) => filename.replace(/\.md$/, '');
+
   /**
    * Parses a source file and adds/updates it in the database
    *
@@ -93,27 +108,12 @@ export const contentHandlerCreator: Handlers.ContentHandler =
    * @returns Whether or not the file has been added, or null if the file has
    *   been removed
    */
-  const parseFile = async (filename) => {
-    const id = filename.replace(/\.md$/, '');
-    filename = getFilename(id);
+  const parseFile = async (documentPath) => {
+    const id = getIdFromFilename(documentPath);
+    let filename = getFilename(id);
 
     // Remove the current document if it already exists
-    let creation = true;
-    if (typeof docs[id] !== 'undefined') {
-      creation = false;
-
-      // Remove counts if enabled
-      if (config.functionality.tags && docs[id].attributes.tags) {
-        docs[id].attributes.tags.forEach((tag) => tags.remove(tag));
-      }
-
-      if (config.functionality.categories && docs[id].attributes.categories) {
-        docs[id].attributes.categories.forEach((category) =>
-            categories.remove(category));
-      }
-
-      delete docs[id];
-    }
+    const creation = !removeDocument(documentPath);
 
     const mtime = await stat(filename).then((stats) => stats.mtime,
         (error) => error.code === 'ENOENT' ? null : Promise.reject(error));
@@ -158,6 +158,14 @@ export const contentHandlerCreator: Handlers.ContentHandler =
 
     docs[id] = markdown;
 
+    // Add to docsArray
+    const index = docsArray.findIndex((doc) => doc.attributes.date.getTime() < markdown.attributes.date.getTime());
+    if (index === -1) {
+      docsArray.push(markdown);
+    } else {
+      docsArray.splice(index, 0, markdown);
+    }
+
     // Add counts if enabled and not a draft
     if (config.functionality.tags && data.tags) {
       data.tags = data.tags.map((tag) => tag.toLowerCase());
@@ -179,31 +187,69 @@ export const contentHandlerCreator: Handlers.ContentHandler =
       }
     }
 
-
     return creation;
   };
 
-  // Parse all the markdown files in the source folder
-  await glob('**/*.md', {
-    cwd: config.source
-  }).then((files) => {
-    return Promise.all(files.map((file) => parseFile(file)));
-  });
+  /**
+   * Removes the document from the given filename from the cache
+   *
+   * @params filename Filename of document to remove
+   *
+   * @returns Whether a document was removed from the cache
+   */
+  const removeDocument = (documentPath: string, noLog?: boolean): boolean => {
+    const id = getIdFromFilename(documentPath);
 
-  // Create and sort the docs array dates descending
-  docsArray = Object.values(docs).sort((a, b) => {
-    const aDate = a.attributes.date.getTime();
-    const bDate = b.attributes.date.getTime();
-    if (aDate < bDate) {
-      return 1;
-    } else if (aDate > bDate) {
-      return -1;
+    if (typeof docs[id] !== 'undefined') {
+      // Remove counts if enabled
+      if (config.functionality.tags && docs[id].attributes.tags) {
+        docs[id].attributes.tags.forEach((tag) => tags.remove(tag));
+      }
+
+      if (config.functionality.categories && docs[id].attributes.categories) {
+        docs[id].attributes.categories.forEach((category) =>
+            categories.remove(category));
+      }
+
+      // Remove from docsArray
+      const index = docsArray.findIndex((doc) => doc === docs[id]);
+      if (index !== -1) {
+        docsArray.splice(index, 1);
+      }
+
+      delete docs[id];
+
+      return true;
     }
-    return 0;
-  });
+
+    return false;
+  }
+
+  const mdFilesGlob = '**/*.md';
 
   // Add watch to source folder
-  
+  if (!config.disableFileWatch) {
+    console.log('watching for changes in documents');
+    watch(mdFilesGlob, {
+      cwd: config.source
+    }).on('add', (path) => {
+      console.log('Adding document', path);
+      parseFile(path);
+    }).on('change', (path) => {
+      console.log('Updating document', path);
+      parseFile(path);
+    }).on('unlink', (path) => {
+      console.log('Removing document', path);
+      removeDocument(path);
+    });
+  } else {
+    // Parse all the markdown files in the source folder
+    await glob(mdFilesGlob, {
+      cwd: config.source
+    }).then((files) => {
+      return Promise.all(files.map((file) => parseFile(file)));
+    });
+  }
 
   /**
    * Gets the contents of a document

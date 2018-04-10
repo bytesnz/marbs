@@ -4,6 +4,11 @@ import {
   testDocuments as posts
 } from '../tests/data/source';
 
+// Hard code config to point to marss default config for lib/config
+require('node-require-alias').setAlias({
+  Config: '../config.global'
+});
+
 import * as utils from './utils';
 
 test('filterPostsByTags() should filter posts with the given tag', (t) => {

@@ -102,6 +102,23 @@ This is a test - it should list by default
   }
 ];
 
+export const newTestDocuments = [
+  { // 6
+    id: 'new-document-1',
+    attributes: {
+      title: 'New Test 1',
+      date: new Date('2017-12-1 10:30'),
+      tags: [ 'cool', 'new' ],
+      categories: [ 'cool' ]
+    },
+    body: `
+# New Test Document 1
+
+This is a test document
+  `
+  }
+];
+
 /**
  * Create a copy of the given documents ensuring that any with ids that match
  * the draft regex have the  draft attribute set
@@ -177,6 +194,7 @@ export const flaggedTestDocuments = flagDraftDocuments(testDocuments);
 
 /// The flagged test documents with their bodies nulled
 export const nulledTestDocuments = nullDocumentBodies(flaggedTestDocuments);
+export const nulledNewTestDocuments = nullDocumentBodies(newTestDocuments);
 
 /// The default attributes extracted from the flagged and nulled documents
 export const mappedDocuments = mapOutData(nulledTestDocuments);
