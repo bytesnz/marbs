@@ -89,22 +89,14 @@ Promise.all([globalConfig, serverConfig].map(function (file) { return file && ac
     var promises = [];
     // Run content handler inits if defined
     Object.keys(contentHandlers).forEach(function (id) {
-        if (typeof contentHandlers[id] === 'function') {
-            var value = contentHandlers[id](config);
-            if (value instanceof Promise) {
-                promises.push(value.then(function (handler) {
-                    handlers[id] = handler;
-                }));
-            }
-            else {
-                handlers[id] = value;
-            }
+        var value = contentHandlers[id](config);
+        if (value instanceof Promise) {
+            promises.push(value.then(function (handler) {
+                handlers[id] = handler;
+            }));
         }
-        else if (typeof contentHandlers[id].init === 'function') {
-            var value = contentHandlers[id].init(config);
-            if (value instanceof Promise) {
-                promises.push(value);
-            }
+        else {
+            handlers[id] = value;
         }
     });
     return Promise.all(promises).then(function () { return handlers; });

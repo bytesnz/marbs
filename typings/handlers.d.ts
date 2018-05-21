@@ -102,9 +102,9 @@ export type ContentHandlerCreator = (conf: ServerConfig) => Promise<ContentHandl
 
 export type ContentHandler = ContentHandlerCreator | ContentHandlerObject;
 
-export interface Handlers {
-  content: ContentHandler,
-  [id: string]: Handler
+export interface HandlerCreators {
+  content: ContentHandlerCreator,
+  [id: string]: HandlerCreator
 }
 
 export interface InitialisedHandlers {

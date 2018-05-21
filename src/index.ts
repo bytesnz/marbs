@@ -1,6 +1,6 @@
 import { ServerConfig } from '../typings/configs';
 import {
-  Handlers,
+  HandlerCreators,
   HandlerCreator,
   HandlerObject,
   InitialisedHandlers
@@ -106,7 +106,7 @@ Promise.all([globalConfig, serverConfig].map((file) => file && access(file, 'r')
   }
 
   // Create complete content handlers
-  const contentHandlers: Handlers = Object.assign({}, baseContentHandlers, config.handlers);
+  const contentHandlers: HandlerCreators = Object.assign({}, baseContentHandlers, config.handlers);
 
   let handlers: InitialisedHandlers = {
     content: null
@@ -116,22 +116,14 @@ Promise.all([globalConfig, serverConfig].map((file) => file && access(file, 'r')
 
   // Run content handler inits if defined
   Object.keys(contentHandlers).forEach((id) => {
-    if (typeof contentHandlers[id] === 'function') {
-      const value = (<HandlerCreator>contentHandlers[id])(config);
+    const value = contentHandlers[id](config);
 
-      if (value instanceof Promise) {
-        promises.push(value.then((handler) => {
-          handlers[id] = handler;
-        }));
-      } else {
-        handlers[id] = value;
-      }
-    } else if (typeof (<HandlerObject>contentHandlers[id]).init === 'function') {
-      const value = (<HandlerObject>contentHandlers[id]).init(config);
-
-      if (value instanceof Promise) {
-        promises.push(value);
-      }
+    if (value instanceof Promise) {
+      promises.push(value.then((handler) => {
+        handlers[id] = handler;
+      }));
+    } else {
+      handlers[id] = value;
     }
   });
 
