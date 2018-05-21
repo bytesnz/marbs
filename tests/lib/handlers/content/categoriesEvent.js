@@ -1,4 +1,12 @@
 "use strict";
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -37,10 +45,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 //TODO Add test type def import * as AVA from 'ava';
-var testData = require("../../data/source");
-var asyncValue_1 = require("../asyncValue");
-exports.documentsEventTests = function (test, contentHandlerCreator) {
-    test('documents event handler returns the only posts without drafts', function (t) { return __awaiter(_this, void 0, void 0, function () {
+var testData = require("../../../data/source");
+var asyncValue_1 = require("../../asyncValue");
+var tag_you_are_1 = require("tag-you-are");
+exports.categoriesEventTests = function (test, contentHandlerCreator) {
+    test('categories event handler returns undefined if categories are not enabled', function (t) { return __awaiter(_this, void 0, void 0, function () {
         var contentHandler;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -50,50 +59,45 @@ exports.documentsEventTests = function (test, contentHandlerCreator) {
                 case 1:
                     contentHandler = _a.sent();
                     return [2 /*return*/, new Promise(function (resolve, reject) {
-                            contentHandler.events.documents({
+                            contentHandler.events.categories({
                                 emit: function (event, data) {
-                                    t.is('documents', event);
+                                    t.is('categories', event);
                                     t.deepEqual({
-                                        results: [
-                                            testData.mappedDocuments[1],
-                                            testData.mappedDocuments[3],
-                                            testData.mappedDocuments[4],
-                                            testData.mappedDocuments[5]
-                                        ],
-                                        start: 0,
-                                        total: 4
+                                        results: undefined
                                     }, data);
                                     resolve();
                                 }
-                            }, {
-                                includeDrafts: true
                             });
                         })];
             }
         });
     }); });
-    test('documents event handler returns the posts with no options', function (t) { return __awaiter(_this, void 0, void 0, function () {
-        var contentHandler;
+    test('categories event handler returns the categories count if categories are enabled', function (t) { return __awaiter(_this, void 0, void 0, function () {
+        var conf, contentHandler, testCategoriesCount;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     t.plan(2);
-                    return [4 /*yield*/, asyncValue_1.getReturn(contentHandlerCreator(t.context.config))];
+                    conf = __assign({}, t.context.config, { functionality: __assign({}, t.context.config.functionality, { categories: true }) });
+                    return [4 /*yield*/, asyncValue_1.getReturn(contentHandlerCreator(conf))];
                 case 1:
                     contentHandler = _a.sent();
+                    testCategoriesCount = new tag_you_are_1.Tags('/');
+                    testData.nulledTestDocuments.filter(function (doc) {
+                        return !doc.attributes.draft;
+                    }).forEach(function (doc) {
+                        if (doc.attributes.categories) {
+                            doc.attributes.categories.forEach(function (category) {
+                                return testCategoriesCount.add(category);
+                            });
+                        }
+                    });
                     return [2 /*return*/, new Promise(function (resolve, reject) {
-                            contentHandler.events.documents({
+                            contentHandler.events.categories({
                                 emit: function (event, data) {
-                                    t.is('documents', event);
+                                    t.is('categories', event);
                                     t.deepEqual({
-                                        results: [
-                                            testData.mappedDocuments[1],
-                                            testData.mappedDocuments[3],
-                                            testData.mappedDocuments[4],
-                                            testData.mappedDocuments[5]
-                                        ],
-                                        start: 0,
-                                        total: 4
+                                        results: testCategoriesCount.tags()
                                     }, data);
                                     resolve();
                                 }
@@ -102,6 +106,5 @@ exports.documentsEventTests = function (test, contentHandlerCreator) {
             }
         });
     }); });
-    test.todo('documents event handler returns documents with the given fields');
 };
-//# sourceMappingURL=documentsEvent.js.map
+//# sourceMappingURL=categoriesEvent.js.map

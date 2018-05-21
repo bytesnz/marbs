@@ -1,9 +1,9 @@
-import { ContentHandlerCreator } from '../../../../typings/handlers';
-import { Document } from '../../../../typings/data';
+import { ContentHandlerCreator } from '../../../../../typings/handlers';
+import { Document } from '../../../../../typings/data';
 //TODO Add test type def import * as AVA from 'ava';
-import * as testData from '../../data/source';
+import * as testData from '../../../data/source';
 
-import { getReturn } from '../asyncValue';
+import { getReturn } from '../../asyncValue';
 
 export const contentEventTests = (test, contentHandlerCreator: ContentHandlerCreator) => {
   test('content event handler returns undefined if content with the given id does not exist', async (t) => {

@@ -1,4 +1,12 @@
 "use strict";
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -37,68 +45,51 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 //TODO Add test type def import * as AVA from 'ava';
-var testData = require("../../data/source");
-var asyncValue_1 = require("../asyncValue");
-exports.getTests = function (test, contentHandlerCreator) {
-    test('get() returns undefined when a document does not exist for the given id', function (t) { return __awaiter(_this, void 0, void 0, function () {
-        var contentHandler, content;
+var testData = require("../../../data/source");
+var tag_you_are_1 = require("tag-you-are");
+var asyncValue_1 = require("../../asyncValue");
+exports.categoriesTests = function (test, contentHandlerCreator) {
+    test('categories() returns undefined if categories no enabled', function (t) { return __awaiter(_this, void 0, void 0, function () {
+        var contentHandler, categories;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, asyncValue_1.getReturn(contentHandlerCreator(t.context.config))];
                 case 1:
                     contentHandler = _a.sent();
-                    return [4 /*yield*/, contentHandler.get('fdgsgsfd')];
+                    return [4 /*yield*/, contentHandler.categories()];
                 case 2:
-                    content = _a.sent();
-                    t.is(undefined, content);
+                    categories = _a.sent();
+                    t.is(undefined, categories);
                     return [2 /*return*/];
             }
         });
     }); });
-    test('get() returns the entire document when a good is given', function (t) { return __awaiter(_this, void 0, void 0, function () {
-        var contentHandler, content;
+    test('categories() returns the categories and counts', function (t) { return __awaiter(_this, void 0, void 0, function () {
+        var conf, contentHandler, categories, testCategoriesCount;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, asyncValue_1.getReturn(contentHandlerCreator(t.context.config))];
+                case 0:
+                    conf = __assign({}, t.context.config, { functionality: __assign({}, t.context.config.functionality, { categories: true }) });
+                    return [4 /*yield*/, asyncValue_1.getReturn(contentHandlerCreator(conf))];
                 case 1:
                     contentHandler = _a.sent();
-                    return [4 /*yield*/, contentHandler.get(testData.testDocuments[0].id)];
+                    return [4 /*yield*/, contentHandler.categories()];
                 case 2:
-                    content = _a.sent();
-                    t.deepEqual(testData.testDocuments[0], content);
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    test('get() returns draft content if requested', function (t) { return __awaiter(_this, void 0, void 0, function () {
-        var contentHandler, content;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, asyncValue_1.getReturn(contentHandlerCreator(t.context.config))];
-                case 1:
-                    contentHandler = _a.sent();
-                    return [4 /*yield*/, contentHandler.get(testData.flaggedTestDocuments[2].id)];
-                case 2:
-                    content = _a.sent();
-                    t.deepEqual(testData.flaggedTestDocuments[2], content);
-                    return [2 /*return*/];
-            }
-        });
-    }); });
-    test('get() returns the index page when available', function (t) { return __awaiter(_this, void 0, void 0, function () {
-        var contentHandler, content;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, asyncValue_1.getReturn(contentHandlerCreator(t.context.config))];
-                case 1:
-                    contentHandler = _a.sent();
-                    return [4 /*yield*/, contentHandler.get('')];
-                case 2:
-                    content = _a.sent();
-                    t.deepEqual(testData.flaggedTestDocuments[0], content);
+                    categories = _a.sent();
+                    testCategoriesCount = new tag_you_are_1.Tags('/');
+                    testData.nulledTestDocuments.filter(function (doc) {
+                        return !doc.attributes.draft;
+                    }).forEach(function (doc) {
+                        if (doc.attributes.categories) {
+                            doc.attributes.categories.forEach(function (category) {
+                                return testCategoriesCount.add(category);
+                            });
+                        }
+                    });
+                    t.deepEqual(testCategoriesCount.tags(), categories);
                     return [2 /*return*/];
             }
         });
     }); });
 };
-//# sourceMappingURL=get.js.map
+//# sourceMappingURL=categories.js.map

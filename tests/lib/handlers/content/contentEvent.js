@@ -37,8 +37,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 //TODO Add test type def import * as AVA from 'ava';
-var testData = require("../../data/source");
-var asyncValue_1 = require("../asyncValue");
+var testData = require("../../../data/source");
+var asyncValue_1 = require("../../asyncValue");
 exports.contentEventTests = function (test, contentHandlerCreator) {
     test('content event handler returns undefined if content with the given id does not exist', function (t) { return __awaiter(_this, void 0, void 0, function () {
         var contentHandler;

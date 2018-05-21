@@ -45,8 +45,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 //TODO Add test type def import * as AVA from 'ava';
-var testData = require("../../data/source");
-var asyncValue_1 = require("../asyncValue");
+var testData = require("../../../data/source");
+var asyncValue_1 = require("../../asyncValue");
 exports.documentsTests = function (test, contentHandlerCreator) {
     test('documents() returns documents without drafts by default', function (t) { return __awaiter(_this, void 0, void 0, function () {
         var contentHandler, docs;

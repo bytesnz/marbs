@@ -1,8 +1,8 @@
-import { ContentHandlerCreator } from '../../../../typings/handlers';
+import { ContentHandlerCreator } from '../../../../../typings/handlers';
 //TODO Add test type def import * as AVA from 'ava';
-import * as testData from '../../data/source';
+import * as testData from '../../../data/source';
 
-import { getReturn } from '../asyncValue';
+import { getReturn } from '../../asyncValue';
 
 export const documentsEventTests = (test, contentHandlerCreator: ContentHandlerCreator) => {
   test('documents event handler returns the only posts without drafts', async (t) => {

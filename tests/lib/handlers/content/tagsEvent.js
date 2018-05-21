@@ -45,11 +45,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 //TODO Add test type def import * as AVA from 'ava';
-var testData = require("../../data/source");
-var asyncValue_1 = require("../asyncValue");
-var tag_you_are_1 = require("tag-you-are");
-exports.categoriesEventTests = function (test, contentHandlerCreator) {
-    test('categories event handler returns undefined if categories are not enabled', function (t) { return __awaiter(_this, void 0, void 0, function () {
+var testData = require("../../../data/source");
+var asyncValue_1 = require("../../asyncValue");
+var tags_1 = require("./tags");
+exports.tagsEventTests = function (test, contentHandlerCreator) {
+    test('tags event handler returns undefined if tags are not enabled', function (t) { return __awaiter(_this, void 0, void 0, function () {
         var contentHandler;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -59,9 +59,9 @@ exports.categoriesEventTests = function (test, contentHandlerCreator) {
                 case 1:
                     contentHandler = _a.sent();
                     return [2 /*return*/, new Promise(function (resolve, reject) {
-                            contentHandler.events.categories({
+                            contentHandler.events.tags({
                                 emit: function (event, data) {
-                                    t.is('categories', event);
+                                    t.is('tags', event);
                                     t.deepEqual({
                                         results: undefined
                                     }, data);
@@ -72,32 +72,24 @@ exports.categoriesEventTests = function (test, contentHandlerCreator) {
             }
         });
     }); });
-    test('categories event handler returns the categories count if categories are enabled', function (t) { return __awaiter(_this, void 0, void 0, function () {
-        var conf, contentHandler, testCategoriesCount;
+    test('tags event handler returns the tags count if tags are enabled', function (t) { return __awaiter(_this, void 0, void 0, function () {
+        var conf, contentHandler;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     t.plan(2);
-                    conf = __assign({}, t.context.config, { functionality: __assign({}, t.context.config.functionality, { categories: true }) });
+                    conf = __assign({}, t.context.config, { functionality: __assign({}, t.context.config.functionality, { tags: true }) });
                     return [4 /*yield*/, asyncValue_1.getReturn(contentHandlerCreator(conf))];
                 case 1:
                     contentHandler = _a.sent();
-                    testCategoriesCount = new tag_you_are_1.Tags('/');
-                    testData.nulledTestDocuments.filter(function (doc) {
-                        return !doc.attributes.draft;
-                    }).forEach(function (doc) {
-                        if (doc.attributes.categories) {
-                            doc.attributes.categories.forEach(function (category) {
-                                return testCategoriesCount.add(category);
-                            });
-                        }
-                    });
                     return [2 /*return*/, new Promise(function (resolve, reject) {
-                            contentHandler.events.categories({
+                            contentHandler.events.tags({
                                 emit: function (event, data) {
-                                    t.is('categories', event);
+                                    t.is('tags', event);
                                     t.deepEqual({
-                                        results: testCategoriesCount.tags()
+                                        results: tags_1.calculateTagsCount(testData.nulledTestDocuments.filter(function (doc) {
+                                            return !doc.attributes.draft;
+                                        }))
                                     }, data);
                                     resolve();
                                 }
@@ -107,4 +99,4 @@ exports.categoriesEventTests = function (test, contentHandlerCreator) {
         });
     }); });
 };
-//# sourceMappingURL=categoriesEvent.js.map
+//# sourceMappingURL=tagsEvent.js.map

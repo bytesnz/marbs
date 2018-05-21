@@ -1,8 +1,8 @@
-import { ContentHandlerCreator } from '../../../../typings/handlers';
+import { ContentHandlerCreator } from '../../../../../typings/handlers';
 //TODO Add test type def import * as AVA from 'ava';
-import * as testData from '../../data/source';
+import * as testData from '../../../data/source';
 
-import { getReturn } from '../asyncValue';
+import { getReturn } from '../../asyncValue';
 
 export const getTests = (test, contentHandlerCreator: ContentHandlerCreator) => {
   test('get() returns undefined when a document does not exist for the given id', async (t) => {

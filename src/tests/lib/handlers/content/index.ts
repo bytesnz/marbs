@@ -2,7 +2,7 @@ import * as ava from 'ava';
 
 import * as process from 'process';
 
-import { getReturn } from '../asyncValue';
+import { getReturn } from '../../asyncValue';
 
 import { documentsTests } from './documents';
 import { getTests } from './get';

@@ -1,10 +1,10 @@
 import * as ava from 'ava';
 
-import { ContentHandlerCreator } from '../../../../typings/handlers';
+import { ContentHandlerCreator } from '../../../../../typings/handlers';
 //TODO Add test type def import * as AVA from 'ava';
-import * as testData from '../../data/source';
+import * as testData from '../../../data/source';
 
-import { getReturn } from '../asyncValue';
+import { getReturn } from '../../asyncValue';
 import { calculateTagsCount } from './tags';
 
 export const tagsEventTests = (test: ava.RegisterContextual<any>, contentHandlerCreator: ContentHandlerCreator) => {

@@ -45,58 +45,56 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
 //TODO Add test type def import * as AVA from 'ava';
-var testData = require("../../data/source");
-var asyncValue_1 = require("../asyncValue");
-var tags_1 = require("./tags");
-exports.tagsEventTests = function (test, contentHandlerCreator) {
-    test('tags event handler returns undefined if tags are not enabled', function (t) { return __awaiter(_this, void 0, void 0, function () {
-        var contentHandler;
+var testData = require("../../../data/source");
+var asyncValue_1 = require("../../asyncValue");
+exports.calculateTagsCount = function (documents) { return documents.reduce(function (tagCounts, doc) {
+    if (doc.attributes.tags) {
+        doc.attributes.tags.forEach(function (tag) {
+            if (typeof tagCounts[tag] === 'undefined') {
+                tagCounts[tag] = 1;
+            }
+            else {
+                tagCounts[tag]++;
+            }
+        });
+    }
+    return tagCounts;
+}, {}); };
+exports.tagsTests = function (test, contentHandlerCreator) {
+    test('tags() returns undefined if tags not enabled', function (t) { return __awaiter(_this, void 0, void 0, function () {
+        var contentHandler, tags;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    t.plan(2);
-                    return [4 /*yield*/, asyncValue_1.getReturn(contentHandlerCreator(t.context.config))];
+                case 0: return [4 /*yield*/, asyncValue_1.getReturn(contentHandlerCreator(t.context.config))];
                 case 1:
                     contentHandler = _a.sent();
-                    return [2 /*return*/, new Promise(function (resolve, reject) {
-                            contentHandler.events.tags({
-                                emit: function (event, data) {
-                                    t.is('tags', event);
-                                    t.deepEqual({
-                                        results: undefined
-                                    }, data);
-                                    resolve();
-                                }
-                            });
-                        })];
+                    return [4 /*yield*/, contentHandler.tags()];
+                case 2:
+                    tags = _a.sent();
+                    t.is(undefined, tags);
+                    return [2 /*return*/];
             }
         });
     }); });
-    test('tags event handler returns the tags count if tags are enabled', function (t) { return __awaiter(_this, void 0, void 0, function () {
-        var conf, contentHandler;
+    test('tags() returns the tags and counts when tags enabled', function (t) { return __awaiter(_this, void 0, void 0, function () {
+        var conf, contentHandler, tags, testTagsCount;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    t.plan(2);
                     conf = __assign({}, t.context.config, { functionality: __assign({}, t.context.config.functionality, { tags: true }) });
                     return [4 /*yield*/, asyncValue_1.getReturn(contentHandlerCreator(conf))];
                 case 1:
                     contentHandler = _a.sent();
-                    return [2 /*return*/, new Promise(function (resolve, reject) {
-                            contentHandler.events.tags({
-                                emit: function (event, data) {
-                                    t.is('tags', event);
-                                    t.deepEqual({
-                                        results: tags_1.calculateTagsCount(testData.nulledTestDocuments.filter(function (doc) {
-                                            return !doc.attributes.draft;
-                                        }))
-                                    }, data);
-                                    resolve();
-                                }
-                            });
-                        })];
+                    return [4 /*yield*/, contentHandler.tags()];
+                case 2:
+                    tags = _a.sent();
+                    testTagsCount = exports.calculateTagsCount(testData.nulledTestDocuments.filter(function (doc) {
+                        return !doc.attributes.draft;
+                    }));
+                    t.deepEqual(testTagsCount, tags);
+                    return [2 /*return*/];
             }
         });
     }); });
 };
-//# sourceMappingURL=tagsEvent.js.map
+//# sourceMappingURL=tags.js.map

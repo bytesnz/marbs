@@ -24,7 +24,7 @@ require('node-require-alias').setAlias({
     ServerConfig: webpackConfig.resolve.alias.ServerConfig$,
     '~': '..'
 });
-var contentHandlers_1 = require("./lib/contentHandlers");
+var handlers_1 = require("./lib/handlers");
 var config_global_1 = require("./lib/defaults/config.global");
 var config_server_1 = require("./lib/defaults/config.server");
 var access = (util.promisify || promisify)(fs.access);
@@ -82,7 +82,7 @@ Promise.all([globalConfig, serverConfig].map(function (file) { return file && ac
         config.draftRegex = defaultConfig.draftRegex;
     }
     // Create complete content handlers
-    var contentHandlers = Object.assign({}, contentHandlers_1.default, config.handlers);
+    var contentHandlers = Object.assign({}, handlers_1.default, config.handlers);
     var handlers = {
         content: null
     };

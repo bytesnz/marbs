@@ -26,7 +26,7 @@ require('node-require-alias').setAlias({
   '~': '..'
 });
 
-import baseContentHandlers from './lib/contentHandlers';
+import baseContentHandlers from './lib/handlers';
 
 import defaultGlobalConfig from './lib/defaults/config.global';
 import defaultServerConfig from './lib/defaults/config.server';

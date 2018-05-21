@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var _this = this;
 Object.defineProperty(exports, "__esModule", { value: true });
-var asyncValue_1 = require("../asyncValue");
+var asyncValue_1 = require("../../asyncValue");
 var documents_1 = require("./documents");
 var get_1 = require("./get");
 var tags_1 = require("./tags");

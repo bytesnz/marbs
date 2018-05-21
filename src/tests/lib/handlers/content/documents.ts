@@ -1,8 +1,8 @@
-import { ContentHandlerCreator } from '../../../../typings/handlers';
+import { ContentHandlerCreator } from '../../../../../typings/handlers';
 //TODO Add test type def import * as AVA from 'ava';
-import * as testData from '../../data/source';
+import * as testData from '../../../data/source';
 
-import { getReturn } from '../asyncValue';
+import { getReturn } from '../../asyncValue';
 
 export const documentsTests = (test, contentHandlerCreator: ContentHandlerCreator) => {
   test('documents() returns documents without drafts by default', async (t) => {
