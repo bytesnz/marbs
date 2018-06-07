@@ -8,7 +8,7 @@ require('node-require-alias').setAlias({
 
 import { vol } from '../../tests/lib/unionfs';
 
-import { contentHandlerCreatorTests } from '../../tests/lib/contentHandlers';
+import { contentHandlerCreatorTests } from '../../tests/lib/handlers/content';
 
 import { contentHandlerCreator } from './content';
 
