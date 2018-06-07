@@ -8,7 +8,7 @@
     "dev": "tsc -w",
     "dev:test": "tsc -w & ava -v --watch",
     "build": "webpack --config webpack.prod.js",
-    "start:dev": "node index.js",
+    "start:dev": "supervisor -w index.js,lib index.js",
     "start": "NODE_ENV=production node index.js"
   },
   "bin": {
@@ -59,6 +59,7 @@
     "socket.io-client": "^2.0.4",
     "source-map-loader": "^0.2.3",
     "style-loader": "^0.20.1",
+    "supervisor": "^0.12.0",
     "typescript": "^2.7.1",
     "unionfs": "^3.0.2",
     "z-schema": "^3.19.1"
