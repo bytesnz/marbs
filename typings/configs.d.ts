@@ -44,6 +44,10 @@ export interface GlobalConfig {
   baseUri?: string,
   /// The basename that static elements will be served from (default: static/)
   staticUri?: string,
+  /// Custom paths for the handler paths, where path is <handler_id>/<handler_path>
+  handlerUris?: {
+    [path: string]: string
+  },
   /// Path to use for socketIO (default: SocketIO default path: /socket.io)
   socketPath?: string,
   /// Functionality to be enabled in the web app

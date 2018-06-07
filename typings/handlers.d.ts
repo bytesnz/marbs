@@ -4,6 +4,8 @@ import * as SocketIO from 'socket.io';
 
 type EventHandler = Function; //(socket: Socket) => void;
 
+type PathHandler = Function;
+
 export interface HandlerObject {
   /**
    * Initialisation function to be called before the server is set up
@@ -20,7 +22,15 @@ export interface HandlerObject {
    */
   events?: {
     [event: string]: EventHandler
-  }
+  };
+
+  paths?: {
+    [method: string]: {
+      [path: string]: PathHandler
+    }
+  };
+
+  [additionalProperty: string]: any;
 }
 
 export type HandlerCreator = (conf: ServerConfig) => Promise<HandlerObject>;

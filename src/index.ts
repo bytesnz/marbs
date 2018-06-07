@@ -170,6 +170,19 @@ Promise.all([globalConfig, serverConfig].map((file) => file && access(file, 'r')
         express.static(config.staticAssets));
   }
 
+  // Set up handler paths
+  Object.values(handlers).forEach((handler) => {
+    if (handler.paths) {
+      Object.entries(handler.paths).forEach(([method, paths]) => {
+        Object.entries(paths).forEach(([path, handlerFunction]) => {
+          const uri = (config.handlerUris && config.handlerUris[path]) || path;
+
+          app[method](urlJoin(config.baseUri || '/', uri), handlerFunction);
+        });
+      });
+    }
+  });
+
   // Set up catch all for content
   if (process.env.NODE_ENV === 'production') {
     app.get(path.join(config.baseUri, '*'), (req, res, next) => {

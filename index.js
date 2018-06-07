@@ -132,6 +132,19 @@ Promise.all([globalConfig, serverConfig].map(function (file) { return file && ac
         // Check folder exists
         app.use(urlJoin(config.baseUri + "/", config.staticUri), express.static(config.staticAssets));
     }
+    // Set up handler paths
+    Object.values(handlers).forEach(function (handler) {
+        if (handler.paths) {
+            Object.entries(handler.paths).forEach(function (_a) {
+                var method = _a[0], paths = _a[1];
+                Object.entries(paths).forEach(function (_a) {
+                    var path = _a[0], handlerFunction = _a[1];
+                    var uri = (config.handlerUris && config.handlerUris[path]) || path;
+                    app[method](urlJoin(config.baseUri || '/', uri), handlerFunction);
+                });
+            });
+        }
+    });
     // Set up catch all for content
     if (process.env.NODE_ENV === 'production') {
         app.get(path.join(config.baseUri, '*'), function (req, res, next) {
