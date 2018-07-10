@@ -1,15 +1,13 @@
 import * as React from 'react';
-import * as Remarkable from 'remarkable';
+import * as twitchdown from 'twitchdown';
 
 import { Plugin as RST } from 'remarkably-simple-tags'
 import * as tags from '../lib/client/mdTags';
 
 import config from '../app/lib/config';
 
-import 'highlight.js/styles/default.css';
-
 /// Highlight.js base
-let highlightJs;
+let highlighter;
 /// Highlight.js language packs
 let languages = {};
 
@@ -19,8 +17,9 @@ declare var System: {
 
 export class Markdown extends React.Component {
   state: {
-    hijs: any,
-    md: any
+    highlighter: any,
+    highlighterOptions: any,
+    rdOptions: any,
   };
 
   props: {
@@ -33,59 +32,23 @@ export class Markdown extends React.Component {
   constructor(props) {
     super(props);
 
-    const remarkableOptions = { //TODO Move to config
-        linkify: true,
-        langPrefix: 'hljs ',
-        langDefault: 'unknown',
-        highlight: this.highlight.bind(this),
-      }
-
-    this.state = {
-      hijs: null,
-      md: new Remarkable(remarkableOptions)
+    const highlighterOptions = {
+      showLineNumbers: true,
+      style: null
     };
 
-    // Plugin for unknown language
-    this.state.md.use(function unknownLanguagePlugin(md) {
-      const rule = md.renderer.rules.fence;
-      md.renderer.rules.fence = function unknownLanguageRule(tokens, idx, options, env, instance) {
-        if (!tokens[idx].params && md.options.langDefault) {
-          tokens[idx].params = md.options.langDefault;
-        }
-
-        return rule.call(this, tokens, idx, options, env, instance);
+    this.state = {
+      highlighter: null,
+      highlighterOptions,
+      rdOptions: {
+        highlight: this.highlight.bind(this),
+        createElement: React.createElement,
+        paragraphs: true
       }
-    });
-
-    // Create RST for in remarkable tag replacement
-    const rst = new RST();
-
-    rst.register('post', tags.postTag);
-    rst.register('tags', tags.tagsTag);
-    rst.register('categories', tags.categoriesTag);
-    rst.register('static', tags.staticTag);
-
-    if (config.rstTags) {
-      Object.keys(config.rstTags).forEach((tag) => {
-        if (config.rstTags[tag].multiple) {
-          rst.register(tag, config.rstTags[tag].handler, true);
-        } else {
-          rst.register(tag, config.rstTags[tag].handler);
-        }
-      });
-    }
-
-    this.state.md.use(rst.hook);
-
-    if (config.remarkablePlugins) {
-      config.remarkablePlugins.forEach((plugin) => {
-        this.state.md.use(plugin);
-      });
-    }
+    };
 
     // Try render to start process of getting highlight libraries
-    this.state.md.render(this.props.source);
-
+    twitchdown(this.props.source);
   }
 
   componentDidMount() {
@@ -97,27 +60,34 @@ export class Markdown extends React.Component {
   }
 
   render() {
-    let markdown = this.state.md.render(this.props.source);
+    let markdown = twitchdown(this.props.source, this.state.rdOptions);
+    console.log('markdown is', markdown);
 
     return (
-      <div className={this.props.className} dangerouslySetInnerHTML={{ __html: markdown }} />
+      <div className={this.props.className}>
+        { markdown }
+      </div>
     );
   }
 
-  tryHighlight(content: string, language: string):string {
-    if (language === 'unknown' || languages[language] === false || this.state.hijs === false) {
+  tryHighlight(content: string, language: string) {
+    if (language === 'unknown' || languages[language] === false || this.state.highlighter === false) {
       return '';
     }
 
-    if (this.state.hijs && languages[language]
+    if (this.state.highlighter && languages[language]
         && !(languages[language] instanceof Promise)) {
-      return this.state.hijs.highlight(language, content).value;
+      console.log('highlighting', language)
+      return React.createElement(highlighter.default, {
+        ...this.state.highlighterOptions,
+        language
+      }, content);
     }
 
     return null;
   }
 
-  highlight(content: string, language: string) {
+  highlight(content: string, language: string = 'text') {
     const attempt = this.tryHighlight(content, language);
     if (attempt !== null) {
       return attempt;
@@ -125,61 +95,65 @@ export class Markdown extends React.Component {
       // Load the language pack and base if needed
       let promises = [];
 
-      if (highlightJs instanceof Promise) {
-        promises.push(highlightJs);
-      } else if (typeof highlightJs === 'undefined') {
-        highlightJs = System.import('highlight.js/lib/highlight').then((hijs) => {
-          hijs.configure({ //TODO Move to config
-            tabReplace: '  '
-          });
-
-          highlightJs = hijs;
+      if (highlighter instanceof Promise) {
+        promises.push(highlighter);
+      } else if (typeof highlighter === 'undefined') {
+        highlighter = Promise.all([
+          System.import('react-syntax-highlighter/light'),
+          System.import('react-syntax-highlighter/styles/hljs/default-style')
+        ]).then(([highlightModule, style]) => {
+          highlighter = highlightModule;
 
           if (this.mounted) {
             this.setState({
-              hijs: hijs
+              highlighter: highlightModule,
+              highlighterOptions: {
+                ...this.state.highlighterOptions,
+                style: style.default
+              }
             });
           } else {
-            this.state.hijs = hijs;
+            this.state.highlighter = highlightModule;
           }
         }, (error) => {
-          console.error('could not load Highlight.js', error);
+          console.error('could not load code highlighter', error);
 
           if (this.mounted) {
             this.setState({
-              hijs: false
+              highlighter: false
             });
           } else {
-            this.state.hijs = false;
+            this.state.highlighter = false;
           }
         });
-        promises.push(highlightJs);
+        promises.push(highlighter);
       }
 
       if (language !== 'unknown') {
         if (languages[language] instanceof Promise) {
           promises.push(languages[language]);
         } else if (typeof languages[language] === 'undefined') {
-          languages[language] = System.import(`highlight.js/lib/languages/${language}`).then((languagePack) => {
+          languages[language] = System.import(`react-syntax-highlighter/languages/hljs/${language}`).then((languagePack) => {
             if (!languagePack) {
               console.error('Could not import language', language);
               languages[language] = false;
               return;
             }
+            console.log('got language pack', languagePack);
 
-            if (highlightJs instanceof Promise) {
-              return highlightJs.then(() => {
-                languages[language] = languagePack;
-                highlightJs.registerLanguage(language, languages[language]);
+            if (highlighter instanceof Promise) {
+              return highlighter.then(() => {
+                languages[language] = languagePack.default;
+                highlighter.registerLanguage(language, languages[language]);
                 this.forceUpdate();
               });
             } else {
-              languages[language] = languagePack;
-              highlightJs.registerLanguage(language, languages[language]);
+              languages[language] = languagePack.default;
+              highlighter.registerLanguage(language, languages[language]);
               this.forceUpdate();
             }
           }, (error) => {
-            console.error('Could not load Highlight.js language for ' + language, error);
+            console.error('Could not load code highlighter language for ' + language, error);
             languages[language] = false;
           });
           promises.push(languages[language]);

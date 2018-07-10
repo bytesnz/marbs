@@ -5,7 +5,7 @@ import * as urlJoin from 'join-path';
 
 // TODO Can these be hooked up to the state?
 
-export const postTag: RST.TagHandler = (id: string) => {
+export const post: RST.TagHandler = (id: string) => {
   if (!id) {
     return;
   }
@@ -13,7 +13,7 @@ export const postTag: RST.TagHandler = (id: string) => {
   return urlJoin(config.baseUri, id);
 };
 
-export const tagsTag: RST.TagHandler = (tag: string) => {
+export const tags: RST.TagHandler = (tag: string) => {
   if (!tag) {
     return urlJoin(config.baseUri, config.tagsUri);
   }
@@ -21,7 +21,7 @@ export const tagsTag: RST.TagHandler = (tag: string) => {
   return urlJoin(config.baseUri, config.tagsUri + '#' + tag);
 };
 
-export const categoriesTag: RST.TagHandler = (category?: string) => {
+export const categories: RST.TagHandler = (category?: string) => {
   if (!category) {
     return urlJoin(config.baseUri, config.tagsUri);
   }
@@ -33,6 +33,6 @@ export const categoriesTag: RST.TagHandler = (category?: string) => {
   }
 };
 
-export const staticTag: RST.TagHandler = (assetUri: string) => {
+export const asset: RST.TagHandler = (assetUri: string) => {
   return urlJoin(config.baseUri, config.staticUri, assetUri);
 };
