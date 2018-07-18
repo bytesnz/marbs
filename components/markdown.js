@@ -44,6 +44,7 @@ var Markdown = /** @class */ (function (_super) {
                 highlight: _this.highlight.bind(_this),
                 createElement: React.createElement,
                 paragraphs: true,
+                headingIds: true,
                 customTags: {
                     posts: function (attributes) { return React.createElement(posts_1.PostsTag, { attributes: attributes }); },
                     categories: function () { return React.createElement(categories_1.Categories); },

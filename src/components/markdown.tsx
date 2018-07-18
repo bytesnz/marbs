@@ -47,6 +47,7 @@ export class Markdown extends React.Component {
         highlight: this.highlight.bind(this),
         createElement: React.createElement,
         paragraphs: true,
+        headingIds: true,
         customTags: {
           posts: (attributes) =>  React.createElement(PostsTag, { attributes }),
           categories: () => React.createElement(Categories),
