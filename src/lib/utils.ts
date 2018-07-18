@@ -25,7 +25,7 @@ export const uniderise = (id: string): string => id.replace('_', ' ');
  * @returns Category label
  */
 export const categoryLabel = (category: string | Array<string>) =>
-  Array.isArray(category) ? category.pop() : category;
+  uniderise(Array.isArray(category) ? category[0] : category);
 
 /**
  * Create the url for the categories list, or a given category
@@ -83,7 +83,7 @@ export const flattenCategories =
  *
  * @returns Label
  */
-export const tagLabel = (tag: string) => tag;
+export const tagLabel = (tag: string) => uniderise(tag);
 
 /**
  * Create the url for the tags list, or a given tag

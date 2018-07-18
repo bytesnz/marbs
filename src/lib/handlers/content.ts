@@ -11,6 +11,7 @@ import * as clone from 'lodash.clonedeep';
 import { watch } from 'chokidar';
 import { StringTags, Tags } from 'tag-you-are';
 import {
+  iderise,
   filterPostsByTags,
   filterPostsByCategories
 } from '../utils';
@@ -168,7 +169,7 @@ export const contentHandlerCreator: Handlers.ContentHandlerCreator =
 
     // Add counts if enabled and not a draft
     if (config.functionality.tags && data.tags) {
-      data.tags = data.tags.map((tag) => tag.toLowerCase());
+      data.tags = data.tags.map((tag) => iderise(tag));
       if (!data.draft) {
         data.tags.forEach((tag) => tags.add(tag));
       }
@@ -177,9 +178,9 @@ export const contentHandlerCreator: Handlers.ContentHandlerCreator =
     if (config.functionality.categories && data.categories) {
       data.categories = data.categories.map((category) => {
         if (typeof category === 'string') {
-          return category.toLowerCase();
+          return iderise(category);
         } else {
-          return category.map((subCategory) => subCategory.toLowerCase());
+          return category.map((subCategory) => iderise(subCategory));
         }
       });
       if (!data.draft) {
@@ -243,6 +244,7 @@ export const contentHandlerCreator: Handlers.ContentHandlerCreator =
       removeDocument(path);
     });
   } else {
+    console.log('searching for documents');
     // Parse all the markdown files in the source folder
     await glob(mdFilesGlob, {
       cwd: config.source
