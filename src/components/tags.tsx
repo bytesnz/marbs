@@ -37,8 +37,6 @@ class TagListComponent extends FilterListComponent {
   constructor(props) {
     super(props);
 
-    console.log('taglist constructor called');
-
     const { actions } = props;
 
     if (props.tags === null) {

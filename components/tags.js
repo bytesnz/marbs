@@ -25,7 +25,6 @@ var TagListComponent = /** @class */ (function (_super) {
         _this.state = {
             expanded: null
         };
-        console.log('taglist constructor called');
         var actions = props.actions;
         if (props.tags === null) {
             actions.tags.fetchTags();
@@ -122,7 +121,7 @@ var TagCloudComponent = function (props) {
     var size = function (count) { return 100 * (((count - minCount) / countDelta * sizeDelta) + minSize); };
     return (React.createElement("ul", { className: "tagCloud" }, Object.keys(tags).sort().map(function (id) { return (React.createElement("li", { key: id, style: { fontSize: size(tags[id]) + "%" } },
         React.createElement(react_router_dom_1.Link, { to: urlJoin(config_1.default.baseUri, config_1.default.tagsUri + '#' + id) },
-            id,
+            utils_1.tagLabel(id),
             " (",
             tags[id],
             ")"))); })));
