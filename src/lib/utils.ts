@@ -13,7 +13,9 @@ import { config } from '../app/lib/config';
 export const assetUrl = (asset: string) => urlJoin(config.baseUri,
     config.staticUri, asset);
 
-export const tagToId = (tag: string): string => tag.replace(' ', '-');
+export const iderise = (tag: string): string => tag.toLowerCase().replace(' ', '_');
+
+export const uniderise = (id: string): string => id.replace('_', ' ');
 
 /**
  * Creates a label for the given category
@@ -37,7 +39,7 @@ export const categoryUrl = (category?: string | Array<string>) => {
     if (Array.isArray(category)) {
       category = category.pop();
     }
-    category = tagToId(category);
+    category = iderise(category);
     return (config.categoriesPerPage ?
       urlJoin(config.baseUri, config.categoriesUri, category) :
       urlJoin(config.baseUri, config.categoriesUri + '#' + category)

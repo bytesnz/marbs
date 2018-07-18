@@ -157,7 +157,7 @@ const TagCloudComponent  = (props) => {
       { Object.keys(tags).sort().map((id) => (
       <li key={id} style={{ fontSize: `${size(tags[id])}%` }}>
         <Link to={urlJoin(config.baseUri, config.tagsUri + '#' + id)}>
-          {id} ({tags[id]})
+          {tagLabel(id)} ({tags[id]})
         </Link>
       </li>
       )) }

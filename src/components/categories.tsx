@@ -145,7 +145,7 @@ const CategoryCountsComponent = ({ categories, actions }) => {
           <li key={id} style={{ marginLeft: level * 15 }}>
             <Link to={urlJoin(config.baseUri, config.categoriesUri +
                 (config.categoriesPerPage ? '' : '#') + id)}>
-              {id} ({categories[id]})
+              {categoryLabel(id)} ({categories[id]})
             </Link>
           </li>
         )

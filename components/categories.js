@@ -126,7 +126,7 @@ var CategoryCountsComponent = function (_a) {
         return (React.createElement("li", { key: id, style: { marginLeft: level * 15 } },
             React.createElement(react_router_dom_1.Link, { to: urlJoin(config_1.default.baseUri, config_1.default.categoriesUri +
                     (config_1.default.categoriesPerPage ? '' : '#') + id) },
-                id,
+                utils_1.categoryLabel(id),
                 " (",
                 categories[id],
                 ")")));
