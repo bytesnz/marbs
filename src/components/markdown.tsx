@@ -3,6 +3,9 @@ import * as twitchdown from 'twitchdown';
 
 import { Plugin as RST } from 'remarkably-simple-tags'
 import * as tags from '../lib/client/mdTags';
+import { PostsTag } from './posts';
+import { Categories } from './categories';
+import { TagList, TagCloud } from './tags';
 
 import config from '../app/lib/config';
 
@@ -43,7 +46,17 @@ export class Markdown extends React.Component {
       rdOptions: {
         highlight: this.highlight.bind(this),
         createElement: React.createElement,
-        paragraphs: true
+        paragraphs: true,
+        customTags: {
+          posts: (attributes) =>  React.createElement(PostsTag, { attributes }),
+          categories: () => React.createElement(Categories),
+          taglist: () => React.createElement(TagList),
+          tagcloud: () => React.createElement(TagCloud),
+          postUrl: () => tags.post,
+          categoriesUrl: () => tags.categories,
+          tagsUrl: () => tags.tags,
+          assetUrl: () => tags.asset
+        }
       }
     };
 
@@ -61,7 +74,6 @@ export class Markdown extends React.Component {
 
   render() {
     let markdown = twitchdown(this.props.source, this.state.rdOptions);
-    console.log('markdown is', markdown);
 
     return (
       <div className={this.props.className}>
@@ -77,7 +89,6 @@ export class Markdown extends React.Component {
 
     if (this.state.highlighter && languages[language]
         && !(languages[language] instanceof Promise)) {
-      console.log('highlighting', language)
       return React.createElement(highlighter.default, {
         ...this.state.highlighterOptions,
         language
@@ -139,7 +150,6 @@ export class Markdown extends React.Component {
               languages[language] = false;
               return;
             }
-            console.log('got language pack', languagePack);
 
             if (highlighter instanceof Promise) {
               return highlighter.then(() => {

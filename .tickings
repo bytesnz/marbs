@@ -16,3 +16,15 @@
 2018-07-10T17:04:50.843Z	git:initial-developement	Investigating react-syntax-highlighter including highlight.js
 2018-07-10T17:32:35.507Z	git:initial-developement	0:28:06
 2018-07-10T17:32:48.941Z	git:initial-developement	All good
+2018-07-13T07:21:21.112Z	git:initial-developement	1:00:21
+2018-07-13T07:21:49.520Z	git:initial-developement	Creating special tags
+2018-07-13T16:37:38.781Z	git:initial-developement	0:19:51
+2018-07-13T16:57:10.039Z	git:initial-developement	0:01:26
+2018-07-16T17:35:55.017Z	git:initial-developement	0:13:60
+2018-07-16T18:00:06.392Z	git:initial-developement	Fix iderising of categories and tags in document attributes
+2018-07-16T18:00:25.416Z	git:initial-developement	Add custom tag handlers to markdown
+2018-07-16T20:45:58.618Z	git:initial-developement	0:10:41
+2018-07-17T17:32:16.161Z	git:initial-developement	0:05:40
+2018-07-17T19:12:32.679Z	git:initial-developement	0:24:11
+2018-07-18T05:26:02.033Z	git:initial-developement	Fix issue with urls due to media handler not having staticUrl in URL
+2018-07-18T05:27:36.316Z	git:initial-developement	0:02:18
