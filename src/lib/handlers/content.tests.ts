@@ -10,7 +10,7 @@ import { vol } from '../../tests/lib/unionfs';
 
 import { contentHandlerCreatorTests } from '../../tests/lib/handlers/content';
 
-import { contentHandlerCreator } from './content';
+import * as handler from './content';
 
 import * as testData from '../../tests/data/source';
 import {
@@ -46,10 +46,10 @@ test.beforeEach((t) => {
   t.context.config = testConfig;
 });
 
-contentHandlerCreatorTests(test, contentHandlerCreator);
+contentHandlerCreatorTests(test, handler.contentHandlerCreator);
 
 test.failing('contentHandler watches for file changes (failing due to test watch issue)', async (t) => {
-  const contentHandler = await getReturn(contentHandlerCreator({
+  const contentHandler = await getReturn(handler.contentHandlerCreator({
     ...t.context.config,
     disableFileWatch: false
   }));
