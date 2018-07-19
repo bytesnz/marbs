@@ -121,7 +121,11 @@ export interface UserServerConfig {
   /// Whether or not to cache the content markdown
   cacheMarkdown?: boolean,
   /// Whether or not to disable watching for new documents if using a file-based content handler
-  disableFileWatch?: boolean
+  disableFileWatch?: boolean,
+  /// Server-side markdown tag ({% %}) handlers
+  serverTags?: {
+    [tag: string]: (attributes?: Array<string>) => string
+  }
 }
 
 export interface SetServerConfig extends UserServerConfig {
