@@ -53,10 +53,10 @@ export class Markdown extends React.Component {
           categories: () => React.createElement(Categories),
           taglist: () => React.createElement(TagList),
           tagcloud: () => React.createElement(TagCloud),
-          postUrl: () => tags.post,
-          categoriesUrl: () => tags.categories,
-          tagsUrl: () => tags.tags,
-          assetUrl: () => tags.asset
+          postUrl: (attributes) => attributes && tags.post(attributes[0]),
+          categoriesUrl: (attributes) => attributes && tags.categories(attributes[0]),
+          tagsUrl: (attributes) => attributes && tags.tags(attributes[0]),
+          assetUrl: (attributes) => attributes && tags.asset(attributes[0])
         }
       }
     };

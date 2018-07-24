@@ -50,10 +50,10 @@ var Markdown = /** @class */ (function (_super) {
                     categories: function () { return React.createElement(categories_1.Categories); },
                     taglist: function () { return React.createElement(tags_1.TagList); },
                     tagcloud: function () { return React.createElement(tags_1.TagCloud); },
-                    postUrl: function () { return tags.post; },
-                    categoriesUrl: function () { return tags.categories; },
-                    tagsUrl: function () { return tags.tags; },
-                    assetUrl: function () { return tags.asset; }
+                    postUrl: function (attributes) { return attributes && tags.post(attributes[0]); },
+                    categoriesUrl: function (attributes) { return attributes && tags.categories(attributes[0]); },
+                    tagsUrl: function (attributes) { return attributes && tags.tags(attributes[0]); },
+                    assetUrl: function (attributes) { return attributes && tags.asset(attributes[0]); }
                 }
             }
         };
