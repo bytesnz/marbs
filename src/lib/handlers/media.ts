@@ -229,12 +229,21 @@ export const handlerCreator: Handlers.HandlerCreator =
     paths: {
       get: {
         [urlJoin(config.baseUri, config.staticUri, ':id')]: (req, res, next) => {
-          if (!req.params.id || !media[req.params.id]) {
+          if (req.params.id) {
+            if (media[req.params.id]) {
+              res.sendFile(path.resolve(path.join(config.staticAssets, media[req.params.id].path)));
+            } else {
+              // See if we can match the file from the filename
+              const fileHash = Object.keys(media).find((hash) => media[hash].path === req.params.id)
+
+              if (fileHash) {
+                res.sendFile(path.resolve(path.join(config.staticAssets, media[fileHash].path)));
+              }
+            }
+          } else {
             res.status(404).end();
             return;
           }
-
-          res.sendFile(path.resolve(path.join(config.staticAssets, media[req.params.id].path)));
         }
       }
     }

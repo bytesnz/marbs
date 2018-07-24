@@ -190,7 +190,26 @@ test('media event handler returns media from galleries and sub galleries when su
   });
 });
 
-test('media path handler returns the requested image', async (t) => {
+test('media path handler returns the requested image from image uri', async (t) => {
+  const handler = await handlerCreator(t.context.config);
+
+  const res: any = {};
+
+  res.sendFile = sinon.stub().returns(res);
+  res.status = sinon.stub().returns(res);
+  res.end = sinon.stub().returns(res);
+
+  handler.paths.get['/:id']({
+    params: {
+      id: 'dir/image.png'
+    }
+  }, res);
+
+  t.is(1, res.sendFile.callCount, 'sendFile not called');
+  t.is(path.join(t.context.config.staticAssets, 'dir/image.png'), res.sendFile.getCall(0).args[0], 'sent file not image');
+});
+
+test('media path handler returns the requested image from md5 hash', async (t) => {
   const handler = await handlerCreator(t.context.config);
 
   const res: any = {};
@@ -206,6 +225,5 @@ test('media path handler returns the requested image', async (t) => {
   }, res);
 
   t.is(1, res.sendFile.callCount, 'sendFile not called');
-  t.log('path was', res.sendFile.getCall(0).args);
   t.is(path.join(t.context.config.staticAssets, 'image.png'), res.sendFile.getCall(0).args[0], 'sent file not image');
 });
