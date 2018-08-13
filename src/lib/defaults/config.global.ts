@@ -6,6 +6,7 @@ export default <SetGlobalConfig>{
   functionality: {
     tags: true,
     categories: true,
+    media: true,
     search: ['title', 'tags', 'categories']
   },
   windowTitle: (config, contentTitle) => `${contentTitle} - ${config.title}`,
