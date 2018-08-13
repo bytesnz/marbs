@@ -6,3 +6,8 @@ node_modules
 public
 source
 static
+app
+components
+lib
+reducers
+tests
