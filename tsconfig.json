@@ -14,11 +14,12 @@
     "paths": {
       "~": [ "." ],
       "Config": [ "src/config.global" ],
-      "ServerConfig": [ "src.config.server" ]
+      "ServerConfig": [ "src/config.server" ]
     }
   },
   "include": [
-    "src/**/*"
+    "src/**/*.ts",
+    "src/**/*.tsx"
   ],
   "exclude": [
   ]
