@@ -1,11 +1,14 @@
 "use strict";
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
 };
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -22,8 +25,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
@@ -102,7 +105,7 @@ if (process.env.NODE_ENV === 'production') {
         switch (_a.label) {
             case 0:
                 socket = io({});
-                return [4 /*yield*/, marss_1.createMarss(config_1.default)];
+                return [4 /*yield*/, marss_1.createMarss(config_1.default, socket)];
             case 1:
                 marss = _a.sent();
                 if (process.env.NODE_ENV !== 'production') {
@@ -114,26 +117,27 @@ if (process.env.NODE_ENV === 'production') {
                 }
                 actions = marss_1.livenActions(marss.actions, store, config_1.default, socket);
                 ReactDom.render((React.createElement(react_redux_1.Provider, { store: store },
-                    React.createElement(react_router_redux_1.ConnectedRouter, { history: history },
-                        React.createElement("div", null,
-                            React.createElement(react_helmet_1.Helmet, null,
-                                React.createElement("title", null, config_1.default.title),
-                                config_1.default.description ? (React.createElement("meta", { name: "description", content: config_1.default.description })) : null,
-                                config_1.default.description ? (React.createElement("meta", { property: "og:description", content: config_1.default.description })) : null,
-                                config_1.default.description ? (React.createElement("meta", { name: "twitter:description", content: config_1.default.description })) : null,
-                                React.createElement("meta", { property: "og:type", content: "website" }),
-                                React.createElement("meta", { property: "og:title", content: config_1.default.title }),
-                                React.createElement("meta", { property: "og:url", content: "" }),
-                                React.createElement("meta", { property: "og:site_name", content: config_1.default.title }),
-                                React.createElement("meta", { name: "twitter:card", content: "summary" }),
-                                React.createElement("meta", { name: "twitter:title", content: config_1.default.title })),
-                            React.createElement(header_1.Header, null),
-                            React.createElement(sidebar_1.Sidebar, { actions: actions, toggle: true, toggleUsingClass: true }),
-                            React.createElement("main", null,
-                                React.createElement(PropsRoute, { actions: actions, component: content_1.Content }),
-                                React.createElement(PropsRoute, { path: "" + urlJoin('/', config_1.default.baseUri, config_1.default.tagsUri), actions: actions, component: tags_1.TagList }),
-                                React.createElement(PropsRoute, { path: "" + urlJoin('/', config_1.default.baseUri, config_1.default.categoriesUri), actions: actions, component: categories_1.CategoryList })),
-                            React.createElement(footer_1.Footer, null))))), document.getElementById('app'));
+                    React.createElement(marss_1.MarssContext.Provider, { value: marss },
+                        React.createElement(react_router_redux_1.ConnectedRouter, { history: history },
+                            React.createElement("div", null,
+                                React.createElement(react_helmet_1.Helmet, null,
+                                    React.createElement("title", null, config_1.default.title),
+                                    config_1.default.description ? (React.createElement("meta", { name: "description", content: config_1.default.description })) : null,
+                                    config_1.default.description ? (React.createElement("meta", { property: "og:description", content: config_1.default.description })) : null,
+                                    config_1.default.description ? (React.createElement("meta", { name: "twitter:description", content: config_1.default.description })) : null,
+                                    React.createElement("meta", { property: "og:type", content: "website" }),
+                                    React.createElement("meta", { property: "og:title", content: config_1.default.title }),
+                                    React.createElement("meta", { property: "og:url", content: "" }),
+                                    React.createElement("meta", { property: "og:site_name", content: config_1.default.title }),
+                                    React.createElement("meta", { name: "twitter:card", content: "summary" }),
+                                    React.createElement("meta", { name: "twitter:title", content: config_1.default.title })),
+                                React.createElement(header_1.Header, null),
+                                React.createElement(sidebar_1.Sidebar, { actions: actions, toggle: true, toggleUsingClass: true }),
+                                React.createElement("main", null,
+                                    React.createElement(PropsRoute, { actions: actions, component: content_1.Content }),
+                                    React.createElement(PropsRoute, { path: "" + urlJoin('/', config_1.default.baseUri, config_1.default.tagsUri), actions: actions, component: tags_1.TagList }),
+                                    React.createElement(PropsRoute, { path: "" + urlJoin('/', config_1.default.baseUri, config_1.default.categoriesUri), actions: actions, component: categories_1.CategoryList })),
+                                React.createElement(footer_1.Footer, null)))))), document.getElementById('app'));
                 return [2 /*return*/];
         }
     });

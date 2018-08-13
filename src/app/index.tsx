@@ -10,7 +10,7 @@ import { Helmet } from 'react-helmet';
 
 import * as io from 'socket.io-client';
 
-import { createMarss, livenActions } from '../lib/client/marss';
+import { createMarss, livenActions, MarssContext } from '../lib/client/marss';
 import config from './lib/config';
 
 import './style.scss';
@@ -52,7 +52,7 @@ if (process.env.NODE_ENV === 'production') {
   const socket = io({
   });
 
-  const marss = await createMarss(config);
+  const marss = await createMarss(config, socket);
 
   let store;
   if (process.env.NODE_ENV !== 'production') {
@@ -67,36 +67,38 @@ if (process.env.NODE_ENV === 'production') {
 
   ReactDom.render((
     <Provider store={store}>
-      <ConnectedRouter history={history}>
-        <div>
-          <Helmet>
-            <title>{config.title}</title>
-            { config.description ? (
-                <meta name="description" content={config.description} />
-            ) : null }
-            { config.description ? (
-            <meta property="og:description" content={config.description} />
-            ) : null }
-            { config.description ? (
-            <meta name="twitter:description" content={config.description} />
-            ) : null }
-            <meta property="og:type" content="website" />
-            <meta property="og:title" content={config.title} />
-            <meta property="og:url" content="" />
-            <meta property="og:site_name" content={config.title} />
-            <meta name="twitter:card" content="summary" />
-            <meta name="twitter:title" content={config.title} />
-          </Helmet>
-          <Header/>
-          <Sidebar actions={actions} toggle={true} toggleUsingClass={true} />
-          <main>
-            <PropsRoute actions={actions} component={Content} />
-            <PropsRoute path={`${urlJoin('/', config.baseUri, config.tagsUri)}`} actions={actions} component={TagList} />
-            <PropsRoute path={`${urlJoin('/', config.baseUri, config.categoriesUri)}`} actions={actions} component={CategoryList} />
-          </main>
-          <Footer/>
-        </div>
-      </ConnectedRouter>
+      <MarssContext.Provider value={marss}>
+        <ConnectedRouter history={history}>
+          <div>
+            <Helmet>
+              <title>{config.title}</title>
+              { config.description ? (
+                  <meta name="description" content={config.description} />
+              ) : null }
+              { config.description ? (
+              <meta property="og:description" content={config.description} />
+              ) : null }
+              { config.description ? (
+              <meta name="twitter:description" content={config.description} />
+              ) : null }
+              <meta property="og:type" content="website" />
+              <meta property="og:title" content={config.title} />
+              <meta property="og:url" content="" />
+              <meta property="og:site_name" content={config.title} />
+              <meta name="twitter:card" content="summary" />
+              <meta name="twitter:title" content={config.title} />
+            </Helmet>
+            <Header/>
+            <Sidebar actions={actions} toggle={true} toggleUsingClass={true} />
+            <main>
+              <PropsRoute actions={actions} component={Content} />
+              <PropsRoute path={`${urlJoin('/', config.baseUri, config.tagsUri)}`} actions={actions} component={TagList} />
+              <PropsRoute path={`${urlJoin('/', config.baseUri, config.categoriesUri)}`} actions={actions} component={CategoryList} />
+            </main>
+            <Footer/>
+          </div>
+        </ConnectedRouter>
+      </MarssContext.Provider>
     </Provider>
   ), document.getElementById('app'));
   /*

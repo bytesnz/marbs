@@ -2,6 +2,9 @@ import * as configs from '../../../typings/configs';
 import * as State from '../../../typings/state';
 
 import { combineReducers } from 'redux';
+import * as React from 'react';
+
+import { createMedia } from './media';
 
 import * as contentReducer from '../../reducers/content';
 import * as postsReducer from '../../reducers/posts';
@@ -24,6 +27,8 @@ interface LiveActions {
 interface LiveActionsGroup {
   [action: string]: Function
 }
+
+export const MarssContext = React.createContext(null);
 
 /**
  * Livens the actions given to it by passing the state and the given options
@@ -58,7 +63,7 @@ export const livenActions = (actions: Actions, state,
   }, <LiveActions>{});
 };
 
-export const createMarss = async (options: configs.SetGlobalConfig) => {
+export const createMarss = async (options: configs.SetGlobalConfig, socket) => {
   let reducers = <State.Reducers>{
     content: contentReducer.reducer,
     posts: postsReducer.reducer
@@ -72,6 +77,7 @@ export const createMarss = async (options: configs.SetGlobalConfig) => {
     categories: createCategoriesActions,
     posts: createPostsActions
   };
+  let media = null;
 
   if (options.functionality.tags) {
     const tagsReducer = require('../../reducers/tags');
@@ -84,6 +90,10 @@ export const createMarss = async (options: configs.SetGlobalConfig) => {
     const categoriesReducer = require('../../reducers/categories');
     reducers.categories = categoriesReducer.reducer;
     initialState.categories = await categoriesReducer.initialState(options);
+  }
+
+  if (options.functionality.media) {
+    media = createMedia(socket, options);
   }
 
   let combinedReducers = combineReducers(reducers);
@@ -103,6 +113,7 @@ export const createMarss = async (options: configs.SetGlobalConfig) => {
   return {
     reducers: combinedReducers,
     initialState,
-    actions
+    actions,
+    media
   };
 };

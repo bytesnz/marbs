@@ -19,11 +19,11 @@ const options: config.SetGlobalConfig = {
 };
 
 test('should return a Promise', (t) => {
-  t.is((createMarss(options)) instanceof Promise, true, 'createMarss() did not return a Promise');
+  t.is((createMarss(options, {})) instanceof Promise, true, 'createMarss() did not return a Promise');
 });
 
 test('should return a reducer and initial state with site and content with no functionality selected', async (t) => {
-  const marss = await createMarss(options);
+  const marss = await createMarss(options, {});
 
   const initialState = <State.State>{
     content: null,
@@ -42,7 +42,7 @@ test('initialState should include tags when enabled', async (t) => {
     }
   };
 
-  const marss = await createMarss(testOptions);
+  const marss = await createMarss(testOptions, {});
 
   t.not(typeof marss.initialState.tags, 'undefined');
 });
@@ -55,7 +55,7 @@ test('initialState should include categories when enabled', async (t) => {
     }
   };
 
-  const marss = await createMarss(testOptions);
+  const marss = await createMarss(testOptions, {});
 
   t.not(typeof marss.initialState.categories, 'undefined');
 });
