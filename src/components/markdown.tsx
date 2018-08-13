@@ -6,6 +6,8 @@ import * as tags from '../lib/client/mdTags';
 import { PostsTag } from './posts';
 import { Categories } from './categories';
 import { TagList, TagCloud } from './tags';
+import LinesGallery from 'lines-gallery/LinesGallery';
+import { MarssContext } from '../lib/client/marss';
 
 import config from '../app/lib/config';
 
@@ -18,16 +20,24 @@ declare var System: {
   import(file: string): Promise<any>;
 }
 
-export class Markdown extends React.Component {
+interface Media {
+  [ images: string ]: Array<Media> | Error
+};
+
+export class MarkdownComponent extends React.Component {
   state: {
     highlighter: any,
     highlighterOptions: any,
     rdOptions: any,
+    media: {
+      [ attributes: string ]: Media
+    }
   };
 
   props: {
     source: string,
-    className: string
+    className: string,
+    media: any
   };
 
   mounted: boolean = false;
@@ -48,18 +58,56 @@ export class Markdown extends React.Component {
         createElement: React.createElement,
         paragraphs: true,
         headingIds: true,
+        parseArguments: true,
         customTags: {
           posts: (attributes) =>  React.createElement(PostsTag, { attributes }),
           categories: () => React.createElement(Categories),
           taglist: () => React.createElement(TagList),
           tagcloud: () => React.createElement(TagCloud),
-          postUrl: (attributes) => attributes && tags.post(attributes[0]),
-          categoriesUrl: (attributes) => attributes && tags.categories(attributes[0]),
-          tagsUrl: (attributes) => attributes && tags.tags(attributes[0]),
-          assetUrl: (attributes) => attributes && tags.asset(attributes[0])
+          postUrl: (attributes) => attributes.arguments && tags.post(attributes.arguments[0]),
+          categoriesUrl: (attributes) => attributes.arguments && tags.categories(attributes.arguments[0]),
+          tagsUrl: (attributes) => attributes.arguments && tags.tags(attributes.arguments[0]),
+          assetUrl: (attributes) => attributes.arguments && tags.asset(attributes.arguments[0])
         }
-      }
+      },
+      media: {}
     };
+
+    if (config.functionality.media) {
+      this.state.rdOptions.customTags.linesGallery = (attributes) => {
+        const images  = this.getMedia(attributes);
+        if (images) {
+          return (
+            <LinesGallery images={images} imageMargin={10} />
+          );
+        } else {
+          return null;
+        }
+      };
+
+      this.state.rdOptions.customTags.image = {
+        inParagraph: true,
+        handler: (attributes) => {
+          if (attributes.arguments) {
+            if (attributes.arguments.length) {
+              attributes.src = tags.asset(attributes.arguments[0]);
+
+              if (attributes.arguments.length >= 2) {
+                attributes.title = attributes.arguments[1];
+
+                if (attributes.arguments.length === 3) {
+                  attributes.width = attributes.arguments[2];
+                }
+              }
+            }
+
+            delete attributes.arguments;
+          }
+
+          return (<img { ...attributes } />);
+        }
+      };
+    }
 
     // Try render to start process of getting highlight libraries
     twitchdown(this.props.source);
@@ -73,6 +121,16 @@ export class Markdown extends React.Component {
     this.mounted = false;
   }
 
+  getDerivedStateFromProps(newProps, oldState) {
+    if (newProps.content === null && Object.keys(oldState.media).length) {
+      return {
+        media: {}
+      }
+    }
+
+    return null;
+  }
+
   render() {
     let markdown = twitchdown(this.props.source, this.state.rdOptions);
 
@@ -81,6 +139,34 @@ export class Markdown extends React.Component {
         { markdown }
       </div>
     );
+  }
+
+  getMedia(attributes) {
+    const attributeString = JSON.stringify(attributes);
+
+    if (typeof this.state.media[attributeString] === 'undefined') {
+      this.setState({
+        media: {
+          ...this.state.media,
+          [ attributeString ]: null
+        }
+      });
+      attributes.ids = attributes.arguments;
+      delete attributes.arguments;
+      this.props.media.getMedia(attributes).then((media) => {
+        this.setState({
+          media: {
+            ...this.state.media,
+            [ attributeString ]: media
+          }
+        });
+      }, (error) => {
+        console.log('got error response', error);
+      });
+      return null;
+    }
+
+    return this.state.media[attributeString];
   }
 
   tryHighlight(content: string, language: string) {
@@ -179,3 +265,9 @@ export class Markdown extends React.Component {
     }
   }
 }
+
+export const Markdown = (props) => (
+  <MarssContext.Consumer>
+  { (marss) => (<MarkdownComponent { ...props } media={config.functionality.media && marss.media} />) }
+  </MarssContext.Consumer>
+);

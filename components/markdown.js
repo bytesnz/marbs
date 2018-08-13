@@ -1,21 +1,27 @@
 "use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = require("react");
@@ -24,13 +30,17 @@ var tags = require("../lib/client/mdTags");
 var posts_1 = require("./posts");
 var categories_1 = require("./categories");
 var tags_1 = require("./tags");
+var LinesGallery_1 = require("lines-gallery/LinesGallery");
+var marss_1 = require("../lib/client/marss");
+var config_1 = require("../app/lib/config");
 /// Highlight.js base
 var highlighter;
 /// Highlight.js language packs
 var languages = {};
-var Markdown = /** @class */ (function (_super) {
-    __extends(Markdown, _super);
-    function Markdown(props) {
+;
+var MarkdownComponent = /** @class */ (function (_super) {
+    __extends(MarkdownComponent, _super);
+    function MarkdownComponent(props) {
         var _this = _super.call(this, props) || this;
         _this.mounted = false;
         var highlighterOptions = {
@@ -45,33 +55,94 @@ var Markdown = /** @class */ (function (_super) {
                 createElement: React.createElement,
                 paragraphs: true,
                 headingIds: true,
+                parseArguments: true,
                 customTags: {
                     posts: function (attributes) { return React.createElement(posts_1.PostsTag, { attributes: attributes }); },
                     categories: function () { return React.createElement(categories_1.Categories); },
                     taglist: function () { return React.createElement(tags_1.TagList); },
                     tagcloud: function () { return React.createElement(tags_1.TagCloud); },
-                    postUrl: function (attributes) { return attributes && tags.post(attributes[0]); },
-                    categoriesUrl: function (attributes) { return attributes && tags.categories(attributes[0]); },
-                    tagsUrl: function (attributes) { return attributes && tags.tags(attributes[0]); },
-                    assetUrl: function (attributes) { return attributes && tags.asset(attributes[0]); }
+                    postUrl: function (attributes) { return attributes.arguments && tags.post(attributes.arguments[0]); },
+                    categoriesUrl: function (attributes) { return attributes.arguments && tags.categories(attributes.arguments[0]); },
+                    tagsUrl: function (attributes) { return attributes.arguments && tags.tags(attributes.arguments[0]); },
+                    assetUrl: function (attributes) { return attributes.arguments && tags.asset(attributes.arguments[0]); }
                 }
-            }
+            },
+            media: {}
         };
+        if (config_1.default.functionality.media) {
+            _this.state.rdOptions.customTags.linesGallery = function (attributes) {
+                var images = _this.getMedia(attributes);
+                if (images) {
+                    return (React.createElement(LinesGallery_1.default, { images: images, imageMargin: 10 }));
+                }
+                else {
+                    return null;
+                }
+            };
+            _this.state.rdOptions.customTags.image = {
+                inParagraph: true,
+                handler: function (attributes) {
+                    if (attributes.arguments) {
+                        if (attributes.arguments.length) {
+                            attributes.src = tags.asset(attributes.arguments[0]);
+                            if (attributes.arguments.length >= 2) {
+                                attributes.title = attributes.arguments[1];
+                                if (attributes.arguments.length === 3) {
+                                    attributes.width = attributes.arguments[2];
+                                }
+                            }
+                        }
+                        delete attributes.arguments;
+                    }
+                    return (React.createElement("img", __assign({}, attributes)));
+                }
+            };
+        }
         // Try render to start process of getting highlight libraries
         twitchdown(_this.props.source);
         return _this;
     }
-    Markdown.prototype.componentDidMount = function () {
+    MarkdownComponent.prototype.componentDidMount = function () {
         this.mounted = true;
     };
-    Markdown.prototype.componentWillUnmount = function () {
+    MarkdownComponent.prototype.componentWillUnmount = function () {
         this.mounted = false;
     };
-    Markdown.prototype.render = function () {
+    MarkdownComponent.prototype.getDerivedStateFromProps = function (newProps, oldState) {
+        if (newProps.content === null && Object.keys(oldState.media).length) {
+            return {
+                media: {}
+            };
+        }
+        return null;
+    };
+    MarkdownComponent.prototype.render = function () {
         var markdown = twitchdown(this.props.source, this.state.rdOptions);
         return (React.createElement("div", { className: this.props.className }, markdown));
     };
-    Markdown.prototype.tryHighlight = function (content, language) {
+    MarkdownComponent.prototype.getMedia = function (attributes) {
+        var _this = this;
+        var _a;
+        var attributeString = JSON.stringify(attributes);
+        if (typeof this.state.media[attributeString] === 'undefined') {
+            this.setState({
+                media: __assign({}, this.state.media, (_a = {}, _a[attributeString] = null, _a))
+            });
+            attributes.ids = attributes.arguments;
+            delete attributes.arguments;
+            this.props.media.getMedia(attributes).then(function (media) {
+                var _a;
+                _this.setState({
+                    media: __assign({}, _this.state.media, (_a = {}, _a[attributeString] = media, _a))
+                });
+            }, function (error) {
+                console.log('got error response', error);
+            });
+            return null;
+        }
+        return this.state.media[attributeString];
+    };
+    MarkdownComponent.prototype.tryHighlight = function (content, language) {
         if (language === 'unknown' || languages[language] === false || this.state.highlighter === false) {
             return '';
         }
@@ -81,7 +152,7 @@ var Markdown = /** @class */ (function (_super) {
         }
         return null;
     };
-    Markdown.prototype.highlight = function (content, language) {
+    MarkdownComponent.prototype.highlight = function (content, language) {
         var _this = this;
         if (language === void 0) { language = 'text'; }
         var attempt = this.tryHighlight(content, language);
@@ -161,7 +232,8 @@ var Markdown = /** @class */ (function (_super) {
             }
         }
     };
-    return Markdown;
+    return MarkdownComponent;
 }(React.Component));
-exports.Markdown = Markdown;
+exports.MarkdownComponent = MarkdownComponent;
+exports.Markdown = function (props) { return (React.createElement(marss_1.MarssContext.Consumer, null, function (marss) { return (React.createElement(MarkdownComponent, __assign({}, props, { media: config_1.default.functionality.media && marss.media }))); })); };
 //# sourceMappingURL=markdown.js.map

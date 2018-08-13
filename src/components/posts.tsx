@@ -112,44 +112,36 @@ export const PostsTagComponent = ({ posts, attributes, actions }) => {
   }
 
   posts = posts.data;
-  console.log('PostsTagComponent called', posts, attributes);
-  if (attributes.length) {
-    // Build attributes
-    attributes = parseAttributes(attributes);
-    console.log('parsed attributes', attributes);
 
-    if (attributes.tags) {
-      attributes.tags = attributes.tags.split(/ *, */g)
-      posts = filterPostsByTags(posts, attributes.tags, attributes.allTags);
-    }
-
-    if (attributes.categories) {
-      attributes.categories = attributes.categories.split(/ *, */g);
-      posts = filterPostsByCategories(posts, attributes.categories, attributes.allCategories);
-    }
-
-    if (attributes.from) {
-      const from = (new Date(attributes.from)).getTime();
-      if (!isNaN(from)) {
-        posts.filter((post) => post.attributes.date >= from);
-      } else if (process.env.NODE_ENV !== 'production') {
-        console.error(`Ignoring from attribute (${attributes.from}) in posta tag as not valid`);
-      }
-    }
-
-    if (attributes.to) {
-      const to = (new Date(attributes.to)).getTime();
-      if (!isNaN(to)) {
-        posts.filter((post) => post.attributes.date >= to);
-      } else if (process.env.NODE_ENV !== 'production') {
-        console.error(`Ignoring to attribute (${attributes.to}) in posta tag as not valid`);
-      }
-    }
-
-    return (<Posts posts={posts} full={attributes && attributes.full} />);
-  } else {
-    return (<Posts/>);
+  if (attributes.tags) {
+    attributes.tags = attributes.tags.split(/ *, */g)
+    posts = filterPostsByTags(posts, attributes.tags, attributes.allTags);
   }
+
+  if (attributes.categories) {
+    attributes.categories = attributes.categories.split(/ *, */g);
+    posts = filterPostsByCategories(posts, attributes.categories, attributes.allCategories);
+  }
+
+  if (attributes.from) {
+    const from = (new Date(attributes.from)).getTime();
+    if (!isNaN(from)) {
+      posts.filter((post) => post.attributes.date >= from);
+    } else if (process.env.NODE_ENV !== 'production') {
+      console.error(`Ignoring from attribute (${attributes.from}) in posta tag as not valid`);
+    }
+  }
+
+  if (attributes.to) {
+    const to = (new Date(attributes.to)).getTime();
+    if (!isNaN(to)) {
+      posts.filter((post) => post.attributes.date >= to);
+    } else if (process.env.NODE_ENV !== 'production') {
+      console.error(`Ignoring to attribute (${attributes.to}) in posta tag as not valid`);
+    }
+  }
+
+  return (<Posts posts={posts} full={attributes.full} />);
 };
 
 export const PostsTag = connect((state) => ({
