@@ -54,6 +54,7 @@ class ContentComponent extends React.Component {
 
   checkContent(props) {
     const { actions } = props;
+    let update = null;
 
     const route = props.location;
     let { content } = props;
@@ -62,11 +63,16 @@ class ContentComponent extends React.Component {
     if (content && content.data && !this.correctId(content.data.id, id)) {
       //actions.content.clearContent();
       content = null;
+      update = {
+        content: null
+      }
     }
 
     if (content === null) {
       actions.content.fetchContent(id);
     }
+
+    return update;
   }
 
   render() {
