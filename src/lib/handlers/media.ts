@@ -1,5 +1,7 @@
 import * as Handlers from '../../../typings/handlers';
 import { ServerConfig } from '../../../typings/configs';
+import { Filter } from '../../../typings/media';
+
 import * as path from 'path';
 import * as glob from 'glob-promise';
 import { watch } from 'chokidar';
@@ -16,6 +18,7 @@ const sizeOf = util.promisify(aSizeOf);
 interface Media {
   id: string,
   width: number,
+  type: string,
   height: number,
   path: string,
   gallery: string
@@ -41,10 +44,8 @@ interface Gallery {
 interface MediaQuery {
   /// ID of query
   id: string | number,
-  /// Hash of gallery
-  ids: string | Array<string>,
-  /// Whether or not to include media of subdirectories of the galleries
-  subdirectories?: boolean
+  /// Image filter
+  filter: Filter
 };
 
 export const handlerCreator: Handlers.HandlerCreator =
@@ -119,31 +120,80 @@ export const handlerCreator: Handlers.HandlerCreator =
     }
   };
 
-  const imageFilesGlob = '**/*.@(jpg|jpeg|gif|png|svg)';
+  if (config.staticAssets) {
+    const imageFilesGlob = '**/*.@(jpg|jpeg|gif|png|svg|JPG|JPEG|GIF|PNG|SVG)';
 
-  // Load metadata about media
-  if (!config.disableFileWatch) {
-    console.log('watching for changes in media');
-    watch(imageFilesGlob, {
-      cwd: config.staticAssets
-    }).on('add', (filepath) => {
-      console.log('Adding media', filepath);
-      handleMedia(filepath);
-    }).on('change', (filepath) => {
-      console.log('Updating media', filepath);
-      handleMedia(filepath);
-    }).on('unlink', (filepath) => {
-      console.log('Removing media', filepath);
-      removeMedia(filepath);
-    });
-  } else {
-    console.log('searching for media in', config.staticAssets);
-    await glob(imageFilesGlob, {
-      cwd: config.staticAssets
-    }).then((files) => {
-      return Promise.all(files.map((file) => handleMedia(file)));
-    });
+    // Load metadata about media
+    if (!config.disableFileWatch) {
+      console.log('watching for changes in media');
+      watch(imageFilesGlob, {
+        cwd: config.staticAssets
+      }).on('add', (filepath) => {
+        console.log('Adding media', filepath);
+        handleMedia(filepath);
+      }).on('change', (filepath) => {
+        console.log('Updating media', filepath);
+        handleMedia(filepath);
+      }).on('unlink', (filepath) => {
+        console.log('Removing media', filepath);
+        removeMedia(filepath);
+      });
+    } else {
+      console.log('searching for media in', config.staticAssets);
+      await glob(imageFilesGlob, {
+        cwd: config.staticAssets
+      }).then((files) => {
+        return Promise.all(files.map((file) => handleMedia(file)));
+      });
+    }
   }
+
+  const getMedia = (filter: Filter): Array<Media> => {
+    let images = [];
+
+    if (!filter.ids) {
+      return Object.values(media);
+    }
+
+    filter.ids.forEach((id) => {
+      // Check if id is an image
+      let image;
+      image = media[id];
+      // Check if the id is the path
+      if (!image) {
+        image = media[md5(id)];
+      }
+
+      if (image) {
+        // Add image if not already in there
+        if (images.indexOf(image) === -1) {
+          images.push(image);
+        }
+      } else {
+        // Check if it is an id for a gallery
+        let gallery = galleriesMap[id];
+
+        // Check if the id is the path
+        if (!gallery) {
+          gallery = galleriesMap[md5(id)];
+        }
+
+        if (gallery) {
+          // Add images from gallery
+          images = images.concat(Object.values(gallery.media));
+
+          if (filter.subGalleries) {
+            images = images.concat(getMedia({
+              ...filter,
+              ids: Object.keys(gallery.subGalleries),
+            }));
+          }
+        }
+      }
+    })
+
+    return images;
+  };
 
   return {
     get media () {
@@ -152,78 +202,39 @@ export const handlerCreator: Handlers.HandlerCreator =
     get galleries () {
       return JSON.parse(JSON.stringify(galleries));
     },
+    getMedia,
     events: {
-      media: (socket, data: MediaQuery) => {
-        if (!data || !data.ids) {
+      media: (socket, data: MediaQuery): void => {
+        if (!data || !data.id) {
+          return
+        }
+
+        if (!data.filter || !data.filter.ids) {
           socket.emit('media', {
+            id: data.id,
             error: 'Require a gallery ids'
           });
           return;
         }
 
-        if (!Array.isArray(data.ids)) {
-          data.ids = [ data.ids ];
-        }
-
-        // Check for invalid errors
-        const badGalleries = [];
-
-        data.ids.forEach((id) => {
-          if (!galleriesMap[id]) {
-            badGalleries.push(id);
-          }
-        });
-
-        if (badGalleries.length) {
-          let message;
-
-          if (badGalleries.length === 1) {
-            message = `Gallery ${badGalleries[0]} does not exist`;
-          } else {
-            message = badGalleries.push();
-            message = `Galleries ${badGalleries.join(', ')} and ${message} do no exist`;
-          }
-
-          socket.emit('media', {
-            error: message
-          });
-          return;
-        }
-
-        // Add subdirectories to array
-        if (data.subdirectories) {
-          let allIds = [ ...data.ids ];
-          const galleriesLength = allIds.length;
-
-          const addSubGalleries = (id) => {
-            Object.keys(galleriesMap[id].subGalleries).forEach((subId) => {
-              if (data.ids.indexOf(subId) === -1) {
-                allIds.push(subId);
-              }
-            });
-          };
-
-          allIds.forEach(addSubGalleries);
-
-          data.ids = allIds;
-        }
-
-        let returnedMedia = [];
-
-        // Make array of media
-        data.ids.forEach((id) => {
-          returnedMedia = returnedMedia.concat(Object.values(galleriesMap[id].media));
-        });
-
-        socket.emit('media', {
-          ...data,
-          media: returnedMedia.map((media) => ({
-            id: media.id,
+        try {
+          const images = getMedia(data.filter).map((media) => ({
             type: media.type,
+            id: media.id,
             width: media.width,
             height: media.height
-          }))
-        });
+          }));
+
+          socket.emit('media', {
+            id: data.id,
+            media: images
+          });
+        } catch (error) {
+          socket.emit('media', {
+            id: data.id,
+            error
+          });
+        }
       }
     },
     paths: {

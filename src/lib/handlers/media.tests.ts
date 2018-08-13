@@ -156,11 +156,12 @@ test('that the media event handler returns only media that is in the given direc
           height: media.height
         })), data.media);
       t.deepEqual(id, data.id);
-      t.deepEqual([ mediaCollection.id ], data.ids);
     }
   }, {
     id,
-    ids: mediaCollection.id
+    filter: {
+      ids: [ mediaCollection.id ]
+    }
   });
 });
 
@@ -181,12 +182,13 @@ test('media event handler returns media from galleries and sub galleries when su
         height: media.height
       })), data.media);
       t.deepEqual(id, data.id);
-      t.deepEqual([ testFileHashes['dir'], testFileHashes['dir/subdir'] ], data.ids);
     }
   }, {
     id,
-    subdirectories: true,
-    ids: testFileHashes['dir']
+    filter: {
+      subGalleries: true,
+      ids: [ testFileHashes['dir'] ]
+    }
   });
 });
 

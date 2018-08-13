@@ -19,6 +19,8 @@ export interface AppFunctionalityConfig {
   tags?: boolean,
   /// Generate and load category list
   categories?: boolean,
+  /// Use the media module
+  media?: boolean,
   /// Search in the given post fields
   search?: Array<string>,
   /** TODO Whether or not to preload the tags count. If set, server
