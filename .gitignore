@@ -8,6 +8,7 @@ source
 static
 app
 components
+actions
 lib
 reducers
 tests
