@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
+import { connect } from '../lib/client/marss';
 import * as urlJoin from 'join-path';
 import {
   categoryLabel,
@@ -11,6 +11,7 @@ import {
   tagLabel,
   tagUrl,
 } from '../lib/utils';
+import { Manager as LoaderManager, connectLoader } from './loader';
 
 import config from '../app/lib/config';
 
@@ -23,6 +24,7 @@ import { Posts } from './posts';
 class ContentComponent extends React.Component {
   props: {
     actions: any,
+    loader: LoaderManager,
     content: any, //TODO Properly type
     location: any,
     posts: any
@@ -64,12 +66,15 @@ class ContentComponent extends React.Component {
       //actions.content.clearContent();
       content = null;
       update = {
-        content: null
+        loading: true
       }
     }
 
-    if (content === null) {
-      actions.content.fetchContent(id);
+    if (content === null || (update && update.loading === true)) {
+      const promise = actions.content.fetchContent(id);
+      if (this.props.loader) {
+        this.props.loader.add(promise);
+      }
     }
 
     return update;
@@ -207,7 +212,9 @@ class ContentComponent extends React.Component {
   }
 }
 
-export const Content = connect((state) => ({
+const LoadedContentComponent = connectLoader(ContentComponent);
+
+export const Content = connect(LoadedContentComponent, (state) => ({
   content: state ? state.content : null,
   posts: state.posts
-}))(ContentComponent);
+}));

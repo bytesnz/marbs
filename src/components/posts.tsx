@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { connect } from '../lib/client/marss';
 import * as urlJoin from 'join-path';
 import {
   categoryLabel,
@@ -94,9 +94,12 @@ const PostsComponent = ({ posts, _posts, limit, filter, actions, full }) => {
   }
 };
 
-export const Posts = connect((state) => ({
+export const Posts = connect(PostsComponent, (state) => ({
   _posts: state.posts
-}))(PostsComponent);
+}));
+/*export const Posts = connect((state) => ({
+  _posts: state.posts
+}))(PostsComponent);*/
 
 /**
  * {@posts } tag handler
@@ -144,6 +147,9 @@ export const PostsTagComponent = ({ posts, attributes, actions }) => {
   return (<Posts posts={posts} full={attributes.full} />);
 };
 
-export const PostsTag = connect((state) => ({
+export const PostsTag = connect(PostsTagComponent, (state) => ({
   posts: state.posts
-}))(PostsTagComponent);
+}));
+/*export const PostsTag = connect((state) => ({
+  posts: state.posts
+}))(PostsTagComponent);*/

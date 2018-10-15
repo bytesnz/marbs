@@ -1,4 +1,4 @@
-import { connect } from 'react-redux';
+import { connect } from '../lib/client/marss';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import * as urlJoin from 'join-path';
@@ -108,11 +108,11 @@ class TagListComponent extends FilterListComponent {
   }
 }
 
-export const TagList = connect((state) => ({
+export const TagList = connect(TagListComponent, (state) => ({
   content: state.content,
   tags: state.tags,
   posts: state.posts
-}))(TagListComponent);
+}));
 
 const TagCloudComponent  = (props) => {
   let { actions, minSize, maxSize, tags, Label } = props;
@@ -163,6 +163,6 @@ const TagCloudComponent  = (props) => {
   );
 };
 
-export const TagCloud = connect((state) => ({
+export const TagCloud = connect(TagCloudComponent, (state) => ({
   tags: state.tags
-}))(TagCloudComponent);
+}));

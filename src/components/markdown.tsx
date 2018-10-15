@@ -7,14 +7,17 @@ import { PostsTag } from './posts';
 import { Categories } from './categories';
 import { TagList, TagCloud } from './tags';
 import LinesGallery from 'lines-gallery/LinesGallery';
-import { MarssContext } from '../lib/client/marss';
+import { connect } from '../lib/client/marss';
+import { connectLoader } from './loader';
 
 import config from '../app/lib/config';
 
 /// Highlight.js base
-let highlighter;
+let highlighter = null;
 /// Highlight.js language packs
 let languages = {};
+// Highlight.js styles
+let highlighterStyles = {};
 
 declare var System: {
   import(file: string): Promise<any>;
@@ -26,7 +29,7 @@ interface Media {
 
 export class MarkdownComponent extends React.Component {
   state: {
-    highlighter: any,
+    highlighterLoaded: any,
     highlighterOptions: any,
     rdOptions: any,
     media: {
@@ -35,6 +38,7 @@ export class MarkdownComponent extends React.Component {
   };
 
   props: {
+    loader: any,
     source: string,
     className: string,
     media: any
@@ -46,12 +50,11 @@ export class MarkdownComponent extends React.Component {
     super(props);
 
     const highlighterOptions = {
-      showLineNumbers: true,
-      style: null
+      showLineNumbers: true
     };
 
     this.state = {
-      highlighter: null,
+      highlighterLoaded: highlighter !== null,
       highlighterOptions,
       rdOptions: {
         highlight: this.highlight.bind(this),
@@ -121,7 +124,7 @@ export class MarkdownComponent extends React.Component {
     this.mounted = false;
   }
 
-  getDerivedStateFromProps(newProps, oldState) {
+  static getDerivedStateFromProps(newProps, oldState) {
     if (newProps.content === null && Object.keys(oldState.media).length) {
       return {
         media: {}
@@ -161,7 +164,7 @@ export class MarkdownComponent extends React.Component {
           }
         });
       }, (error) => {
-        console.log('got error response', error);
+        console.error('got error response', error);
       });
       return null;
     }
@@ -170,15 +173,16 @@ export class MarkdownComponent extends React.Component {
   }
 
   tryHighlight(content: string, language: string) {
-    if (language === 'unknown' || languages[language] === false || this.state.highlighter === false) {
+    if (language === 'unknown' || languages[language] === false || highlighter === false) {
       return '';
     }
 
-    if (this.state.highlighter && languages[language]
+    if (highlighter && languages[language]
         && !(languages[language] instanceof Promise)) {
       return React.createElement(highlighter.default, {
         ...this.state.highlighterOptions,
-        language
+        language,
+        style: highlighterStyles['default']
       }, content);
     }
 
@@ -195,35 +199,17 @@ export class MarkdownComponent extends React.Component {
 
       if (highlighter instanceof Promise) {
         promises.push(highlighter);
-      } else if (typeof highlighter === 'undefined') {
+      } else if (highlighter === null) {
         highlighter = Promise.all([
-          System.import('react-syntax-highlighter/light'),
-          System.import('react-syntax-highlighter/styles/hljs/default-style')
-        ]).then(([highlightModule, style]) => {
-          highlighter = highlightModule;
-
-          if (this.mounted) {
-            this.setState({
-              highlighter: highlightModule,
-              highlighterOptions: {
-                ...this.state.highlighterOptions,
-                style: style.default
-              }
-            });
-          } else {
-            this.state.highlighter = highlightModule;
-          }
-        }, (error) => {
-          console.error('could not load code highlighter', error);
-
-          if (this.mounted) {
-            this.setState({
-              highlighter: false
-            });
-          } else {
-            this.state.highlighter = false;
-          }
-        });
+          import('react-syntax-highlighter/light').then(
+            (highlighterModule) => { highlighter = highlighterModule; },
+            (error) => { highlighter = false; }
+          ),
+          import('react-syntax-highlighter/styles/hljs/default-style').then(
+            (style) => { highlighterStyles['default'] = style.default; },
+            (error) => { highlighterStyles['default'] = false; }
+          )
+        ]);
         promises.push(highlighter);
       }
 
@@ -231,7 +217,7 @@ export class MarkdownComponent extends React.Component {
         if (languages[language] instanceof Promise) {
           promises.push(languages[language]);
         } else if (typeof languages[language] === 'undefined') {
-          languages[language] = System.import(`react-syntax-highlighter/languages/hljs/${language}`).then((languagePack) => {
+          languages[language] = import(`react-syntax-highlighter/languages/hljs/${language}`).then((languagePack) => {
             if (!languagePack) {
               console.error('Could not import language', language);
               languages[language] = false;
@@ -260,14 +246,23 @@ export class MarkdownComponent extends React.Component {
       if (!promises.length) {
         return this.tryHighlight(content, language);
       } else {
+        const promise = Promise.all(promises)
+        this.props.loader.add(promise);
+        promise.then(() => {
+          if (this.mounted) {
+            this.setState({
+              highlighterLoaded: true
+            });
+          } else {
+            this.state.highlighterLoaded = true;
+          }
+        });
         return '';
       }
     }
   }
 }
 
-export const Markdown = (props) => (
-  <MarssContext.Consumer>
-  { (marss) => (<MarkdownComponent { ...props } media={config.functionality.media && marss.media} />) }
-  </MarssContext.Consumer>
-);
+const LoadedMarkdownComponent = connectLoader(MarkdownComponent);
+
+export const Markdown =  connect(LoadedMarkdownComponent);

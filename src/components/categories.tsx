@@ -1,7 +1,7 @@
-import { connect } from 'react-redux';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import * as urlJoin from 'join-path';
+import { connect } from '../lib/client/marss';
 
 import config from '../app/lib/config';
 
@@ -113,11 +113,11 @@ class CategoryListComponent extends FilterListComponent {
   }
 }
 
-export const CategoryList = connect((state) => ({
+export const CategoryList = connect(CategoryListComponent, (state) => ({
   categories: state.categories,
   content: state.content,
   posts: state.posts
-}))(CategoryListComponent);
+}));
 
 /**
  * Unconnected component for generating a list of categories and the number
@@ -154,6 +154,6 @@ const CategoryCountsComponent = ({ categories, actions }) => {
   );
 };
 
-export const Categories = connect((state) => ({
+export const Categories = connect(CategoryCountsComponent, (state) => ({
   categories: state.categories
-}))(CategoryCountsComponent);
+}));

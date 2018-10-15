@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
 
@@ -7,6 +6,7 @@ import { TagCloud } from './tags';
 import { Posts } from './posts';
 import { Categories } from './categories';
 import { Menu } from './menu';
+import { connect } from '../lib/client/marss';
 
 import {
   categoryUrl,
@@ -83,4 +83,4 @@ class SidebarComponent extends React.Component {
   }
 };
 
-export const Sidebar = withRouter(SidebarComponent);
+export const Sidebar = withRouter(connect(SidebarComponent));

@@ -17,6 +17,10 @@ import * as url from 'url';
 import * as promisify from 'es6-promisify';
 import * as commandLineArguments from 'command-line-args';
 import * as urlJoin from 'join-path';
+import { renderToString } from 'react-dom/server';
+import * as React from 'react';
+import { StaticRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
 
 import * as webpackConfig from './webpack.common';
 
@@ -25,6 +29,11 @@ require('node-require-alias').setAlias({
   ServerConfig: webpackConfig.resolve.alias.ServerConfig$,
   '~': '..'
 });
+
+import { createMarss, Provider as MarssContext } from './lib/client/marss';
+import { Manager, Provider as LoaderProvider } from './components/loader';
+
+import App from './app/app';
 
 import baseContentHandlers from './lib/handlers';
 
@@ -114,6 +123,7 @@ Promise.all([globalConfig, serverConfig].map((file) => file && access(file, 'r')
 
   let promises = [];
 
+  console.log('config is', config);
   // Run content handler inits if defined
   Object.keys(contentHandlers).forEach((id) => {
     const value = contentHandlers[id](config);
@@ -128,7 +138,7 @@ Promise.all([globalConfig, serverConfig].map((file) => file && access(file, 'r')
   });
 
   return Promise.all(promises).then(() => handlers);
-}).then((handlers) => {
+}).then(async (handlers) => {
   // Ensure there is a content contentHandler
   if (typeof handlers.content !== 'object') {
     return Promise.reject(new Error('No content handler for main content'));
@@ -190,10 +200,97 @@ Promise.all([globalConfig, serverConfig].map((file) => file && access(file, 'r')
     });
   } else {
     // Attach to * for HistoryAPI
-    app.get(path.join(config.baseUri, '*'), (req, res) => {
-      const index = devMiddleware.fileSystem.readFileSync(path.join(webpackConfig.output.path, 'index.html'));
+    const baseUriLength = (config.baseUri || '/').length;
+    app.get(path.join(config.baseUri, '*'), async (req, res) => {
 
-      res.end(index);
+      // Create mock socket
+      const serverHandlers = {};
+      const clientHandlers = {};
+
+      const serverSocket = {
+        emit: (event, ...data) => {
+          if (clientHandlers[event]) {
+            clientHandlers[event].forEach((handler) => {
+              handler(...data);
+            });
+          }
+        }
+      };
+
+      Object.keys(handlers).forEach((id) => {
+        const handler = handlers[id];
+        if (handler.events) {
+          Object.keys(handler.events).forEach((event) => {
+            if (serverHandlers[event]) {
+              serverHandlers[event].push(handler.events[event]);
+            } else {
+              serverHandlers[event] = [ handler.events[event] ];
+            }
+          });
+        }
+      });
+
+      const clientSocket = {
+        emit: (event, ...data) => {
+          if (serverHandlers[event]) {
+            serverHandlers[event].forEach((handler) => {
+              handler(serverSocket, ...data);
+            });
+          }
+        },
+        on: (event, handler) => {
+          if (clientHandlers[event]) {
+            clientHandlers[event].push(handler);
+          } else {
+            clientHandlers[event] = [ handler ];
+          }
+        }
+      };
+
+      // Create marss instance
+      try {
+        const uri = req.path.slice(baseUriLength)
+        const marss = await createMarss(config, clientSocket);
+        const loader = new Manager();
+        const index = devMiddleware.fileSystem.readFileSync(path.join(webpackConfig.output.path, 'index.html'));
+
+        let element = React.createElement(StaticRouter, {
+          location: req.url,
+          context: {}
+        }, React.createElement(LoaderProvider, {
+          value: loader
+        }, React.createElement(MarssContext, {
+          marss: marss
+        }, React.createElement(App, {}) ) ) );
+
+        const waitRender = () => {
+          const appString = renderToString(element);
+
+          if (loader.loading) {
+            loader.loading.then((errors) => {
+              if (errors && errors.length) {
+              }
+
+              waitRender();
+            });
+          } else {
+            // Return string
+            let response;
+            try {
+              response = index.toString().replace(/(<div id="app">)(<\/div>)/, '$1' + appString + '$2');
+            } catch (error) {
+              console.error(error);
+              res.end(index);
+            }
+
+            res.end(response);
+          }
+        };
+
+        waitRender();
+      } catch (error) {
+        console.error(error);
+      }
     });
   }
 
