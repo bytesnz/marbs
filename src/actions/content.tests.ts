@@ -110,7 +110,7 @@ test('fetchContents() does not dispatch an action or an event if content for an 
   t.context.actions.fetchContent('test');
   t.context.actions.fetchContent('another');
 
-  t.is(2, t.context.events.length, 'Should have emitted one event');
+  t.is(2, t.context.events.length, 'Should have emitted two events');
 
   t.deepEqual({
     event: 'content',
