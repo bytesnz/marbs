@@ -99,6 +99,9 @@ const media = {
 const testConf: Configs.ServerConfig = {
   title: 'Test Site',
   baseUri: '/',
+  tagsUri: 'tags',
+  categoriesUri: 'categories',
+  staticUri: 'static',
   address: '127.0.0.1',
   port: 4321,
   source: '/source',
@@ -132,6 +135,14 @@ test.beforeEach((t) => {
   vol.writeFileSync(path.join(mockBaseAssets, 'dir/subdir/image.png'), image);
 
   t.context.config = testConfig;
+
+  t.context.log = console.log;
+  t.context.logs = [];
+  console.log = (...data) => t.context.logs.push(data.join(' '));
+});
+
+test.afterEach((t) => {
+  console.log = t.context.log;
 });
 
 test('that the creator populates the media database', async (t) => {
@@ -201,12 +212,12 @@ test('media path handler returns the requested image from image uri', async (t) 
   res.status = sinon.stub().returns(res);
   res.end = sinon.stub().returns(res);
 
-  handler.paths.get['/:id']({
+  handler.paths.get['/static/:id']({
     params: {
       id: 'dir/image.png'
     }
   }, res);
-
+  
   t.is(1, res.sendFile.callCount, 'sendFile not called');
   t.is(path.join(t.context.config.staticAssets, 'dir/image.png'), res.sendFile.getCall(0).args[0], 'sent file not image');
 });
@@ -220,7 +231,7 @@ test('media path handler returns the requested image from md5 hash', async (t) =
   res.status = sinon.stub().returns(res);
   res.end = sinon.stub().returns(res);
 
-  handler.paths.get['/:id']({
+  handler.paths.get['/static/:id']({
     params: {
       id: testFileHashes['image.png']
     }

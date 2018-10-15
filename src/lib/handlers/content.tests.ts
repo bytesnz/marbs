@@ -23,6 +23,9 @@ import * as path from 'path';
 const testConf: Configs.ServerConfig = {
   title: 'Test Site',
   baseUri: '/',
+  tagsUri: 'tags',
+  categoriesUri: 'categories',
+  staticUri: 'static',
   address: '127.0.0.1',
   port: 4321,
   source: '/source',
@@ -44,6 +47,14 @@ test.beforeEach((t) => {
   vol.fromJSON(testData.testSource, testConfig.source);
 
   t.context.config = testConfig;
+
+  t.context.log = console.log;
+  t.context.logs = [];
+  console.log = (...data) => t.context.logs.push(data.join(' '));
+});
+
+test.afterEach((t) => {
+  console.log = t.context.log;
 });
 
 contentHandlerCreatorTests(test, handler.contentHandlerCreator);
