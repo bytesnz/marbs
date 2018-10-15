@@ -137,6 +137,6 @@ export interface SetServerConfig extends UserServerConfig {
   draftRegex: string
 }
 
-export interface ServerConfig extends SetServerConfig, GlobalConfig {
+export interface ServerConfig extends SetServerConfig, SetGlobalConfig {
 }
 
