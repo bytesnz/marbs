@@ -11,6 +11,10 @@ export const createContentActions = ({ getState, dispatch, socket }, options: Se
   let fetchTimeout = null;
   /// Content id currently being fetched
   let fetchingId = null;
+  /// Promise created for the content being fetched
+  let fetchingPromise = null;
+  let fetchingResolve = null;
+  let fetchingReject = null;
 
   /**
    * If the new content has a different id to the current content, or if there
@@ -63,17 +67,24 @@ export const createContentActions = ({ getState, dispatch, socket }, options: Se
    */
   const fetchContent = (id: string) => {
     if (fetchTimeout === null || fetchingId !== id) {
-      if (fetchTimeout !== null) {
-        clearTimeout(fetchTimeout);
-      }
-      fetchingId = id;
-      fetchTimeout = setTimeout(() => {
-        contentError('Nobody responded when trying to fetch the content for ' + id, 408);
-        fetchTimeout = null;
-        fetchingId = null;
-      }, 4000);
-      socket.emit('content', id);
+      fetchingPromise = new Promise((resolve, reject) => {
+        fetchingResolve = resolve;
+        fetchingReject = reject;
+
+        if (fetchTimeout !== null) {
+          clearTimeout(fetchTimeout);
+        }
+        fetchingId = id;
+        fetchTimeout = setTimeout(() => {
+          contentError('Nobody responded when trying to fetch the content for ' + id, 408);
+          fetchTimeout = null;
+          fetchingId = null;
+        }, 4000);
+        socket.emit('content', id);
+      });
     }
+
+    return fetchingPromise;
   };
 
   // Register for the tags event
@@ -83,15 +94,18 @@ export const createContentActions = ({ getState, dispatch, socket }, options: Se
 
     if (data.error) {
       contentError(data.error, data.code);
-      return;
-    }
-
-    if (!data.results) {
+      fetchingReject && fetchingReject();
+    } else if (!data.results) {
       contentError('"Not found', 404);
-      return;
+      fetchingReject && fetchingReject();
+    } else {
+      setContent(data.results);
+      fetchingResolve && fetchingResolve();
     }
 
-    setContent(data.results);
+    fetchingPromise = null;
+    fetchingReject = null;
+    fetchingResolve = null;
   });
 
   return {
