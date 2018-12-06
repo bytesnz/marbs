@@ -5,7 +5,10 @@ interface BaseMenuItem {
 }
 
 interface MenuLink extends BaseMenuItem {
-  link: string
+  /// Url for link, should either be relative to the base URI or contain a protocol
+  link: string,
+  /// Access key for link
+  accesskey?: string
 }
 
 interface MenuHeading extends BaseMenuItem {
