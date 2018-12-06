@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { connect } from '../lib/client/marss';
 import * as urlJoin from 'join-path';
 import {
+  iderise,
   categoryLabel,
   categoryUrl,
   flattenCategories,
@@ -158,7 +159,8 @@ class ContentComponent extends React.Component {
         </Helmet>
       ) : null,
       (
-        <article key="article" className={!attributes.type ? 'post' : attributes.type}>
+        <article key="article" className={!attributes.type
+            ? `post ${attributes.categories ? flattenCategories(attributes.categories).map((category) => iderise(category)).join(' ') : ''}` : attributes.type}>
           { (!attributes.type || attributes.type === 'post') ? (
             <header>
               { (attributes.date) ?
