@@ -63,8 +63,8 @@ let config: ServerConfig = {
   ...defaultConfig
 };
 
-const globalConfig = './config.global.js';
-const serverConfig = './config.server.js';
+const globalConfig = path.resolve('./config.global.js');
+const serverConfig = path.resolve('./config.server.js');
 
 // Pull in config from environment variables
 availableArguments.forEach((argument) => {

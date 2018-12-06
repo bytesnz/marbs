@@ -52,3 +52,38 @@
 2018-08-06T07:07:50.595Z	git:initial-developement	0:46:15
 2018-08-10T18:42:00.824Z	git:initial-developement	1:05:28
 2018-08-13T20:36:35.015Z	git:initial-developement	0:54:36
+2018-08-14T06:21:56.879Z	git:b8ffa35808be6d6a2543d5f2831ce83592236901	0:00:35
+2018-08-14T06:26:38.752Z	git:initial-developement	0:03:50
+2018-08-14T06:48:40.822Z	git:initial-developement	0:21:48
+2018-08-14T20:00:46.759Z	git:initial-developement	0:53:06
+2018-09-06T09:26:52.061Z	git:initial-developement	0:17:51
+2018-09-06T18:49:39.760Z	git:initial-developement	0:31:41
+2018-09-07T07:58:32.799Z	git:initial-developement	1:03:47
+2018-09-07T19:40:46.872Z	git:initial-developement	0:23:31
+2018-09-10T07:15:33.089Z	git:initial-developement	Add loader to content
+2018-09-10T08:00:24.923Z	git:initial-developement	1:06:07
+2018-09-10T17:07:23.267Z	git:initial-developement	1:00:14
+2018-09-11T07:04:34.895Z	git:initial-developement	0:52:54
+2018-09-11T08:43:28.800Z	git:initial-developement	0:02:25
+2018-09-11T17:31:14.432Z	git:initial-developement	Add return of promise to fetchContent
+2018-09-11T17:31:43.045Z	git:initial-developement	Change store to use post sets for partial posts list
+2018-09-11T18:00:35.011Z	git:initial-developement	XXX
+2018-09-11T18:00:51.214Z	git:initial-developement	Using preloadedState
+2018-09-11T20:37:14.089Z	git:initial-developement	1:14:47
+2018-09-12T17:53:31.873Z	git:initial-developement	0:36:18
+2018-09-13T07:45:05.143Z	git:initial-developement	0:17:14
+2018-09-14T08:09:25.865Z	git:initial-developement	0:19:06
+2018-09-14T16:05:03.353Z	git:initial-developement	0:50:21
+2018-09-24T07:08:28.219Z	git:initial-developement	0:34:05
+2018-09-24T07:23:37.133Z	git:initial-developement	0:07:40
+2018-09-25T07:05:55.390Z	git:initial-developement	0:23:20
+2018-09-27T17:51:03.960Z	git:initial-developement	Clearing logging
+2018-09-27T18:00:14.143Z	git:initial-developement	Tidying
+2018-09-27T18:53:47.796Z	git:initial-developement	0:12:20
+2018-09-28T18:11:05.985Z	git:initial-developement	0:06:27
+2018-10-15T06:47:15.858Z	git:initial-developement	Fixed typescript errors
+2018-10-15T06:47:21.106Z	git:initial-developement	Fixing test errors
+2018-10-15T08:11:08.817Z	git:initial-developement	0:57:22
+2018-10-15T18:42:10.799Z	git:initial-developement	0:32:17
+2018-11-20T08:11:22.469Z	git:initial-developement	Testing with @bytesnz site
+2018-11-20T20:11:53.982Z	git:initial-developement	11:42:13

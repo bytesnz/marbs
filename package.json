@@ -51,8 +51,8 @@
     "js-yaml": "^3.10.0",
     "just-diff": "^2.1.1",
     "just-diff-apply": "^1.0.1",
-    "lines-gallery": "^1.0.0",
     "memfs": "^2.6.2",
+    "module-resolver": "^1.0.0",
     "postcss-loader": "^2.0.10",
     "postcss-smart-import": "^0.7.6",
     "precss": "^3.1.0",
@@ -64,6 +64,7 @@
     "supervisor": "^0.12.0",
     "typescript": "^3.0.1",
     "unionfs": "^3.0.2",
+    "webpack-cli": "^3.1.2",
     "z-schema": "^3.19.1"
   },
   "peerDependencies": {
@@ -79,6 +80,9 @@
     "style-loader": "^0.20.1"
   },
   "dependencies": {
+    "@babel/core": "^7.1.6",
+    "babel-loader": "^8.0.4",
+    "babel-plugin-module-resolver": "^3.1.1",
     "chokidar": "^2.0.3",
     "command-line-args": "^5.0.2",
     "es6-promisify": "^5.0.0",
@@ -89,6 +93,7 @@
     "image-size": "^0.6.2",
     "lodash.clonedeep": "^4.5.0",
     "md5": "^2.2.1",
+    "mini-css-extract-plugin": "^0.4.4",
     "node-require-alias": "^1.0.1",
     "node-sass": "^4.7.2",
     "pkg-dir": "^2.0.0",
@@ -106,7 +111,7 @@
     "socket.io": "^2.0.4",
     "tag-you-are": "^1.0.0",
     "twitchdown": "^1.0.0",
-    "webpack": "^3",
+    "webpack": "^4.26.0",
     "webpack-bundle-analyzer": "^2.9.2",
     "webpack-dev-middleware": "^2.0.4",
     "webpack-dev-server": "^2.10.0",
@@ -115,6 +120,18 @@
   "ava": {
     "files": [
       "**/*.tests.js"
+    ]
+  },
+  "babel": {
+    "plugins": [
+      [
+        "module-resolver",
+        {
+          "alias": {
+            "~": "./"
+          }
+        }
+      ]
     ]
   }
 }

@@ -1,5 +1,12 @@
-typings
-src
-yarn*
-source
-config.js
+.*.sw?
+*~
+*.map
+.travis.yml
+.tickings
+/src
+/yarn*
+/source
+/config.js
+/test?
+/static
+/webpack.*

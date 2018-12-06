@@ -11,7 +11,7 @@ import { createMarss, Provider as MarssContext } from '../lib/client/marss';
 import { loader } from '../components/loader';
 import config from './lib/config';
 
-import './style.scss';
+import 'style.scss';
 
 import App from './app';
 
