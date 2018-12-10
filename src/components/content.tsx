@@ -177,20 +177,20 @@ class ContentComponent extends React.Component {
           <Markdown className="documentBody" source={content.data.body} />
           { (!attributes.type || attributes.type === 'post') ? (
             <footer>
-              { attributes.tags ? (
-                <div className="tags">
-                  {attributes.tags.map((tag) => (
-                    <Link key={tag} to={tagUrl(tag)}>
-                      {tagLabel(tag)}
-                    </Link>
-                  ))}
-                </div>
-              ) : null }
               { attributes.categories ? (
                 <div className="categories">
                   {flattenCategories(attributes.categories).map((category) => (
                     <Link key={category} to={categoryUrl(category)}>
                       {categoryLabel(category)}
+                    </Link>
+                  ))}
+                </div>
+              ) : null }
+              { attributes.tags ? (
+                <div className="tags">
+                  {attributes.tags.map((tag) => (
+                    <Link key={tag} to={tagUrl(tag)}>
+                      {tagLabel(tag)}
                     </Link>
                   ))}
                 </div>
