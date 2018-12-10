@@ -161,9 +161,9 @@ class ContentComponent extends React.Component {
       (
         <article key="article" className={!attributes.type
             ? `post ${attributes.categories ? flattenCategories(attributes.categories).map((category) => iderise(category)).join(' ') : ''}` : attributes.type}>
-          { (!attributes.type || attributes.type === 'post') ? (
+          { (attributes.title) ? (
             <header>
-              { (attributes.date) ?
+              { (attributes.type === 'post' && attributes.date) ?
                   (
                     <time dateTime={attributes.date}>
                       {(new Date(attributes.date)).toLocaleDateString()}
