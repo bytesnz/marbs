@@ -13,7 +13,7 @@ import { config } from '../app/lib/config';
 export const assetUrl = (asset: string) => urlJoin(config.baseUri,
     config.staticUri, asset);
 
-export const iderise = (tag: string): string => tag.toLowerCase().replace(' ', '_');
+export const iderise = (tag: string): string => tag.toLowerCase().replace(/ /g, '_');
 
 export const uniderise = (id: string): string => id.replace('_', ' ');
 
