@@ -62,19 +62,25 @@ class SidebarComponent extends React.Component {
       return (
         <div className={'sidebar' + (this.props.toggleUsingClass && show ? ' expanded' : '')}>
           { this.props.toggle ? (<div className="cover" onClick={this.toggle} />) : null }
-          <div className="bar">
+          <nav className="bar">
             {toggle}
-            <div className="contents">
+            <section className="menu">
               <h1>Navigation</h1>
               <Menu />
+            </section>
+            <section className="recent-posts">
               <h1>Recent Posts</h1>
               { show ? (<Posts limit={10} actions={this.props.actions} />) : null }
+            </section>
+            <section className="tags">
               <h1><Link to={tagUrl()}>Tags</Link></h1>
               { show ? (<TagCloud actions={this.props.actions} Label={({ tag, count }) => (<Link to="">{tag} ({count})</Link>)} />) : null }
+            </section>
+            <section className="categories">
               <h1><Link to={categoryUrl()}>Categories</Link></h1>
               {show ? (<Categories actions={this.props.actions} />) : null }
-            </div>
-          </div>
+            </section>
+          </nav>
         </div>
       );
     } else {
