@@ -17,6 +17,7 @@ import * as url from 'url';
 import * as promisify from 'es6-promisify';
 import * as commandLineArguments from 'command-line-args';
 import * as urlJoin from 'join-path';
+import * as compression from 'compression';
 
 import * as webpackConfig from './webpack.common';
 
@@ -33,6 +34,8 @@ const readFile = (util.promisify || promisify)(fs.readFile);
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
+
+app.use(compression());
 
 const availableArguments = [
   { name: 'address', alias: 'a', env: 'ADDRESS', type: String },
