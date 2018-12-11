@@ -14,6 +14,7 @@ console.log('Base directory is', baseDir);
 
 const appDist = path.resolve(baseDir, './public');
 const nodeModulesDir = path.resolve(__dirname, './node_modules');
+const PROD = process.env.NODE_ENV === 'production';
 
 // Check if the config file exists in the current project directory, if not
 // use the one in the marss directory
@@ -53,7 +54,7 @@ module.exports = {
       chunksSortMode: 'dependency'
     }),
     new MiniCssExtractPlugin({
-      filename: 'style.css'
+      filename: '[name].[hash].css'
     }),
   ],
   module: {
@@ -71,9 +72,9 @@ module.exports = {
         loader: path.join(nodeModulesDir, 'source-map-loader')
       },
       {
-        test: /\.(css|scss|sass)$/,
+        test: /\.(c|sc|sa)ss$/,
         use: [
-          process.env.NODE_ENV === 'production' ? path.join(nodeModulesDir, 'style-loader') : MiniCssExtractPlugin.loader,
+          PROD ? MiniCssExtractPlugin.loader : path.join(nodeModulesDir, 'style-loader'),
           path.join(nodeModulesDir, 'css-loader'),
           {
             loader: path.join(nodeModulesDir, 'postcss-loader'),
@@ -99,7 +100,6 @@ module.exports = {
 };
 
 if (process.env.NODE_ENV !== 'production') {
-  console.log('in HERE');
   module.exports.plugins.push(
     new BundleAnalyzerPlugin({
       openAnalyzer: false,

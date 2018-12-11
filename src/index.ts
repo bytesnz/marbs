@@ -17,10 +17,6 @@ import * as url from 'url';
 import * as promisify from 'es6-promisify';
 import * as commandLineArguments from 'command-line-args';
 import * as urlJoin from 'join-path';
-import { renderToString } from 'react-dom/server';
-import * as React from 'react';
-import { StaticRouter } from 'react-router-dom';
-import { Provider } from 'react-redux';
 
 import * as webpackConfig from './webpack.common';
 
@@ -30,17 +26,9 @@ require('node-require-alias').setAlias({
   '~': '..'
 });
 
-import { createMarss, Provider as MarssContext } from './lib/client/marss';
-import { Manager, Provider as LoaderProvider } from './components/loader';
+import { Marss } from './marss';
 
-import App from './app/app';
-
-import baseContentHandlers from './lib/handlers';
-
-import defaultGlobalConfig from './lib/defaults/config.global';
-import defaultServerConfig from './lib/defaults/config.server';
-
-const access = (util.promisify || promisify)(fs.access);
+const readFile = (util.promisify || promisify)(fs.readFile);
 
 const app = express();
 const server = http.createServer(app);
@@ -54,17 +42,7 @@ const availableArguments = [
   { name: 'draftRegex', env: 'DRAFT_REGEX', type: String }
 ];
 
-const defaultConfig: ServerConfig = {
-  ...defaultGlobalConfig,
-  ...defaultServerConfig
-};
-
-let config: ServerConfig = {
-  ...defaultConfig
-};
-
-const globalConfig = path.resolve('./config.global.js');
-const serverConfig = path.resolve('./config.server.js');
+let instanceConfig = {};
 
 // Pull in config from environment variables
 availableArguments.forEach((argument) => {
@@ -78,7 +56,7 @@ availableArguments.forEach((argument) => {
         }
       }
 
-      config[argument.name] = value;
+      instanceConfig[argument.name] = value;
     } catch (error) {
       console.log(`Value for ${argument.env} ignored: ${error.message}`);
     }
@@ -86,66 +64,11 @@ availableArguments.forEach((argument) => {
 });
 
 // Pull in config from command line arguments
-config = Object.assign(config, commandLineArguments(availableArguments));
+Object.assign(instanceConfig, commandLineArguments(availableArguments));
 
-Promise.all([globalConfig, serverConfig].map((file) => file && access(file, 'r').then(
-    () => {
-      let content = require(file);
-      if (typeof content === 'object') {
-        if (typeof content.default !== 'undefined') {
-          content = content.default;
+const marss = new Marss(instanceConfig);
 
-          if (typeof content !== 'object') {
-            console.error(`Default value in ${file} not an Object`);
-            return;
-          }
-        }
-
-        config = Object.assign(config, content);
-        return;
-      }
-
-      console.error(`Value in ${file} not an Object`);
-    },
-    (err) => (err.code === 'ENOENT' ? undefined : err))))
-.then(() => {
-  // TODO Check validaty of config?
-  if (!config.draftRegex) {
-    config.draftRegex = defaultConfig.draftRegex;
-  }
-
-  // Create complete content handlers
-  const contentHandlers: HandlerCreators = Object.assign({}, baseContentHandlers, config.handlers);
-
-  let handlers: InitialisedHandlers = {
-    content: null
-  }
-
-  let promises = [];
-
-  console.log('config is', config);
-  // Run content handler inits if defined
-  Object.keys(contentHandlers).forEach((id) => {
-    const value = contentHandlers[id](config);
-
-    if (value instanceof Promise) {
-      promises.push(value.then((handler) => {
-        handlers[id] = handler;
-      }));
-    } else {
-      handlers[id] = value;
-    }
-  });
-
-  return Promise.all(promises).then(() => handlers);
-}).then(async (handlers) => {
-  // Ensure there is a content contentHandler
-  if (typeof handlers.content !== 'object') {
-    return Promise.reject(new Error('No content handler for main content'));
-  }
-
-  const content = handlers.content;
-
+Promise.all([marss.getConfig(), marss.getHandlers()]).then(([config, handlers]) => {
   // Change the socket path
   if (config.socketPath) {
     console.log('changing socket path to', config.socketPath);
@@ -157,7 +80,9 @@ Promise.all([globalConfig, serverConfig].map((file) => file && access(file, 'r')
       webpackDevMiddleware;
 
   if (process.env.NODE_ENV === 'production') {
-    app.use(config.baseUri, express.static(webpackConfig.output.path));
+    app.use(config.baseUri, express.static(webpackConfig.output.path, {
+      index: false
+    }));
   } else {
     console.log('Using Webpack dev middleware for realtime development');
     // Dev imports
@@ -167,6 +92,7 @@ Promise.all([globalConfig, serverConfig].map((file) => file && access(file, 'r')
     const compiler = webpack(webpackDevConfig);
 
     devMiddleware = webpackDevMiddleware(compiler, {
+      // TODO Check if need no index
     });
 
     // Attach webpack middlewares
@@ -181,6 +107,7 @@ Promise.all([globalConfig, serverConfig].map((file) => file && access(file, 'r')
   }
 
   // Set up handler paths
+  console.log('got handlers', handlers);
   Object.values(handlers).forEach((handler) => {
     if (handler.paths) {
       Object.entries(handler.paths).forEach(([method, paths]) => {
@@ -193,103 +120,46 @@ Promise.all([globalConfig, serverConfig].map((file) => file && access(file, 'r')
     }
   });
 
+  const baseUriLength = (config.baseUri || '/').length;
   // Set up catch all for content
   if (process.env.NODE_ENV === 'production') {
+    let indexFile = readFile(path.join(webpackConfig.output.path, 'index.html')).then((buffer) => {
+      const content = buffer.toString();
+      indexFile = content;
+      return content;
+    });
     app.get(path.join(config.baseUri, '*'), (req, res, next) => {
-      res.sendFile(path.join(webpackConfig.output.path, 'index.html'));
+      const uri = req.path.slice(baseUriLength)
+      console.log('received request for', req.path, uri);
+
+      marss.generatePage(uri, indexFile).then(([status, content]) => {
+        res.status(status).send(content).end();
+      }, (error) => {
+        console.error(error);
+        if (indexFile instanceof Promise) {
+          indexFile.then((content) => res.end);
+        } else {
+          res.send(indexFile).end();
+        }
+      });
     });
   } else {
     // Attach to * for HistoryAPI
-    const baseUriLength = (config.baseUri || '/').length;
     app.get(path.join(config.baseUri, '*'), async (req, res) => {
-
-      // Create mock socket
-      const serverHandlers = {};
-      const clientHandlers = {};
-
-      const serverSocket = {
-        emit: (event, ...data) => {
-          if (clientHandlers[event]) {
-            clientHandlers[event].forEach((handler) => {
-              handler(...data);
-            });
-          }
-        }
-      };
-
-      Object.keys(handlers).forEach((id) => {
-        const handler = handlers[id];
-        if (handler.events) {
-          Object.keys(handler.events).forEach((event) => {
-            if (serverHandlers[event]) {
-              serverHandlers[event].push(handler.events[event]);
-            } else {
-              serverHandlers[event] = [ handler.events[event] ];
-            }
-          });
-        }
-      });
-
-      const clientSocket = {
-        emit: (event, ...data) => {
-          if (serverHandlers[event]) {
-            serverHandlers[event].forEach((handler) => {
-              handler(serverSocket, ...data);
-            });
-          }
-        },
-        on: (event, handler) => {
-          if (clientHandlers[event]) {
-            clientHandlers[event].push(handler);
-          } else {
-            clientHandlers[event] = [ handler ];
-          }
-        }
-      };
-
-      // Create marss instance
       try {
-        const uri = req.path.slice(baseUriLength)
-        const marss = await createMarss(config, clientSocket);
-        const loader = new Manager();
-        const index = devMiddleware.fileSystem.readFileSync(path.join(webpackConfig.output.path, 'index.html'));
+        const uri = req.path.slice(baseUriLength);
+        const indexFile = devMiddleware.fileSystem.readFileSync(path.join(webpackConfig.output.path, 'index.html')).toString();
 
-        let element = React.createElement(StaticRouter, {
-          location: req.url,
-          context: {}
-        }, React.createElement(LoaderProvider, {
-          value: loader
-        }, React.createElement(MarssContext, {
-          marss: marss
-        }, React.createElement(App, {}) ) ) );
-
-        const waitRender = () => {
-          const appString = renderToString(element);
-
-          if (loader.loading) {
-            loader.loading.then((errors) => {
-              if (errors && errors.length) {
-              }
-
-              waitRender();
-            });
-          } else {
-            // Return string
-            let response;
-            try {
-              response = index.toString().replace(/(<div id="app">)(<\/div>)/, '$1' + appString + '$2');
-            } catch (error) {
-              console.error(error);
-              res.end(index);
-            }
-
-            res.end(response);
-          }
-        };
-
-        waitRender();
+        marss.generatePage(uri, indexFile).then(([status, content]) => {
+          console.log('got content', content);
+          res.status(status).end(content);
+        }, (error) => {
+          console.error(error);
+          res.end(indexFile);
+        });
       } catch (error) {
         console.error(error);
+        res.status(500).end();
       }
     });
   }
