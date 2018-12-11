@@ -36,6 +36,7 @@ const server = http.createServer(app);
 const io = socketio(server);
 
 app.use(compression());
+app.disable('x-powered-by');
 
 const availableArguments = [
   { name: 'address', alias: 'a', env: 'ADDRESS', type: String },
