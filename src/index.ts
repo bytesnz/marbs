@@ -130,7 +130,6 @@ Promise.all([marss.getConfig(), marss.getHandlers()]).then(([config, handlers]) 
     });
     app.get(path.join(config.baseUri, '*'), (req, res, next) => {
       const uri = req.path.slice(baseUriLength)
-      console.log('received request for', req.path, uri);
 
       marss.generatePage(uri, indexFile).then(([status, content]) => {
         res.status(status).send(content).end();
