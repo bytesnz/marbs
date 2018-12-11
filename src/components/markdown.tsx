@@ -81,7 +81,7 @@ export class MarkdownComponent extends React.Component {
         const images  = this.getMedia(attributes);
         if (images) {
           return (
-            <LinesGallery images={images} imageMargin={10} />
+            <LinesGallery images={images} imageMargin={10} minImageSize={150} { ...(config.functionality && config.functionality.linesGallery) } />
           );
         } else {
           return null;

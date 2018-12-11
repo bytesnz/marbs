@@ -1,4 +1,5 @@
 import * as handlers from './handlers';
+import { Options as LinesGalleryOptions } from 'lines-gallery/typings/index';
 
 interface BaseMenuItem {
   label: string
@@ -37,7 +38,9 @@ export interface AppFunctionalityConfig {
   /** TODO If and how many post details to preload. If set, server
    *  rendering / client rerendering of the page will be blocked until the
    *  categories list is loaded. */
-  proloadPostDetails?: number
+  proloadPostDetails?: number,
+  /// Options for LinesGallery
+  linesGallery?: LinesGalleryOptions
 }
 
 export interface GlobalConfig {
