@@ -15,7 +15,7 @@ export const assetUrl = (asset: string) => urlJoin(config.baseUri,
 
 export const iderise = (tag: string): string => tag.toLowerCase().replace(/ /g, '_');
 
-export const uniderise = (id: string): string => id.replace('_', ' ');
+export const uniderise = (id: string): string => id.replace(/_/g, ' ');
 
 /**
  * Creates a label for the given category
