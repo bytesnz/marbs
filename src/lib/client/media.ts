@@ -14,7 +14,6 @@ export const createMedia = (socket, options: SetGlobalConfig) => {
   let nextMediaRequestId = 1;
 
   socket.on('media', (data) => {
-    console.log('got media response', data, requests);
     const index = requests.findIndex((request) => request.id === data.id);
     // Check if request exists
     if (index === -1) {
@@ -22,7 +21,6 @@ export const createMedia = (socket, options: SetGlobalConfig) => {
     }
 
     const request = requests[index];
-    console.log('request was', request);
 
     if (data.error) {
       request.reject(data.error);
