@@ -15,7 +15,7 @@ const menuItem = (item, index) => {
   } else if (item.link) {
     return (
       <li key={index}>
-        <Link to={urlJoin('/', config.baseUri, item.link)} accesskey={ item.accesskey || null }>
+        <Link to={urlJoin('/', config.baseUri, item.link)} accessKey={ item.accesskey || null }>
         {item.label}
         </Link>
       </li>

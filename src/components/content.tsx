@@ -197,10 +197,10 @@ class ContentComponent extends React.Component {
               ) : null }
               <nav>
                 { previousPost ? (
-                  <Link className="previousPost" accesskey="p" to={documentUrl(previousPost.id)}>{previousPost.attributes.title}</Link>
+                  <Link className="previousPost" accessKey="p" to={documentUrl(previousPost.id)}>{previousPost.attributes.title}</Link>
                 ) : null }
                 { nextPost ? (
-                  <Link className="nextPost" accesskey="n" to={documentUrl(nextPost.id)}>{nextPost.attributes.title}</Link>
+                  <Link className="nextPost" accessKey="n" to={documentUrl(nextPost.id)}>{nextPost.attributes.title}</Link>
                 ) : null }
               </nav>
             </footer>

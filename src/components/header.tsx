@@ -8,7 +8,7 @@ import config from '../app/lib/config';
 
 export const Header = () => (
   <header className="siteHeader" role="banner">
-    <h1><Link to={urlJoin('/', config.baseUri)} accesskey="1">{config.title}</Link></h1>
+    <h1><Link to={urlJoin('/', config.baseUri)} accessKey="1">{config.title}</Link></h1>
     { config.description ? (<div className="description">{config.description}</div>) : null }
     <Menu />
   </header>
